@@ -7,26 +7,25 @@ namespace L02_FirstFudge {
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
         ƒ.RenderManager.initialize();
-        viewport = new ƒ.Viewport();
+        ƒ.Debug.log(canvas);
+
+        let node: ƒ.Node = new ƒ.Node("Quad");
 
         let mesh: ƒ.MeshQuad = new ƒ.MeshQuad();
-        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
-
         let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
-        let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
-        let node: ƒ.Node = new ƒ.Node("Quad");
         node.addComponent(cmpMesh);
+        
+        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
+        let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
         node.addComponent(cmpMaterial);
 
+        let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
+        cmpCamera.pivot.translateZ(2);
 
-        let camera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-        camera.pivot.translate(new ƒ.Vector3(0, 0, 2));
-
-        viewport.initialize("Viewport", node, camera, canvas);
-        
-        // ƒ.RenderManager.update();
-        viewport.draw();
-
+        viewport = new ƒ.Viewport();
+        viewport.initialize("Viewport", node, cmpCamera, canvas);
         ƒ.Debug.log(viewport);
+
+        viewport.draw();
     }
 }
