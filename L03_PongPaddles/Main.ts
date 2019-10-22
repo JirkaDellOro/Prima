@@ -21,8 +21,8 @@ namespace L03_PongPaddle {
         
         paddleRight.cmpTransform.local.translateX(20);
         paddleLeft.cmpTransform.local.translateX(-20);
-        ( <ƒ.ComponentMesh> paddleLeft.getComponent(ƒ.ComponentMesh) ).pivot.scaleY(4);
-        ( <ƒ.ComponentMesh> paddleRight.getComponent(ƒ.ComponentMesh) ).pivot.scaleY(4);
+        paddleLeft.getComponent(ƒ.ComponentMesh).pivot.scaleY(4);
+        paddleRight.getComponent(ƒ.ComponentMesh).pivot.scaleY(4);
 
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", pong, cmpCamera, canvas);
