@@ -1,7 +1,8 @@
 "use strict";
-var L03_PongPaddle;
-(function (L03_PongPaddle) {
+var L04_PongAnimated;
+(function (L04_PongAnimated) {
     var ƒ = FudgeCore;
+    let keysPressed = {};
     window.addEventListener("load", hndLoad);
     let viewport;
     let ball = new ƒ.Node("Ball");
@@ -22,26 +23,30 @@ var L03_PongPaddle;
         viewport.initialize("Viewport", pong, cmpCamera, canvas);
         ƒ.Debug.log(viewport);
         document.addEventListener("keydown", hndKeydown);
+        document.addEventListener("keyup", hndKeyup);
         viewport.draw();
+        // setInterval(handler, milliseconds);
+        // requestAnimationFrame(handler);
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        ƒ.Loop.start();
     }
-    function hndKeydown(_event) {
-        // let keycode: number = 
-        switch (_event.code) {
-            case ƒ.KEYBOARD_CODE.ARROW_UP:
-                paddleRight.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
-                break;
-            case ƒ.KEYBOARD_CODE.ARROW_DOWN:
-                paddleRight.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
-                break;
-            case ƒ.KEYBOARD_CODE.W:
-                paddleLeft.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
-                break;
-            case ƒ.KEYBOARD_CODE.S:
-                paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
-                break;
-        }
+    function update(_event) {
+        if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_UP])
+            paddleRight.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
+        if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_DOWN])
+            paddleRight.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
+        if (keysPressed[ƒ.KEYBOARD_CODE.W])
+            paddleLeft.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
+        if (keysPressed[ƒ.KEYBOARD_CODE.S])
+            paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
         ƒ.RenderManager.update();
         viewport.draw();
+    }
+    function hndKeyup(_event) {
+        keysPressed[_event.code] = false;
+    }
+    function hndKeydown(_event) {
+        keysPressed[_event.code] = true;
     }
     function createPong() {
         let pong = new ƒ.Node("Pong");
@@ -61,5 +66,5 @@ var L03_PongPaddle;
         pong.appendChild(paddleRight);
         return pong;
     }
-})(L03_PongPaddle || (L03_PongPaddle = {}));
+})(L04_PongAnimated || (L04_PongAnimated = {}));
 //# sourceMappingURL=Main.js.map

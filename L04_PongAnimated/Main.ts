@@ -1,5 +1,11 @@
-namespace L03_PongPaddle {
+namespace L04_PongAnimated {
+
+    interface KeyPressed {
+        [code: string]: boolean;
+    }
+
     import ƒ = FudgeCore;
+    let keysPressed: KeyPressed = {};
 
     window.addEventListener("load", hndLoad);
     let viewport: ƒ.Viewport;
@@ -29,29 +35,36 @@ namespace L03_PongPaddle {
         ƒ.Debug.log(viewport);
 
         document.addEventListener("keydown", hndKeydown);
+        document.addEventListener("keyup", hndKeyup);
 
         viewport.draw();
+
+        // setInterval(handler, milliseconds);
+        // requestAnimationFrame(handler);
+        ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
+        ƒ.Loop.start();
     }
 
-    function hndKeydown(_event: KeyboardEvent): void {
-        // let keycode: number = 
-        switch (_event.code) {
-            case ƒ.KEYBOARD_CODE.ARROW_UP:
-                paddleRight.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
-                break;
-            case ƒ.KEYBOARD_CODE.ARROW_DOWN:
-                paddleRight.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
-                break;
-            case ƒ.KEYBOARD_CODE.W:
-                paddleLeft.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
-                break;
-            case ƒ.KEYBOARD_CODE.S:
-                paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
-                break;
-        }
+    function update(_event: Event): void {
+
+        if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_UP])
+            paddleRight.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
+        if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_DOWN])
+            paddleRight.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
+        if (keysPressed[ƒ.KEYBOARD_CODE.W])
+            paddleLeft.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
+        if (keysPressed[ƒ.KEYBOARD_CODE.S])
+            paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
 
         ƒ.RenderManager.update();
         viewport.draw();
+    }
+
+    function hndKeyup(_event: KeyboardEvent): void {
+        keysPressed[_event.code] = false;
+    }
+    function hndKeydown(_event: KeyboardEvent): void {
+        keysPressed[_event.code] = true;
     }
 
     function createPong(): ƒ.Node {
