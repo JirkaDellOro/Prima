@@ -14,6 +14,8 @@ namespace L04_PongAnimated {
     let paddleLeft: ƒ.Node = new ƒ.Node("PaddleLeft");
     let paddleRight: ƒ.Node = new ƒ.Node("PaddleRight");
 
+    let ballSpeed: ƒ.Vector3 = new ƒ.Vector3(0.1, -0.1, 0);
+
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
         ƒ.RenderManager.initialize();
@@ -56,8 +58,14 @@ namespace L04_PongAnimated {
         if (keysPressed[ƒ.KEYBOARD_CODE.S])
             paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
 
+        moveBall();
+
         ƒ.RenderManager.update();
         viewport.draw();
+    }
+
+    function moveBall(): void {
+        ball.cmpTransform.local.translate(ballSpeed);
     }
 
     function hndKeyup(_event: KeyboardEvent): void {

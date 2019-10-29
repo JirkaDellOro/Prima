@@ -1,6 +1,6 @@
 "use strict";
-var L04_PongAnimated;
-(function (L04_PongAnimated) {
+var L05_PongReflection;
+(function (L05_PongReflection) {
     var ƒ = FudgeCore;
     let keysPressed = {};
     window.addEventListener("load", hndLoad);
@@ -36,13 +36,27 @@ var L04_PongAnimated;
             paddleRight.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
         if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_DOWN])
             paddleRight.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
+        if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_LEFT])
+            paddleRight.cmpTransform.local.translate(new ƒ.Vector3(-0.3, 0, 0));
+        if (keysPressed[ƒ.KEYBOARD_CODE.ARROW_RIGHT])
+            paddleRight.cmpTransform.local.translate(ƒ.Vector3.X(0.3));
         if (keysPressed[ƒ.KEYBOARD_CODE.W])
             paddleLeft.cmpTransform.local.translate(new ƒ.Vector3(0, 0.3, 0));
         if (keysPressed[ƒ.KEYBOARD_CODE.S])
             paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
-        moveBall();
+        ;
+        let sclRect = paddleRight.getComponent(ƒ.ComponentMesh).pivot.scaling.copy;
+        let posRect = paddleRight.cmpTransform.local.translation.copy;
+        let hit = detectHit(ball.cmpTransform.local.translation, posRect, sclRect);
+        console.log(hit);
+        if (!hit)
+            moveBall();
         ƒ.RenderManager.update();
         viewport.draw();
+    }
+    function detectHit(_position, _posRect, _sclRect) {
+        let rect = new ƒ.Rectangle(_posRect.x, _posRect.y, _sclRect.x, _sclRect.y, ƒ.ORIGIN2D.CENTER);
+        return rect.isInside(_position.getVector2());
     }
     function moveBall() {
         ball.cmpTransform.local.translate(ballSpeed);
@@ -71,5 +85,5 @@ var L04_PongAnimated;
         pong.appendChild(paddleRight);
         return pong;
     }
-})(L04_PongAnimated || (L04_PongAnimated = {}));
+})(L05_PongReflection || (L05_PongReflection = {}));
 //# sourceMappingURL=Main.js.map

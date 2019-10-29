@@ -664,6 +664,7 @@ declare namespace FudgeCore {
         static decorateCoat(_constructor: Function): void;
         private static injectRenderDataForCoatColored;
         private static injectRenderDataForCoatTextured;
+        private static injectRenderDataForCoatMatCap;
     }
 }
 declare namespace FudgeCore {
@@ -813,6 +814,16 @@ declare namespace FudgeCore {
         tilingX: number;
         tilingY: number;
         repetition: boolean;
+    }
+    /**
+     * A [[Coat]] to be used by the MatCap Shader providing a texture, a tint color (0.5 grey is neutral)
+     * and a flatMix number for mixing between smooth and flat shading.
+     */
+    class CoatMatCap extends Coat {
+        texture: TextureImage;
+        tintColor: Color;
+        flatMix: number;
+        constructor(_texture?: TextureImage, _tintcolor?: Color, _flatmix?: number);
     }
 }
 declare namespace FudgeCore {
@@ -1814,12 +1825,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    interface Rectangle {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    }
     interface Border {
         left: number;
         top: number;
@@ -1909,14 +1914,40 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    /**
+     * Stores a 4x4 transformation matrix and provides operations for it.
+     * ```plaintext
+     * [ 0, 1, 2, 3 ] ← row vector x
+     * [ 4, 5, 6, 7 ] ← row vector y
+     * [ 8, 9,10,11 ] ← row vector z
+     * [12,13,14,15 ] ← translation
+     *            ↑  homogeneous column
+     * ```
+     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
+     */
     class Matrix4x4 extends Mutable implements Serializable {
         private data;
         private mutator;
         private vectors;
         constructor();
+        /**
+         * - get: a copy of the calculated translation vector
+         * - set: effect the matrix
+         */
         translation: Vector3;
+        /**
+         * - get: a copy of the calculated rotation vector
+         * - set: effect the matrix
+         */
         rotation: Vector3;
+        /**
+         * - get: a copy of the calculated scale vector
+         * - set: effect the matrix
+         */
         scaling: Vector3;
+        /**
+         * Retrieve a new identity matrix
+         */
         static readonly IDENTITY: Matrix4x4;
         /**
          * Computes and returns the product of two passed matrices.
@@ -1937,7 +1968,6 @@ declare namespace FudgeCore {
         static LOOK_AT(_transformPosition: Vector3, _targetPosition: Vector3, _up?: Vector3): Matrix4x4;
         /**
          * Returns a matrix that translates coordinates along the x-, y- and z-axis according to the given vector.
-         * @param _translate
          */
         static TRANSLATION(_translate: Vector3): Matrix4x4;
         /**
@@ -1957,7 +1987,6 @@ declare namespace FudgeCore {
         static ROTATION_Z(_angleInDegrees: number): Matrix4x4;
         /**
          * Returns a matrix that scales coordinates along the x-, y- and z-axis according to the given vector
-         * @param _scalar
          */
         static SCALING(_scalar: Vector3): Matrix4x4;
         /**
@@ -1980,47 +2009,68 @@ declare namespace FudgeCore {
          */
         static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near?: number, _far?: number): Matrix4x4;
         /**
-        * Wrapper function that multiplies a passed matrix by a rotationmatrix with passed x-rotation.
-        * @param _matrix The matrix to multiply.
-        * @param _angleInDegrees The angle to rotate by.
-        */
+         * Adds a rotation around the x-Axis to this matrix
+         */
         rotateX(_angleInDegrees: number): void;
         /**
-         * Wrapper function that multiplies a passed matrix by a rotationmatrix with passed y-rotation.
-         * @param _matrix The matrix to multiply.
-         * @param _angleInDegrees The angle to rotate by.
+         * Adds a rotation around the y-Axis to this matrix
          */
         rotateY(_angleInDegrees: number): void;
         /**
-         * Wrapper function that multiplies a passed matrix by a rotationmatrix with passed z-rotation.
-         * @param _matrix The matrix to multiply.
-         * @param _angleInDegrees The angle to rotate by.
+         * Adds a rotation around the z-Axis to this matrix
          */
         rotateZ(_angleInDegrees: number): void;
+        /**
+         * Adjusts the rotation of this matrix to face the given target and tilts it to accord with the given up vector
+         */
         lookAt(_target: Vector3, _up?: Vector3): void;
+        /**
+         * Add a translation by the given vector to this matrix
+         */
         translate(_by: Vector3): void;
         /**
-         * Translate the transformation along the x-axis.
-         * @param _x The value of the translation.
+         * Add a translation along the x-Axis by the given amount to this matrix
          */
         translateX(_x: number): void;
         /**
-         * Translate the transformation along the y-axis.
-         * @param _y The value of the translation.
+         * Add a translation along the y-Axis by the given amount to this matrix
          */
         translateY(_y: number): void;
         /**
-         * Translate the transformation along the z-axis.
-         * @param _z The value of the translation.
+         * Add a translation along the y-Axis by the given amount to this matrix
          */
         translateZ(_z: number): void;
+        /**
+         * Add a scaling by the given vector to this matrix
+         */
         scale(_by: Vector3): void;
+        /**
+         * Add a scaling along the x-Axis by the given amount to this matrix
+         */
         scaleX(_by: number): void;
+        /**
+         * Add a scaling along the y-Axis by the given amount to this matrix
+         */
         scaleY(_by: number): void;
+        /**
+         * Add a scaling along the z-Axis by the given amount to this matrix
+         */
         scaleZ(_by: number): void;
+        /**
+         * Multiply this matrix with the given matrix
+         */
         multiply(_matrix: Matrix4x4): void;
+        /**
+         * Calculates and returns the euler-angles representing the current rotation of this matrix
+         */
         getEulerAngles(): Vector3;
+        /**
+         * Sets the elements of this matrix to the values of the given matrix
+         */
         set(_to: Matrix4x4): void;
+        /**
+         * Return the elements of this matrix as a Float32Array
+         */
         get(): Float32Array;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
@@ -2029,6 +2079,53 @@ declare namespace FudgeCore {
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
         protected reduceMutator(_mutator: Mutator): void;
         private resetCache;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Defines the origin of a rectangle
+     */
+    enum ORIGIN2D {
+        TOPLEFT = 0,
+        TOPCENTER = 1,
+        TOPRIGHT = 2,
+        CENTERLEFT = 16,
+        CENTER = 17,
+        CENTERRIGHT = 18,
+        BOTTOMLEFT = 32,
+        BOTTOMCENTER = 33,
+        BOTTOMRIGHT = 34
+    }
+    /**
+     * Defines a rectangle with position and size and add comfortable methods to it
+     * @author Jirka Dell'Oro-Friedl, HFU, 2019
+     */
+    class Rectangle extends Mutable {
+        position: Vector2;
+        size: Vector2;
+        constructor(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D);
+        /**
+         * Returns a new rectangle created with the given parameters
+         */
+        static GET(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): Rectangle;
+        /**
+         * Sets the position and size of the rectangle according to the given parameters
+         */
+        setPositionAndSize(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): void;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+        right: number;
+        bottom: number;
+        /**
+         * Returns true if the given point is inside of this rectangle or on the border
+         * @param _point
+         */
+        isInside(_point: Vector2): boolean;
+        protected reduceMutator(_mutator: Mutator): void;
     }
 }
 declare namespace FudgeCore {
@@ -2177,6 +2274,10 @@ declare namespace FudgeCore {
          * @returns A deep copy of the vector.
          */
         readonly copy: Vector2;
+        /**
+         * Adds a z-component to the vector and returns a new Vector3
+         */
+        getVector3(): Vector3;
         getMutator(): Mutator;
         protected reduceMutator(_mutator: Mutator): void;
     }
@@ -2240,6 +2341,10 @@ declare namespace FudgeCore {
         get(): Float32Array;
         readonly copy: Vector3;
         transform(_matrix: Matrix4x4): void;
+        /**
+         * Drops the z-component and returns a Vector2 consisting of the x- and y-components
+         */
+        getVector2(): Vector2;
         getMutator(): Mutator;
         protected reduceMutator(_mutator: Mutator): void;
     }
@@ -2643,6 +2748,18 @@ declare namespace FudgeCore {
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
      */
     class ShaderFlat extends Shader {
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Matcap (Material Capture) shading. The texture provided by the coat is used as a matcap material.
+     * Implementation based on https://www.clicktorelease.com/blog/creating-spherical-environment-mapping-shader/
+     * @authors Simon Storl-Schulke, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
+     */
+    class ShaderMatCap extends Shader {
         static getCoat(): typeof Coat;
         static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;
