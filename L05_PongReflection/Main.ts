@@ -75,7 +75,7 @@ namespace L05_PongReflection {
 
     function detectHit(_position: ƒ.Vector3, _posRect: ƒ.Vector3, _sclRect: ƒ.Vector3): boolean {
         let rect: ƒ.Rectangle = new ƒ.Rectangle(_posRect.x, _posRect.y, _sclRect.x, _sclRect.y, ƒ.ORIGIN2D.CENTER);
-        return rect.isInside(_position.getVector2());
+        return rect.isInside(_position.toVector2());
     }
 
     function moveBall(): void {

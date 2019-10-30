@@ -2277,7 +2277,7 @@ declare namespace FudgeCore {
         /**
          * Adds a z-component to the vector and returns a new Vector3
          */
-        getVector3(): Vector3;
+        toVector3(): Vector3;
         getMutator(): Mutator;
         protected reduceMutator(_mutator: Mutator): void;
     }
@@ -2344,7 +2344,7 @@ declare namespace FudgeCore {
         /**
          * Drops the z-component and returns a Vector2 consisting of the x- and y-components
          */
-        getVector2(): Vector2;
+        toVector2(): Vector2;
         getMutator(): Mutator;
         protected reduceMutator(_mutator: Mutator): void;
     }

@@ -4855,7 +4855,7 @@ var FudgeCore;
         /**
          * Adds a z-component to the vector and returns a new Vector3
          */
-        getVector3() {
+        toVector3() {
             return new FudgeCore.Vector3(this.x, this.y, 0);
         }
         getMutator() {
@@ -5019,7 +5019,7 @@ var FudgeCore;
         /**
          * Drops the z-component and returns a Vector2 consisting of the x- and y-components
          */
-        getVector2() {
+        toVector2() {
             return new FudgeCore.Vector2(this.x, this.y);
         }
         getMutator() {
