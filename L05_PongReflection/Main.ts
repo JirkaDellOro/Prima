@@ -62,12 +62,12 @@ namespace L05_PongReflection {
         if (keysPressed[ƒ.KEYBOARD_CODE.S])
             paddleLeft.cmpTransform.local.translate(ƒ.Vector3.Y(-0.3));
 
-        ;
+        
         let sclRect: ƒ.Vector3 = paddleRight.getComponent(ƒ.ComponentMesh).pivot.scaling.copy;
         let posRect: ƒ.Vector3 = paddleRight.cmpTransform.local.translation.copy;
         let hit: boolean = detectHit(ball.cmpTransform.local.translation, posRect, sclRect);
         console.log(hit);
-        if (!hit) moveBall()
+        if (!hit) moveBall();
 
         ƒ.RenderManager.update();
         viewport.draw();
