@@ -5,7 +5,7 @@ var L07_FudgeCraft_Fragments;
     window.addEventListener("load", hndLoad);
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
-        ƒ.RenderManager.initialize();
+        ƒ.RenderManager.initialize(true);
         ƒ.Debug.log("Canvas", canvas);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new ƒ.Vector3(2, 3, 10));

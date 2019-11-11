@@ -6,7 +6,7 @@ namespace L07_FudgeCraft_Fragments {
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
-        ƒ.RenderManager.initialize();
+        ƒ.RenderManager.initialize(true);
         ƒ.Debug.log("Canvas", canvas);
 
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
