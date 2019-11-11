@@ -4,7 +4,10 @@ namespace L07_FudgeCraft_Fragments {
     export enum CUBE_TYPE {
         GREEN = "Green",
         RED = "Red",
-        BLUE = "Blue"
+        BLUE = "Blue",
+        YELLOW = "Yellow",
+        MAGENTA = "Magenta",
+        CYAN = "Cyan"
     }
     type Materials = Map<CUBE_TYPE, ƒ.Material>;
 
@@ -28,9 +31,12 @@ namespace L07_FudgeCraft_Fragments {
 
         private static createMaterials(): Materials {
             return new Map([
-                [CUBE_TYPE.RED, new ƒ.Material("Red", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.RED))],
-                [CUBE_TYPE.GREEN, new ƒ.Material("Green", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.GREEN))],
-                [CUBE_TYPE.BLUE, new ƒ.Material("Blue", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.BLUE))]
+                [CUBE_TYPE.RED, new ƒ.Material(CUBE_TYPE.RED, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.RED))],
+                [CUBE_TYPE.GREEN, new ƒ.Material(CUBE_TYPE.GREEN, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.GREEN))],
+                [CUBE_TYPE.BLUE, new ƒ.Material(CUBE_TYPE.BLUE, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.BLUE))],
+                [CUBE_TYPE.MAGENTA, new ƒ.Material(CUBE_TYPE.MAGENTA, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.MAGENTA))],
+                [CUBE_TYPE.YELLOW, new ƒ.Material(CUBE_TYPE.YELLOW, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.YELLOW))],
+                [CUBE_TYPE.CYAN, new ƒ.Material(CUBE_TYPE.CYAN, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CYAN))]
             ]);
         }
     }

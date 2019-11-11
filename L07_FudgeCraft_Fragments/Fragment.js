@@ -7,8 +7,8 @@ var L07_FudgeCraft_Fragments;
             super("Fragment-Type" + _shape);
             this.position = new ƒ.Vector3(0, 0, 0);
             let shape = Fragment.shapes[_shape];
-            let type = L07_FudgeCraft_Fragments.CUBE_TYPE.RED;
             for (let position of shape) {
+                let type = Fragment.getRandomEnum(L07_FudgeCraft_Fragments.CUBE_TYPE);
                 let vctPosition = ƒ.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
                 let cube = new L07_FudgeCraft_Fragments.Cube(type, vctPosition);
@@ -17,9 +17,17 @@ var L07_FudgeCraft_Fragments;
         }
         static getShapeArray() {
             return [
-                // small flat L
-                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+                // corner
+                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                // quad
+                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]],
+                // s
+                [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]]
             ];
+        }
+        static getRandomEnum(_enum) {
+            let randomKey = Object.keys(_enum)[Math.floor(Math.random() * Object.keys(_enum).length)];
+            return _enum[randomKey];
         }
     }
     Fragment.shapes = Fragment.getShapeArray();

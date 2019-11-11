@@ -8,8 +8,8 @@ namespace L07_FudgeCraft_Fragments {
         constructor(_shape: number) {
             super("Fragment-Type" + _shape);
             let shape: number [][] = Fragment.shapes[_shape];
-            let type: CUBE_TYPE = CUBE_TYPE.RED;
             for (let position of shape) {
+                let type: CUBE_TYPE =  Fragment.getRandomEnum(CUBE_TYPE);
                 let vctPosition: ƒ.Vector3 = ƒ.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
                 let cube: Cube = new Cube(type, vctPosition);
@@ -19,9 +19,18 @@ namespace L07_FudgeCraft_Fragments {
 
         private static getShapeArray(): number[][][] {
             return [
-                // small flat L
-                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]]
+                // corner
+                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                // quad
+                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]],
+                // s
+                [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]]
             ];
+        }
+
+        private static getRandomEnum<T>(_enum: {[key: string]: T}): T {
+            let randomKey: string = Object.keys(_enum)[Math.floor(Math.random() * Object.keys(_enum).length)];
+            return _enum[randomKey];
         }
     }
 }

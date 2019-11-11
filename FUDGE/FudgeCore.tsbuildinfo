@@ -22,6 +22,7 @@
       "../Source/Component/ComponentAudio.ts",
       "../Source/Component/ComponentAudioListener.ts",
       "../Source/Component/ComponentCamera.ts",
+      "../Source/Light/Light.ts",
       "../Source/Component/ComponentLight.ts",
       "../Source/Component/ComponentMaterial.ts",
       "../Source/Component/ComponentMesh.ts",
@@ -38,7 +39,6 @@
       "../Source/Engine/Material.ts",
       "../Source/Engine/Recycler.ts",
       "../Source/Engine/ResourceManager.ts",
-      "../Source/Light/Light.ts",
       "../Source/Engine/Viewport.ts",
       "../Source/Event/Event.ts",
       "../Source/Event/EventKeyboard.ts",
@@ -85,7 +85,7 @@
         },
         {
           "pos": 593,
-          "end": 295187,
+          "end": 296467,
           "kind": "text"
         }
       ],
@@ -116,7 +116,7 @@
       "sections": [
         {
           "pos": 0,
-          "end": 120822,
+          "end": 121120,
           "kind": "text"
         }
       ]
