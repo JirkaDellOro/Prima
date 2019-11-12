@@ -2,7 +2,9 @@ namespace L07_FudgeCraft_Fragments {
     import ƒ = FudgeCore;
 
     window.addEventListener("load", hndLoad);
-    export let viewport: ƒ.Viewport;
+    let viewport: ƒ.Viewport;
+    let game: ƒ.Node;
+    let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -13,11 +15,12 @@ namespace L07_FudgeCraft_Fragments {
         cmpCamera.pivot.translate(new ƒ.Vector3(2, 3, 10));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
 
-        let game: ƒ.Node = new ƒ.Node("FudgeCraft");
+        game = new ƒ.Node("FudgeCraft");
 
         // let cube: Cube = new Cube(CUBE_TYPE.BLUE);
         let fragment: Fragment = new Fragment(0);
         // ƒ.Debug.log("Fragment", fragment);
+        fragment.addComponent(new ƒ.ComponentTransform());
         game.appendChild(fragment);
 
         fragment = new Fragment(1);
@@ -42,5 +45,32 @@ namespace L07_FudgeCraft_Fragments {
         viewport.draw();
 
         ƒ.Debug.log("Game", game);
+
+        window.addEventListener("keydown", hndKeyDown);
+    }
+
+    function hndKeyDown(_event: KeyboardEvent): void {
+        //let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
+        switch (_event.code) {
+            case ƒ.KEYBOARD_CODE.ARROW_UP:
+                rotate.add(ƒ.Vector3.X(-1));
+                break;
+            case ƒ.KEYBOARD_CODE.ARROW_DOWN:
+                rotate.add(ƒ.Vector3.X(1));
+                break;
+            case ƒ.KEYBOARD_CODE.ARROW_LEFT:
+                rotate.add(ƒ.Vector3.Y(-1));
+                break;
+            case ƒ.KEYBOARD_CODE.ARROW_RIGHT:
+                rotate.add(ƒ.Vector3.Y(1));
+                break;
+        }
+        for (let fragment of game.getChildren()) {
+            // fragment.cmpTransform.local.rotate(rotate);
+            fragment.cmpTransform.local.rotation = rotate;
+        }
+
+        ƒ.RenderManager.update();
+        viewport.draw();
     }
 }
