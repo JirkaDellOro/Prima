@@ -2,11 +2,12 @@ namespace L08_FudgeCraft_Collision {
     export import ƒ = FudgeCore;
 
     window.addEventListener("load", hndLoad);
+
+    export let grid: Grid = new Grid();
+    export let game: ƒ.Node;
     let viewport: ƒ.Viewport;
-    let game: ƒ.Node;
     let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
 
-    let grid: Grid = new Grid();
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -20,16 +21,8 @@ namespace L08_FudgeCraft_Collision {
         game = new ƒ.Node("FudgeCraft");
 
         game.appendChild(new Fragment(0));
-        game.appendChild(new Fragment(1, ƒ.Vector3.X(3)));
-        game.appendChild(new Fragment(2, ƒ.Vector3.X(-3)));
-
-
-        grid.set("Jonas", new Cube(CUBE_TYPE.GREEN, ƒ.Vector3.ZERO()));
-        let jonas: Cube = grid.get("Jonas");
-        jonas.cmpTransform.local.translate(new ƒ.Vector3(1.5, 7.6, -12.3));
-        game.appendChild(jonas);
-        ƒ.RenderManager.update();
-        grid.setCube(jonas);
+        // game.appendChild(new Fragment(1, ƒ.Vector3.X(3)));
+        // game.appendChild(new Fragment(2, ƒ.Vector3.X(-3)));
 
         let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
@@ -46,29 +39,42 @@ namespace L08_FudgeCraft_Collision {
 
         window.addEventListener("keydown", hndKeyDown);
 
-
+        test();
     }
 
     function hndKeyDown(_event: KeyboardEvent): void {
+        let angle: number = 10;
+        let rotate: ƒ.Vector3 = new ƒ.Vector3();
         switch (_event.code) {
             case ƒ.KEYBOARD_CODE.ARROW_UP:
-                rotate.add(ƒ.Vector3.X(-5));
+                rotate.add(ƒ.Vector3.X(-angle));
                 break;
             case ƒ.KEYBOARD_CODE.ARROW_DOWN:
-                rotate.add(ƒ.Vector3.X(5));
+                rotate.add(ƒ.Vector3.X(angle));
                 break;
             case ƒ.KEYBOARD_CODE.ARROW_LEFT:
-                rotate.add(ƒ.Vector3.Y(-5));
+                rotate.add(ƒ.Vector3.Y(-angle));
                 break;
             case ƒ.KEYBOARD_CODE.ARROW_RIGHT:
-                rotate.add(ƒ.Vector3.Y(5));
+                rotate.add(ƒ.Vector3.Y(angle));
                 break;
         }
-        for (let fragment of game.getChildren()) {
-            fragment.cmpTransform.local.rotation = rotate;
-        }
 
-        ƒ.RenderManager.update();
-        viewport.draw();
-    }
+        let count: number = 9;
+        let interval: number = window.setInterval(function (): void {
+            for (let fragment of game.getChildren()) {
+                // fragment.cmpTransform.local.rotation = rotate;   
+                // fragment.cmpTransform.local.rotateX(rotate.x, true);
+                // fragment.cmpTransform.local.rotateY(rotate.y, true);
+                fragment.cmpTransform.local.rotate(rotate, true);
+            }
+
+            ƒ.RenderManager.update();
+            viewport.draw();
+
+            if (--count <= 0)
+                window.clearInterval(interval);
+        },                                        
+        10);
+}
 }
