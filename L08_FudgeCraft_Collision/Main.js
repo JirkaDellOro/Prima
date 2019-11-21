@@ -1,12 +1,15 @@
 "use strict";
-var L07_FudgeCraft_Fragments;
-(function (L07_FudgeCraft_Fragments) {
+var L08_FudgeCraft_Collision;
+(function (L08_FudgeCraft_Collision) {
     var ƒ = FudgeCore;
     window.addEventListener("load", hndLoad);
     let viewport;
     let game;
     let rotate = ƒ.Vector3.ZERO();
+    let grid = new L08_FudgeCraft_Collision.Grid();
     function hndLoad(_event) {
+        grid.set("Jonas", new L08_FudgeCraft_Collision.Cube(L08_FudgeCraft_Collision.CUBE_TYPE.GREEN, ƒ.Vector3.ZERO()));
+        console.log(grid.get("Jonas"));
         const canvas = document.querySelector("canvas");
         ƒ.RenderManager.initialize(true);
         ƒ.Debug.log("Canvas", canvas);
@@ -14,9 +17,9 @@ var L07_FudgeCraft_Fragments;
         cmpCamera.pivot.translate(new ƒ.Vector3(2, 3, 10));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
         game = new ƒ.Node("FudgeCraft");
-        game.appendChild(new L07_FudgeCraft_Fragments.Fragment(0));
-        game.appendChild(new L07_FudgeCraft_Fragments.Fragment(1, ƒ.Vector3.X(3)));
-        game.appendChild(new L07_FudgeCraft_Fragments.Fragment(2, ƒ.Vector3.X(-3)));
+        game.appendChild(new L08_FudgeCraft_Collision.Fragment(0));
+        game.appendChild(new L08_FudgeCraft_Collision.Fragment(1, ƒ.Vector3.X(3)));
+        game.appendChild(new L08_FudgeCraft_Collision.Fragment(2, ƒ.Vector3.X(-3)));
         let cmpLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
         game.addComponent(cmpLight);
@@ -48,5 +51,5 @@ var L07_FudgeCraft_Fragments;
         ƒ.RenderManager.update();
         viewport.draw();
     }
-})(L07_FudgeCraft_Fragments || (L07_FudgeCraft_Fragments = {}));
+})(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));
 //# sourceMappingURL=Main.js.map

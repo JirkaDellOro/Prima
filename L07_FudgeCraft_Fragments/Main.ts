@@ -17,21 +17,9 @@ namespace L07_FudgeCraft_Fragments {
 
         game = new ƒ.Node("FudgeCraft");
 
-        // let cube: Cube = new Cube(CUBE_TYPE.BLUE);
-        let fragment: Fragment = new Fragment(0);
-        // ƒ.Debug.log("Fragment", fragment);
-        fragment.addComponent(new ƒ.ComponentTransform());
-        game.appendChild(fragment);
-
-        fragment = new Fragment(1);
-        // ƒ.Debug.log("Fragment", fragment);
-        fragment.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.X(3))));
-        game.appendChild(fragment);
-
-        fragment = new Fragment(2);
-        // ƒ.Debug.log("Fragment", fragment);
-        fragment.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.X(-3))));
-        game.appendChild(fragment);
+        game.appendChild(new Fragment(0));
+        game.appendChild(new Fragment(1, ƒ.Vector3.X(3)));
+        game.appendChild(new Fragment(2, ƒ.Vector3.X(-3)));
 
         let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
@@ -50,23 +38,21 @@ namespace L07_FudgeCraft_Fragments {
     }
 
     function hndKeyDown(_event: KeyboardEvent): void {
-        //let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
         switch (_event.code) {
             case ƒ.KEYBOARD_CODE.ARROW_UP:
-                rotate.add(ƒ.Vector3.X(-1));
+                rotate.add(ƒ.Vector3.X(-5));
                 break;
             case ƒ.KEYBOARD_CODE.ARROW_DOWN:
-                rotate.add(ƒ.Vector3.X(1));
+                rotate.add(ƒ.Vector3.X(5));
                 break;
             case ƒ.KEYBOARD_CODE.ARROW_LEFT:
-                rotate.add(ƒ.Vector3.Y(-1));
+                rotate.add(ƒ.Vector3.Y(-5));
                 break;
             case ƒ.KEYBOARD_CODE.ARROW_RIGHT:
-                rotate.add(ƒ.Vector3.Y(1));
+                rotate.add(ƒ.Vector3.Y(5));
                 break;
         }
         for (let fragment of game.getChildren()) {
-            // fragment.cmpTransform.local.rotate(rotate);
             fragment.cmpTransform.local.rotation = rotate;
         }
 

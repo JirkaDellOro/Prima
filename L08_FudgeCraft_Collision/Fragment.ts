@@ -1,4 +1,4 @@
-namespace L07_FudgeCraft_Fragments {
+namespace L08_FudgeCraft_Collision {
     import ƒ = FudgeCore;
 
     export class Fragment extends ƒ.Node {
