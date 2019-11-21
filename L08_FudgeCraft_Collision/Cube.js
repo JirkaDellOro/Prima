@@ -15,11 +15,11 @@ var L08_FudgeCraft_Collision;
         constructor(_type, _position) {
             super("Cube." + _type);
             let cmpMesh = new ƒ.ComponentMesh(Cube.mesh);
+            cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.9));
             this.addComponent(cmpMesh);
             let cmpMaterial = new ƒ.ComponentMaterial(Cube.materials.get(_type));
             this.addComponent(cmpMaterial);
             let cmpTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
-            cmpTransform.local.scale(ƒ.Vector3.ONE(0.9));
             this.addComponent(cmpTransform);
         }
         static createMaterials() {

@@ -19,13 +19,13 @@ namespace L08_FudgeCraft_Collision {
             super("Cube." + _type);
 
             let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(Cube.mesh);
+            cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.9));
             this.addComponent(cmpMesh);
 
             let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(Cube.materials.get(_type));
             this.addComponent(cmpMaterial);
 
             let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position));
-            cmpTransform.local.scale(ƒ.Vector3.ONE(0.9));
             this.addComponent(cmpTransform);
         }
 

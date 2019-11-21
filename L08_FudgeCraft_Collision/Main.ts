@@ -1,5 +1,5 @@
 namespace L08_FudgeCraft_Collision {
-    import ƒ = FudgeCore;
+    export import ƒ = FudgeCore;
 
     window.addEventListener("load", hndLoad);
     let viewport: ƒ.Viewport;
@@ -9,10 +9,6 @@ namespace L08_FudgeCraft_Collision {
     let grid: Grid = new Grid();
 
     function hndLoad(_event: Event): void {
-        grid.set("Jonas", new Cube(CUBE_TYPE.GREEN, ƒ.Vector3.ZERO()));
-        console.log(grid.get("Jonas"));
-
-
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
         ƒ.RenderManager.initialize(true);
         ƒ.Debug.log("Canvas", canvas);
@@ -26,6 +22,14 @@ namespace L08_FudgeCraft_Collision {
         game.appendChild(new Fragment(0));
         game.appendChild(new Fragment(1, ƒ.Vector3.X(3)));
         game.appendChild(new Fragment(2, ƒ.Vector3.X(-3)));
+
+
+        grid.set("Jonas", new Cube(CUBE_TYPE.GREEN, ƒ.Vector3.ZERO()));
+        let jonas: Cube = grid.get("Jonas");
+        jonas.cmpTransform.local.translate(new ƒ.Vector3(1.5, 7.6, -12.3));
+        game.appendChild(jonas);
+        ƒ.RenderManager.update();
+        grid.setCube(jonas);
 
         let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
