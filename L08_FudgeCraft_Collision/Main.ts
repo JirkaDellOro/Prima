@@ -6,7 +6,7 @@ namespace L08_FudgeCraft_Collision {
     export let grid: Grid = new Grid();
     export let game: ƒ.Node;
     let viewport: ƒ.Viewport;
-    let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
+    // let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
 
 
     function hndLoad(_event: Event): void {
@@ -27,6 +27,8 @@ namespace L08_FudgeCraft_Collision {
         let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
         game.addComponent(cmpLight);
+        let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY));
+        game.addComponent(cmpLightAmbient);
 
 
         viewport = new ƒ.Viewport();
@@ -74,7 +76,7 @@ namespace L08_FudgeCraft_Collision {
 
             if (--count <= 0)
                 window.clearInterval(interval);
-        },                                        
-        10);
-}
+        },
+            10);
+    }
 }

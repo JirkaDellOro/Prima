@@ -1,25 +1,35 @@
 namespace L08_FudgeCraft_Collision {
-    export class Grid extends Map<string, Cube> {
+    export class GridElement {
+        public cube: Cube;
+
+        constructor(_cube: Cube = null) {
+            this.cube = _cube;
+        }
+    }
+
+    export class Grid extends Map<string, GridElement> {
         // private grid: Map<string, Cube> = new Map();
 
-        push(_cube: Cube): void {
-            let key: string = this.toKey(_cube.cmpTransform.local.translation.map(Math.round));
-            this.set(key, _cube);
-            game.appendChild(_cube);
+        push(_position: ƒ.Vector3, _element: GridElement = null): void {
+            let key: string = this.toKey(_position);
+            this.set(key, _element);
+            if (_element)
+                game.appendChild(_element.cube);
         }
 
-        pull(_position: ƒ.Vector3): Cube {
+        pull(_position: ƒ.Vector3): GridElement {
             let key: string = this.toKey(_position);
-            let cube: Cube = this.get(key);
-            return cube;
+            let element: GridElement = this.get(key);
+            return element;
         }
 
-        pop(_position: ƒ.Vector3): Cube {
+        pop(_position: ƒ.Vector3): GridElement {
             let key: string = this.toKey(_position);
-            let cube: Cube = this.get(key);
+            let element: GridElement = this.get(key);
             this.delete(key);
-            game.removeChild(cube);
-            return cube;
+            if (element)
+                game.removeChild(element.cube);
+            return element;
         }
 
         toKey(_position: ƒ.Vector3): string {

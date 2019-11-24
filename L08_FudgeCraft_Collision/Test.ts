@@ -5,15 +5,16 @@ namespace L08_FudgeCraft_Collision {
 
     function testGrid(): void {
         let cube: Cube = new Cube(CUBE_TYPE.GREEN, ƒ.Vector3.ZERO());
-        grid.push(cube);
-        let cube2: Cube = grid.pull(cube.cmpTransform.local.translation);
-        logResult(cube == cube2, "Grid push and pull", cube, cube2);
+        grid.push(cube.cmpTransform.local.translation, new GridElement(cube));
 
-        let cube3: Cube = grid.pop(cube.cmpTransform.local.translation);
-        logResult(cube == cube3, "Grid pop", cube, cube3);
+        let pulled: GridElement = grid.pull(cube.cmpTransform.local.translation);
+        logResult(cube == pulled.cube, "Grid push and pull", cube, pulled.cube, pulled);
 
-        let cube4: Cube = grid.pull(cube.cmpTransform.local.translation);
-        logResult(cube4 == undefined, "Grid element deleted");
+        let popped: GridElement = grid.pop(cube.cmpTransform.local.translation);
+        logResult(cube == popped.cube, "Grid pop", cube, popped.cube, popped);
+
+        let empty: GridElement = grid.pull(cube.cmpTransform.local.translation);
+        logResult(empty == undefined, "Grid element deleted");
     }
 
     function logResult(_success: boolean, ..._args: Object[]): void {

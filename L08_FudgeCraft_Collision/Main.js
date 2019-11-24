@@ -5,7 +5,7 @@ var L08_FudgeCraft_Collision;
     window.addEventListener("load", hndLoad);
     L08_FudgeCraft_Collision.grid = new L08_FudgeCraft_Collision.Grid();
     let viewport;
-    let rotate = L08_FudgeCraft_Collision.ƒ.Vector3.ZERO();
+    // let rotate: ƒ.Vector3 = ƒ.Vector3.ZERO();
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         L08_FudgeCraft_Collision.ƒ.RenderManager.initialize(true);
@@ -20,6 +20,8 @@ var L08_FudgeCraft_Collision;
         let cmpLight = new L08_FudgeCraft_Collision.ƒ.ComponentLight(new L08_FudgeCraft_Collision.ƒ.LightDirectional(L08_FudgeCraft_Collision.ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new L08_FudgeCraft_Collision.ƒ.Vector3(0.5, 1, 0.8));
         L08_FudgeCraft_Collision.game.addComponent(cmpLight);
+        let cmpLightAmbient = new L08_FudgeCraft_Collision.ƒ.ComponentLight(new L08_FudgeCraft_Collision.ƒ.LightAmbient(L08_FudgeCraft_Collision.ƒ.Color.DARK_GREY));
+        L08_FudgeCraft_Collision.game.addComponent(cmpLightAmbient);
         viewport = new L08_FudgeCraft_Collision.ƒ.Viewport();
         viewport.initialize("Viewport", L08_FudgeCraft_Collision.game, cmpCamera, canvas);
         L08_FudgeCraft_Collision.ƒ.Debug.log("Viewport", viewport);
