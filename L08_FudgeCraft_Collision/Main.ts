@@ -3,10 +3,10 @@ namespace L08_FudgeCraft_Collision {
 
     window.addEventListener("load", hndLoad);
 
+    export let game: ƒ.Node = new ƒ.Node("FudgeCraft");
     export let grid: Grid = new Grid();
-    export let game: ƒ.Node;
     let viewport: ƒ.Viewport;
-    let control: Control;
+    let control: Control = new Control();
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -16,9 +16,8 @@ namespace L08_FudgeCraft_Collision {
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new ƒ.Vector3(2, 3, 10));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
+        cmpCamera.backgroundColor = ƒ.Color.WHITE;
 
-        game = new ƒ.Node("FudgeCraft");
-        control = new Control();
         let fragment: Fragment = new Fragment(0);
         control.setFragment(fragment);
         game.appendChild(control);

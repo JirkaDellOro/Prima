@@ -1181,15 +1181,14 @@ declare namespace FudgeCore {
      */
     class ComponentCamera extends Component {
         pivot: Matrix4x4;
+        backgroundColor: Color;
         private projection;
         private transform;
         private fieldOfView;
         private aspectRatio;
         private direction;
-        private backgroundColor;
         private backgroundEnabled;
         getProjection(): PROJECTION;
-        getBackgoundColor(): Color;
         getBackgroundEnabled(): boolean;
         getAspect(): number;
         getFieldOfView(): number;
@@ -1499,6 +1498,7 @@ declare namespace FudgeCore {
         static readonly YELLOW: Color;
         static readonly CYAN: Color;
         static readonly MAGENTA: Color;
+        static readonly GREY: Color;
         static readonly LIGHT_GREY: Color;
         static readonly LIGHT_RED: Color;
         static readonly LIGHT_GREEN: Color;

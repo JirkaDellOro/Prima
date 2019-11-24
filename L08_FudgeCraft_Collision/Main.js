@@ -3,9 +3,10 @@ var L08_FudgeCraft_Collision;
 (function (L08_FudgeCraft_Collision) {
     L08_FudgeCraft_Collision.ƒ = FudgeCore;
     window.addEventListener("load", hndLoad);
+    L08_FudgeCraft_Collision.game = new L08_FudgeCraft_Collision.ƒ.Node("FudgeCraft");
     L08_FudgeCraft_Collision.grid = new L08_FudgeCraft_Collision.Grid();
     let viewport;
-    let control;
+    let control = new L08_FudgeCraft_Collision.Control();
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         L08_FudgeCraft_Collision.ƒ.RenderManager.initialize(true);
@@ -13,8 +14,7 @@ var L08_FudgeCraft_Collision;
         let cmpCamera = new L08_FudgeCraft_Collision.ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new L08_FudgeCraft_Collision.ƒ.Vector3(2, 3, 10));
         cmpCamera.pivot.lookAt(L08_FudgeCraft_Collision.ƒ.Vector3.ZERO());
-        L08_FudgeCraft_Collision.game = new L08_FudgeCraft_Collision.ƒ.Node("FudgeCraft");
-        control = new L08_FudgeCraft_Collision.Control();
+        cmpCamera.backgroundColor = L08_FudgeCraft_Collision.ƒ.Color.WHITE;
         let fragment = new L08_FudgeCraft_Collision.Fragment(0);
         control.setFragment(fragment);
         L08_FudgeCraft_Collision.game.appendChild(control);
