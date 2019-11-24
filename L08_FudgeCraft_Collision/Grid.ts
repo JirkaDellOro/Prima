@@ -11,7 +11,7 @@ namespace L08_FudgeCraft_Collision {
         // private grid: Map<string, Cube> = new Map();
         constructor() {
             super();
-            this.push(ƒ.Vector3.Y(3), new GridElement(new Cube(CUBE_TYPE.GREY, ƒ.Vector3.ZERO())));
+            this.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.GREY, ƒ.Vector3.ZERO())));
         }
 
         push(_position: ƒ.Vector3, _element: GridElement = null): void {

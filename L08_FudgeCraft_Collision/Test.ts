@@ -1,6 +1,6 @@
 namespace L08_FudgeCraft_Collision {
     export function test(): void {
-        testGrid();
+       testGrid();
     }
 
     function testGrid(): void {

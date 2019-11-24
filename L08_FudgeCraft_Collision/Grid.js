@@ -11,7 +11,7 @@ var L08_FudgeCraft_Collision;
         // private grid: Map<string, Cube> = new Map();
         constructor() {
             super();
-            this.push(L08_FudgeCraft_Collision.ƒ.Vector3.Y(3), new GridElement(new L08_FudgeCraft_Collision.Cube(L08_FudgeCraft_Collision.CUBE_TYPE.GREY, L08_FudgeCraft_Collision.ƒ.Vector3.ZERO())));
+            this.push(L08_FudgeCraft_Collision.ƒ.Vector3.ZERO(), new GridElement(new L08_FudgeCraft_Collision.Cube(L08_FudgeCraft_Collision.CUBE_TYPE.GREY, L08_FudgeCraft_Collision.ƒ.Vector3.ZERO())));
         }
         push(_position, _element = null) {
             let key = this.toKey(_position);
