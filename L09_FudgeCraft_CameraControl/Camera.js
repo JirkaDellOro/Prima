@@ -1,0 +1,45 @@
+"use strict";
+var L09_FudgeCraft_CameraControl;
+(function (L09_FudgeCraft_CameraControl) {
+    var ƒ = FudgeCore;
+    class CameraOrbit extends ƒ.Node {
+        constructor(_maxRotX) {
+            super("CameraOrbit");
+            //rotatorX: ƒ.Node;
+            this.maxRotX = 75;
+            this.minDistance = 1;
+            this.maxRotX = Math.min(_maxRotX, 89);
+            let cmpTransform = new ƒ.ComponentTransform();
+            this.addComponent(cmpTransform);
+            let rotatorX = new ƒ.Node("CameraRotX");
+            rotatorX.addComponent(new ƒ.ComponentTransform());
+            this.appendChild(rotatorX);
+            let cmpCamera = new ƒ.ComponentCamera();
+            cmpCamera.backgroundColor = ƒ.Color.WHITE;
+            rotatorX.addComponent(cmpCamera);
+            this.setDistance(20);
+        }
+        get cmpCamera() {
+            return this.rotatorX.getComponent(ƒ.ComponentCamera);
+        }
+        get rotatorX() {
+            return this.getChildrenByName("CameraRotX")[0];
+        }
+        setDistance(_distance) {
+            let newDistance = Math.max(this.minDistance, _distance);
+            this.cmpCamera.pivot.translation = ƒ.Vector3.Z(newDistance);
+        }
+        moveDistance(_delta) {
+            this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
+        }
+        setRotationY(_angle) {
+            this.cmpTransform.local.rotation = ƒ.Vector3.Y(_angle);
+        }
+        setRotationX(_angle) {
+            // @Jonas: rotation.z = ... verändert nur die Koordinate einer Kopie
+            this.rotatorX.cmpTransform.local.rotation = ƒ.Vector3.X(_angle);
+        }
+    }
+    L09_FudgeCraft_CameraControl.CameraOrbit = CameraOrbit;
+})(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));
+//# sourceMappingURL=Camera.js.map
