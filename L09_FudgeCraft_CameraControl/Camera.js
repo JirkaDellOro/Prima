@@ -7,7 +7,7 @@ var L09_FudgeCraft_CameraControl;
             super("CameraOrbit");
             //rotatorX: ƒ.Node;
             this.maxRotX = 75;
-            this.minDistance = 1;
+            this.minDistance = 10;
             this.maxRotX = Math.min(_maxRotX, 89);
             let cmpTransform = new ƒ.ComponentTransform();
             this.addComponent(cmpTransform);
@@ -37,7 +37,19 @@ var L09_FudgeCraft_CameraControl;
         }
         setRotationX(_angle) {
             // @Jonas: rotation.z = ... verändert nur die Koordinate einer Kopie
+            _angle = Math.min(Math.max(-this.maxRotX, _angle), this.maxRotX);
             this.rotatorX.cmpTransform.local.rotation = ƒ.Vector3.X(_angle);
+        }
+        rotateY(_delta) {
+            this.cmpTransform.local.rotateY(_delta);
+        }
+        rotateX(_delta) {
+            let angle = this.rotatorX.cmpTransform.local.rotation.x + _delta;
+            this.setRotationX(angle);
+        }
+        translate(_delta) {
+            let distance = this.cmpCamera.pivot.translation.z + _delta;
+            this.setDistance(distance);
         }
     }
     L09_FudgeCraft_CameraControl.CameraOrbit = CameraOrbit;

@@ -4,11 +4,11 @@ namespace L09_FudgeCraft_CameraControl {
     export class CameraOrbit extends ƒ.Node {
         //rotatorX: ƒ.Node;
         maxRotX: number = 75;
-        minDistance: number = 1;
+        minDistance: number = 10;
 
         constructor(_maxRotX: number) {
             super("CameraOrbit");
-            
+
             this.maxRotX = Math.min(_maxRotX, 89);
 
             let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
@@ -47,7 +47,21 @@ namespace L09_FudgeCraft_CameraControl {
 
         setRotationX(_angle: number): void {
             // @Jonas: rotation.z = ... verändert nur die Koordinate einer Kopie
+            _angle = Math.min(Math.max(-this.maxRotX, _angle), this.maxRotX);
             this.rotatorX.cmpTransform.local.rotation = ƒ.Vector3.X(_angle);
+        }
+
+        rotateY(_delta: number): void {
+            this.cmpTransform.local.rotateY(_delta);
+        }
+        
+        rotateX(_delta: number): void {
+            let angle: number = this.rotatorX.cmpTransform.local.rotation.x + _delta;
+            this.setRotationX(angle);
+        }
+        translate(_delta: number): void {
+            let distance: number = this.cmpCamera.pivot.translation.z + _delta;
+            this.setDistance(distance);
         }
     }
 }

@@ -7,43 +7,68 @@ namespace L09_FudgeCraft_CameraControl {
     export let grid: Grid = new Grid();
     let control: Control = new Control();
     let viewport: ƒ.Viewport;
+    let camera: CameraOrbit;
+    let speedCameraRotation: number = 0.2;
+    let speedCameraTranslation: number = 0.02;
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
         ƒ.RenderManager.initialize(true);
         ƒ.Debug.log("Canvas", canvas);
 
-        // let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-        // cmpCamera.pivot.translate(new ƒ.Vector3(4, 6, 20));
-        // cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
-        // cmpCamera.backgroundColor = ƒ.Color.WHITE;
+        // enable unlimited mouse-movement (user needs to click on canvas first)
+        canvas.addEventListener("click", canvas.requestPointerLock);
 
-        let camera: CameraOrbit = new CameraOrbit(75);
-        game.appendChild(camera);
-
+        // set lights
         let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
         game.addComponent(cmpLight);
         let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY));
         game.addComponent(cmpLightAmbient);
 
+        // setup orbiting camera
+        camera = new CameraOrbit(75);
+        game.appendChild(camera);
         camera.setRotationX(-20);
         camera.setRotationY(20);
 
+        // setup viewport
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", game, camera.cmpCamera, canvas);
         ƒ.Debug.log("Viewport", viewport);
-        viewport.draw();
-        
+
+        // setup event handling
+        viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
+        viewport.activateWheelEvent(ƒ.EVENT_WHEEL.WHEEL, true);
+        viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, hndPointerMove);
+        viewport.addEventListener(ƒ.EVENT_WHEEL.WHEEL, hndWheelMove);
+        window.addEventListener("keydown", hndKeyDown);
+
+        // start game
         startRandomFragment();
         game.appendChild(control);
-        
-        viewport.draw();
+
+        updateDisplay();
         ƒ.Debug.log("Game", game);
-        
-        window.addEventListener("keydown", hndKeyDown);
-        
+
         //test();
+    }
+
+    function updateDisplay(): void {
+        viewport.draw();
+
+    }
+
+    function hndPointerMove(_event: ƒ.PointerEventƒ): void {
+        // console.log(_event.movementX, _event.movementY);
+        camera.rotateY(_event.movementX * speedCameraRotation);
+        camera.rotateX(_event.movementY * speedCameraRotation);
+        updateDisplay();
+    }
+
+    function hndWheelMove(_event: WheelEvent): void {
+        camera.translate(_event.deltaY * speedCameraTranslation);
+        updateDisplay();
     }
 
     function hndKeyDown(_event: KeyboardEvent): void {
@@ -56,8 +81,7 @@ namespace L09_FudgeCraft_CameraControl {
         if (transformation)
             move(transformation);
 
-        // ƒ.RenderManager.update();
-        viewport.draw();
+        updateDisplay();
     }
 
     function move(_transformation: Transformation): void {
@@ -82,8 +106,7 @@ namespace L09_FudgeCraft_CameraControl {
 
         ƒ.Time.game.setTimer(10, animationSteps, function (): void {
             control.move(move);
-            // ƒ.RenderManager.update();
-            viewport.draw();
+            updateDisplay();
         });
     }
 

@@ -1647,6 +1647,106 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    interface MapEventTypeToListener {
+        [eventType: string]: EventListener[];
+    }
+    /**
+     * Types of events specific to Fudge, in addition to the standard DOM/Browser-Types and custom strings
+     */
+    const enum EVENT {
+        /** dispatched to targets registered at [[Loop]], when requested animation frame starts */
+        LOOP_FRAME = "loopFrame",
+        /** dispatched to a [[Component]] when its being added to a [[Node]] */
+        COMPONENT_ADD = "componentAdd",
+        /** dispatched to a [[Component]] when its being removed from a [[Node]] */
+        COMPONENT_REMOVE = "componentRemove",
+        /** dispatched to a [[Component]] when its being activated */
+        COMPONENT_ACTIVATE = "componentActivate",
+        /** dispatched to a [[Component]] when its being deactivated */
+        COMPONENT_DEACTIVATE = "componentDeactivate",
+        /** dispatched to a child [[Node]] and its ancestors after it was appended to a parent */
+        CHILD_APPEND = "childAdd",
+        /** dispatched to a child [[Node]] and its ancestors just before its being removed from its parent */
+        CHILD_REMOVE = "childRemove",
+        /** dispatched to a [[Mutable]] when its being mutated */
+        MUTATE = "mutate",
+        /** dispatched to [[Viewport]] when it gets the focus to receive keyboard input */
+        FOCUS_IN = "focusin",
+        /** dispatched to [[Viewport]] when it loses the focus to receive keyboard input */
+        FOCUS_OUT = "focusout",
+        /** dispatched to [[Node]] when it's done serializing */
+        NODE_SERIALIZED = "nodeSerialized",
+        /** dispatched to [[Node]] when it's done deserializing, so all components, children and attributes are available */
+        NODE_DESERIALIZED = "nodeDeserialized",
+        /** dispatched to [[NodeResourceInstance]] when it's content is set according to a serialization of a [[NodeResource]]  */
+        NODERESOURCE_INSTANTIATED = "nodeResourceInstantiated",
+        /** dispatched to [[Time]] when it's scaling changed  */
+        TIME_SCALED = "timeScaled",
+        /** dispatched to [[FileIo]] when a list of files has been loaded  */
+        FILE_LOADED = "fileLoaded",
+        /** dispatched to [[FileIo]] when a list of files has been saved */
+        FILE_SAVED = "fileSaved"
+    }
+    const enum EVENT_POINTER {
+        UP = "\u0192pointerup",
+        DOWN = "\u0192pointerdown",
+        MOVE = "\u0192pointermove",
+        OVER = "\u0192pointerover",
+        ENTER = "\u0192pointerenter",
+        CANCEL = "\u0192pointercancel",
+        OUT = "\u0192pointerout",
+        LEAVE = "\u0192pointerleave",
+        GOTCAPTURE = "\u0192gotpointercapture",
+        LOSTCAPTURE = "\u0192lostpointercapture"
+    }
+    const enum EVENT_DRAGDROP {
+        DRAG = "\u0192drag",
+        DROP = "\u0192drop",
+        START = "\u0192dragstart",
+        END = "\u0192dragend",
+        OVER = "\u0192dragover"
+    }
+    const enum EVENT_WHEEL {
+        WHEEL = "\u0192wheel"
+    }
+    class PointerEventƒ extends PointerEvent {
+        pointerX: number;
+        pointerY: number;
+        canvasX: number;
+        canvasY: number;
+        clientRect: ClientRect;
+        constructor(type: string, _event: PointerEventƒ);
+    }
+    class DragDropEventƒ extends DragEvent {
+        pointerX: number;
+        pointerY: number;
+        canvasX: number;
+        canvasY: number;
+        clientRect: ClientRect;
+        constructor(type: string, _event: DragDropEventƒ);
+    }
+    class WheelEventƒ extends WheelEvent {
+        constructor(type: string, _event: WheelEventƒ);
+    }
+    type Eventƒ = PointerEventƒ | DragDropEventƒ | WheelEventƒ | KeyboardEventƒ | Event;
+    type EventListenerƒ = ((_event: PointerEventƒ) => void) | ((_event: DragDropEventƒ) => void) | ((_event: WheelEventƒ) => void) | ((_event: KeyboardEventƒ) => void) | ((_event: Eventƒ) => void) | EventListenerObject;
+    class EventTargetƒ extends EventTarget {
+        addEventListener(_type: string, _handler: EventListenerƒ, _options?: boolean | AddEventListenerOptions): void;
+        removeEventListener(_type: string, _handler: EventListenerƒ, _options?: boolean | AddEventListenerOptions): void;
+        dispatchEvent(_event: Eventƒ): boolean;
+    }
+    /**
+     * Base class for EventTarget singletons, which are fixed entities in the structure of Fudge, such as the core loop
+     */
+    class EventTargetStatic extends EventTarget {
+        protected static targetStatic: EventTargetStatic;
+        protected constructor();
+        static addEventListener(_type: string, _handler: EventListener): void;
+        static removeEventListener(_type: string, _handler: EventListener): void;
+        static dispatchEvent(_event: Event): boolean;
+    }
+}
+declare namespace FudgeCore {
     type MapLightTypeToLightList = Map<TypeOfLight, ComponentLight[]>;
     /**
      * Controls the rendering of a branch of a scenetree, using the given [[ComponentCamera]],
@@ -1655,7 +1755,7 @@ declare namespace FudgeCore {
      * [[RenderManager]].viewport -> [[Viewport]].source -> [[Viewport]].destination -> DOM-Canvas -> Client(CSS)
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
      */
-    class Viewport extends EventTarget {
+    class Viewport extends EventTargetƒ {
         private static focus;
         name: string;
         camera: ComponentCamera;
@@ -1787,91 +1887,6 @@ declare namespace FudgeCore {
          * @param _fudgeNode The node to create a scenegraphentry for.
          */
         private createSceneGraph;
-    }
-}
-declare namespace FudgeCore {
-    interface MapEventTypeToListener {
-        [eventType: string]: EventListener[];
-    }
-    /**
-     * Types of events specific to Fudge, in addition to the standard DOM/Browser-Types and custom strings
-     */
-    const enum EVENT {
-        /** dispatched to targets registered at [[Loop]], when requested animation frame starts */
-        LOOP_FRAME = "loopFrame",
-        /** dispatched to a [[Component]] when its being added to a [[Node]] */
-        COMPONENT_ADD = "componentAdd",
-        /** dispatched to a [[Component]] when its being removed from a [[Node]] */
-        COMPONENT_REMOVE = "componentRemove",
-        /** dispatched to a [[Component]] when its being activated */
-        COMPONENT_ACTIVATE = "componentActivate",
-        /** dispatched to a [[Component]] when its being deactivated */
-        COMPONENT_DEACTIVATE = "componentDeactivate",
-        /** dispatched to a child [[Node]] and its ancestors after it was appended to a parent */
-        CHILD_APPEND = "childAdd",
-        /** dispatched to a child [[Node]] and its ancestors just before its being removed from its parent */
-        CHILD_REMOVE = "childRemove",
-        /** dispatched to a [[Mutable]] when its being mutated */
-        MUTATE = "mutate",
-        /** dispatched to [[Viewport]] when it gets the focus to receive keyboard input */
-        FOCUS_IN = "focusin",
-        /** dispatched to [[Viewport]] when it loses the focus to receive keyboard input */
-        FOCUS_OUT = "focusout",
-        /** dispatched to [[Node]] when it's done serializing */
-        NODE_SERIALIZED = "nodeSerialized",
-        /** dispatched to [[Node]] when it's done deserializing, so all components, children and attributes are available */
-        NODE_DESERIALIZED = "nodeDeserialized",
-        /** dispatched to [[NodeResourceInstance]] when it's content is set according to a serialization of a [[NodeResource]]  */
-        NODERESOURCE_INSTANTIATED = "nodeResourceInstantiated",
-        /** dispatched to [[Time]] when it's scaling changed  */
-        TIME_SCALED = "timeScaled",
-        /** dispatched to [[FileIo]] when a list of files has been loaded  */
-        FILE_LOADED = "fileLoaded",
-        /** dispatched to [[FileIo]] when a list of files has been saved */
-        FILE_SAVED = "fileSaved"
-    }
-    const enum EVENT_POINTER {
-        UP = "\u0192pointerup",
-        DOWN = "\u0192pointerdown"
-    }
-    const enum EVENT_DRAGDROP {
-        DRAG = "\u0192drag",
-        DROP = "\u0192drop",
-        START = "\u0192dragstart",
-        END = "\u0192dragend",
-        OVER = "\u0192dragover"
-    }
-    const enum EVENT_WHEEL {
-        WHEEL = "\u0192wheel"
-    }
-    class PointerEventƒ extends PointerEvent {
-        pointerX: number;
-        pointerY: number;
-        canvasX: number;
-        canvasY: number;
-        clientRect: ClientRect;
-        constructor(type: string, _event: PointerEventƒ);
-    }
-    class DragDropEventƒ extends DragEvent {
-        pointerX: number;
-        pointerY: number;
-        canvasX: number;
-        canvasY: number;
-        clientRect: ClientRect;
-        constructor(type: string, _event: DragDropEventƒ);
-    }
-    class WheelEventƒ extends WheelEvent {
-        constructor(type: string, _event: WheelEventƒ);
-    }
-    /**
-     * Base class for EventTarget singletons, which are fixed entities in the structure of Fudge, such as the core loop
-     */
-    class EventTargetStatic extends EventTarget {
-        protected static targetStatic: EventTargetStatic;
-        protected constructor();
-        static addEventListener(_type: string, _handler: EventListener): void;
-        static removeEventListener(_type: string, _handler: EventListener): void;
-        static dispatchEvent(_event: Event): boolean;
     }
 }
 declare namespace FudgeCore {
