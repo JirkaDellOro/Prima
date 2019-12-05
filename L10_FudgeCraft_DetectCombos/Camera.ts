@@ -1,4 +1,4 @@
-namespace L09_FudgeCraft_CameraControl {
+namespace L09_FudgeCraft_DetectCombos {
     import ƒ = FudgeCore;
 
     export class CameraOrbit extends ƒ.Node {

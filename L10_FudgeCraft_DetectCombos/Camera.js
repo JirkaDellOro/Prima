@@ -1,6 +1,6 @@
 "use strict";
-var L09_FudgeCraft_CameraControl;
-(function (L09_FudgeCraft_CameraControl) {
+var L09_FudgeCraft_DetectCombos;
+(function (L09_FudgeCraft_DetectCombos) {
     var ƒ = FudgeCore;
     class CameraOrbit extends ƒ.Node {
         constructor(_maxRotX) {
@@ -51,6 +51,6 @@ var L09_FudgeCraft_CameraControl;
             this.setDistance(distance);
         }
     }
-    L09_FudgeCraft_CameraControl.CameraOrbit = CameraOrbit;
-})(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));
+    L09_FudgeCraft_DetectCombos.CameraOrbit = CameraOrbit;
+})(L09_FudgeCraft_DetectCombos || (L09_FudgeCraft_DetectCombos = {}));
 //# sourceMappingURL=Camera.js.map
