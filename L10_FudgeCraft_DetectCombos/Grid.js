@@ -1,23 +1,22 @@
 "use strict";
-var L09_FudgeCraft_DetectCombos;
-(function (L09_FudgeCraft_DetectCombos) {
+var L10_FudgeCraft_DetectCombos;
+(function (L10_FudgeCraft_DetectCombos) {
     class GridElement {
         constructor(_cube = null) {
             this.cube = _cube;
         }
     }
-    L09_FudgeCraft_DetectCombos.GridElement = GridElement;
+    L10_FudgeCraft_DetectCombos.GridElement = GridElement;
     class Grid extends Map {
         // private grid: Map<string, Cube> = new Map();
         constructor() {
             super();
-            this.push(L09_FudgeCraft_DetectCombos.ƒ.Vector3.ZERO(), new GridElement(new L09_FudgeCraft_DetectCombos.Cube(L09_FudgeCraft_DetectCombos.CUBE_TYPE.GREY, L09_FudgeCraft_DetectCombos.ƒ.Vector3.ZERO())));
         }
         push(_position, _element = null) {
             let key = this.toKey(_position);
             this.set(key, _element);
             if (_element)
-                L09_FudgeCraft_DetectCombos.game.appendChild(_element.cube);
+                L10_FudgeCraft_DetectCombos.game.appendChild(_element.cube);
         }
         pull(_position) {
             let key = this.toKey(_position);
@@ -29,8 +28,19 @@ var L09_FudgeCraft_DetectCombos;
             let element = this.get(key);
             this.delete(key);
             if (element)
-                L09_FudgeCraft_DetectCombos.game.removeChild(element.cube);
+                L10_FudgeCraft_DetectCombos.game.removeChild(element.cube);
             return element;
+        }
+        findNeigbors(_of) {
+            let found = [];
+            let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
+            for (let offset of offsets) {
+                let posNeighbor = L10_FudgeCraft_DetectCombos.ƒ.Vector3.SUM(_of, new L10_FudgeCraft_DetectCombos.ƒ.Vector3(...offset));
+                let neighbor = L10_FudgeCraft_DetectCombos.grid.pull(posNeighbor);
+                if (neighbor)
+                    found.push(neighbor);
+            }
+            return found;
         }
         toKey(_position) {
             let position = _position.map(Math.round);
@@ -38,6 +48,6 @@ var L09_FudgeCraft_DetectCombos;
             return key;
         }
     }
-    L09_FudgeCraft_DetectCombos.Grid = Grid;
-})(L09_FudgeCraft_DetectCombos || (L09_FudgeCraft_DetectCombos = {}));
+    L10_FudgeCraft_DetectCombos.Grid = Grid;
+})(L10_FudgeCraft_DetectCombos || (L10_FudgeCraft_DetectCombos = {}));
 //# sourceMappingURL=Grid.js.map

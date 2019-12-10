@@ -1,6 +1,6 @@
 "use strict";
-var L09_FudgeCraft_DetectCombos;
-(function (L09_FudgeCraft_DetectCombos) {
+var L10_FudgeCraft_DetectCombos;
+(function (L10_FudgeCraft_DetectCombos) {
     var ƒ = FudgeCore;
     class Fragment extends ƒ.Node {
         constructor(_shape, _position = ƒ.Vector3.ZERO()) {
@@ -10,11 +10,11 @@ var L09_FudgeCraft_DetectCombos;
             for (let position of shape) {
                 let type;
                 do {
-                    type = Fragment.getRandomEnum(L09_FudgeCraft_DetectCombos.CUBE_TYPE);
-                } while (type == L09_FudgeCraft_DetectCombos.CUBE_TYPE.GREY);
+                    type = Fragment.getRandomEnum(L10_FudgeCraft_DetectCombos.CUBE_TYPE);
+                } while (type == L10_FudgeCraft_DetectCombos.CUBE_TYPE.GREY);
                 let vctPosition = ƒ.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
-                let cube = new L09_FudgeCraft_DetectCombos.Cube(type, vctPosition);
+                let cube = new L10_FudgeCraft_DetectCombos.Cube(type, vctPosition);
                 this.appendChild(cube);
             }
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
@@ -40,6 +40,6 @@ var L09_FudgeCraft_DetectCombos;
         }
     }
     Fragment.shapes = Fragment.getShapeArray();
-    L09_FudgeCraft_DetectCombos.Fragment = Fragment;
-})(L09_FudgeCraft_DetectCombos || (L09_FudgeCraft_DetectCombos = {}));
+    L10_FudgeCraft_DetectCombos.Fragment = Fragment;
+})(L10_FudgeCraft_DetectCombos || (L10_FudgeCraft_DetectCombos = {}));
 //# sourceMappingURL=Fragment.js.map

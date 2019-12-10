@@ -1,6 +1,6 @@
 "use strict";
-var L09_FudgeCraft_DetectCombos;
-(function (L09_FudgeCraft_DetectCombos) {
+var L10_FudgeCraft_DetectCombos;
+(function (L10_FudgeCraft_DetectCombos) {
     var ƒ = FudgeCore;
     class Control extends ƒ.Node {
         constructor() {
@@ -42,7 +42,7 @@ var L09_FudgeCraft_DetectCombos;
             ƒ.RenderManager.update();
             let collisions = [];
             for (let cube of this.fragment.getChildren()) {
-                let element = L09_FudgeCraft_DetectCombos.grid.pull(cube.mtxWorld.translation);
+                let element = L10_FudgeCraft_DetectCombos.grid.pull(cube.mtxWorld.translation);
                 if (element)
                     collisions.push({ element, cube });
             }
@@ -51,14 +51,18 @@ var L09_FudgeCraft_DetectCombos;
             return collisions;
         }
         freeze() {
+            let frozen = [];
             for (let cube of this.fragment.getChildren()) {
                 let position = cube.mtxWorld.translation;
                 cube.cmpTransform.local.translation = position;
-                L09_FudgeCraft_DetectCombos.grid.push(position, new L09_FudgeCraft_DetectCombos.GridElement(cube));
+                let element = new L10_FudgeCraft_DetectCombos.GridElement(cube);
+                L10_FudgeCraft_DetectCombos.grid.push(position, element);
+                frozen.push(element);
             }
+            return frozen;
         }
     }
     Control.transformations = Control.defineControls();
-    L09_FudgeCraft_DetectCombos.Control = Control;
-})(L09_FudgeCraft_DetectCombos || (L09_FudgeCraft_DetectCombos = {}));
+    L10_FudgeCraft_DetectCombos.Control = Control;
+})(L10_FudgeCraft_DetectCombos || (L10_FudgeCraft_DetectCombos = {}));
 //# sourceMappingURL=Control.js.map

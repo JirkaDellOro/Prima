@@ -1,4 +1,4 @@
-namespace L09_FudgeCraft_DetectCombos {
+namespace L10_FudgeCraft_DetectCombos {
     export import ƒ = FudgeCore;
 
     window.addEventListener("load", hndLoad);
@@ -22,7 +22,7 @@ namespace L09_FudgeCraft_DetectCombos {
         // set lights
         let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
-        game.addComponent(cmpLight);
+        // game.addComponent(cmpLight);
         let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY));
         game.addComponent(cmpLightAmbient);
 
@@ -31,6 +31,7 @@ namespace L09_FudgeCraft_DetectCombos {
         game.appendChild(camera);
         camera.setRotationX(-20);
         camera.setRotationY(20);
+        camera.cmpCamera.getContainer().addComponent(cmpLight);
 
         // setup viewport
         viewport = new ƒ.Viewport();
@@ -44,19 +45,23 @@ namespace L09_FudgeCraft_DetectCombos {
         viewport.addEventListener(ƒ.EVENT_WHEEL.WHEEL, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
 
-        // start game
-        startRandomFragment();
         game.appendChild(control);
+
+        startGame();
+        // startTests();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);
 
-        //test();
     }
 
-    function updateDisplay(): void {
-        viewport.draw();
+    function startGame(): void {
+        grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.GREY, ƒ.Vector3.ZERO())));
+        startRandomFragment();
+    }
 
+    export function updateDisplay(): void {
+        viewport.draw();
     }
 
     function hndPointerMove(_event: ƒ.PointerEventƒ): void {
@@ -73,7 +78,9 @@ namespace L09_FudgeCraft_DetectCombos {
 
     function hndKeyDown(_event: KeyboardEvent): void {
         if (_event.code == ƒ.KEYBOARD_CODE.SPACE) {
-            control.freeze();
+            let frozen: GridElement[] = control.freeze();
+            let combos: Combos = new Combos(frozen);
+            handleCombos(combos);
             startRandomFragment();
         }
 
@@ -82,6 +89,19 @@ namespace L09_FudgeCraft_DetectCombos {
             move(transformation);
 
         updateDisplay();
+    }
+
+    function handleCombos(_combos: Combos): void {
+        for (let combo of _combos.found)
+            if (combo.length > 2)
+                for (let element of combo) {
+                    let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
+                    console.log(element.cube.name, mtxLocal.translation.getMutator());
+                    // mtxLocal.rotateX(45);
+                    // mtxLocal.rotateY(45);
+                    // mtxLocal.rotateY(45, true);
+                    mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+                }
     }
 
     function move(_transformation: Transformation): void {

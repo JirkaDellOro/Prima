@@ -1,4 +1,4 @@
-namespace L09_FudgeCraft_DetectCombos {
+namespace L10_FudgeCraft_DetectCombos {
     import ƒ = FudgeCore;
 
     export interface Transformation {
@@ -75,12 +75,16 @@ namespace L09_FudgeCraft_DetectCombos {
             return collisions;
         }
 
-        public freeze(): void {
+        public freeze(): GridElement[] {
+            let frozen: GridElement[] = [];
             for (let cube of this.fragment.getChildren()) {
                 let position: ƒ.Vector3 = cube.mtxWorld.translation;
                 cube.cmpTransform.local.translation = position;
-                grid.push(position, new GridElement(cube));
+                let element: GridElement = new GridElement(cube);
+                grid.push(position, element);
+                frozen.push(element);
             }
+            return frozen;
         }
     }
 }

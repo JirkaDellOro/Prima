@@ -1,4 +1,4 @@
-namespace L09_FudgeCraft_DetectCombos {
+namespace L10_FudgeCraft_DetectCombos {
     import ƒ = FudgeCore;
 
     export class Fragment extends ƒ.Node {

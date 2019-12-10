@@ -1,6 +1,6 @@
 "use strict";
-var L09_FudgeCraft_DetectCombos;
-(function (L09_FudgeCraft_DetectCombos) {
+var L10_FudgeCraft_DetectCombos;
+(function (L10_FudgeCraft_DetectCombos) {
     var ƒ = FudgeCore;
     let CUBE_TYPE;
     (function (CUBE_TYPE) {
@@ -11,7 +11,7 @@ var L09_FudgeCraft_DetectCombos;
         CUBE_TYPE["MAGENTA"] = "Magenta";
         CUBE_TYPE["CYAN"] = "Cyan";
         CUBE_TYPE["GREY"] = "Grey";
-    })(CUBE_TYPE = L09_FudgeCraft_DetectCombos.CUBE_TYPE || (L09_FudgeCraft_DetectCombos.CUBE_TYPE = {}));
+    })(CUBE_TYPE = L10_FudgeCraft_DetectCombos.CUBE_TYPE || (L10_FudgeCraft_DetectCombos.CUBE_TYPE = {}));
     class Cube extends ƒ.Node {
         constructor(_type, _position) {
             super("Cube." + _type);
@@ -37,6 +37,6 @@ var L09_FudgeCraft_DetectCombos;
     }
     Cube.mesh = new ƒ.MeshCube();
     Cube.materials = Cube.createMaterials();
-    L09_FudgeCraft_DetectCombos.Cube = Cube;
-})(L09_FudgeCraft_DetectCombos || (L09_FudgeCraft_DetectCombos = {}));
+    L10_FudgeCraft_DetectCombos.Cube = Cube;
+})(L10_FudgeCraft_DetectCombos || (L10_FudgeCraft_DetectCombos = {}));
 //# sourceMappingURL=Cube.js.map
