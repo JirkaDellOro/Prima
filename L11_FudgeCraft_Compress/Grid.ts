@@ -1,8 +1,8 @@
 namespace L11_FudgeCraft_Compress {
     interface Gain {
         value: number;
-        popped: GridElement;
-        neighbor: GridElement;
+        empty: ƒ.Vector3;
+        element: GridElement;
     }
 
     export class GridElement {
@@ -16,6 +16,11 @@ namespace L11_FudgeCraft_Compress {
             if (this.cube)
                 return this.cube.cmpTransform.local.translation;
             return null;
+        }
+
+        set position(_new: ƒ.Vector3) {
+            if (this.cube)
+                this.cube.cmpTransform.local.translation = _new;
         }
     }
 
@@ -49,26 +54,29 @@ namespace L11_FudgeCraft_Compress {
             return element;
         }
 
-        public findNeighbors(_of: ƒ.Vector3): GridElement[] {
+        public findNeighbors(_of: ƒ.Vector3, _empty: boolean = false): GridElement[] | ƒ.Vector3[] {
             let found: GridElement[] = [];
+            let empty: ƒ.Vector3[] = [];
             let offsets: number[][] = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
             for (let offset of offsets) {
                 let posNeighbor: ƒ.Vector3 = ƒ.Vector3.SUM(_of, new ƒ.Vector3(...offset));
                 let neighbor: GridElement = grid.pull(posNeighbor);
                 if (neighbor)
                     found.push(neighbor);
+                else
+                    empty.push(posNeighbor);
             }
-            return found;
+            return _empty ? empty : found;
         }
 
-        public compress(_popped: GridElement[]): void {
+        public compress(): void {
             let gains: Gain[] = [];
-            for (let popped of _popped) {
-                let neighbors: GridElement[] = this.findNeighbors(popped.position);
-                for (let neighbor of neighbors) {
-                    let distanceToGain: number = neighbor.position.length - popped.position.length;
-                    if (distanceToGain > 0) {
-                        let gain: Gain = { value: distanceToGain, neighbor: neighbor, popped: popped };
+            for (let element of this) {
+                let emptySpaces: ƒ.Vector3[] = <ƒ.Vector3[]>this.findNeighbors(element[1].position);
+                for (let emptySpace of emptySpaces) {
+                    let relativeGain: number = emptySpace.length / element[1].position.length;
+                    if (relativeGain < 1) {
+                        let gain: Gain = { value: relativeGain, empty: emptySpace, element: element[1] };
                         gains.push(gain);
                     }
                 }
@@ -79,19 +87,21 @@ namespace L11_FudgeCraft_Compress {
             let moves: Gain[] = [];
 
             for (let gain of gains) {
-                let alreadySet: number = moves.findIndex((_gain: Gain) => _gain.neighbor == gain.neighbor || _gain.popped == gain.popped);
+                let alreadySet: number = moves.findIndex((_gain: Gain) => _gain.empty == gain.empty || _gain.element == gain.element);
                 if (alreadySet == -1)
                     moves.push(gain);
             }
 
+            if (moves.length == 0)
+                return;
+
             for (let move of moves) {
-                let iPopped: number = _popped.indexOf(move.popped);
-                if (iPopped >= 0)
-                    _popped.splice(iPopped, 1);
-                _popped.push(move.neighbor);
-                grid.pop(move.neighbor.position);
-                grid.push(move.popped.position, move.neighbor);
+                grid.pop(move.element.position);
+                move.element.position = move.empty;
+                grid.push(move.empty, move.element);
             }
+
+            this.compress();
         }
 
         private toKey(_position: ƒ.Vector3): string {

@@ -41,7 +41,7 @@ namespace L11_FudgeCraft_Compress {
         }
 
         private findNeigborsOfSameColor(_element: GridElement): GridElement[] {
-            let allNeighbors: GridElement[] = grid.findNeighbors(_element.position);
+            let allNeighbors: GridElement[] = <GridElement[]>grid.findNeighbors(_element.position);
             let found: GridElement[] = allNeighbors.filter(
                 _neighbor => (_neighbor.cube.name == _element.cube.name)
             );
