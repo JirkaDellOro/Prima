@@ -73,10 +73,10 @@ namespace L11_FudgeCraft_Compress {
             let movesGain: Move[] = [];
             for (let element of this) {
                 let emptySpaces: ƒ.Vector3[] = <ƒ.Vector3[]>this.findNeighbors(element[1].position, true);
-                for (let emptySpace of emptySpaces) {
-                    let relativeGain: number = element[1].position.magnitude / emptySpace.magnitude;
+                for (let target of emptySpaces) {
+                    let relativeGain: number = element[1].position.magnitude / target.magnitude;
                     if (relativeGain > 1) {
-                        let move: Move = { value: relativeGain, target: emptySpace, element: element[1] };
+                        let move: Move = { value: relativeGain, target: target, element: element[1] };
                         movesGain.push(move);
                     }
                 }

@@ -60,10 +60,10 @@ var L11_FudgeCraft_Compress;
             let movesGain = [];
             for (let element of this) {
                 let emptySpaces = this.findNeighbors(element[1].position, true);
-                for (let emptySpace of emptySpaces) {
-                    let relativeGain = element[1].position.magnitude / emptySpace.magnitude;
+                for (let target of emptySpaces) {
+                    let relativeGain = element[1].position.magnitude / target.magnitude;
                     if (relativeGain > 1) {
-                        let move = { value: relativeGain, target: emptySpace, element: element[1] };
+                        let move = { value: relativeGain, target: target, element: element[1] };
                         movesGain.push(move);
                     }
                 }
