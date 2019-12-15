@@ -2548,6 +2548,7 @@ declare namespace FudgeCore {
         x: number;
         y: number;
         z: number;
+        readonly length: number;
         static X(_scale?: number): Vector3;
         static Y(_scale?: number): Vector3;
         static Z(_scale?: number): Vector3;

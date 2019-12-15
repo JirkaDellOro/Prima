@@ -1,5 +1,5 @@
 namespace L01_HelloWorld {
-    ƒ.Debug.log("Hello World");
+    console.log("Hello World");
     window.addEventListener("load", handleLoad);
 
     function handleLoad(_event: Event): void {

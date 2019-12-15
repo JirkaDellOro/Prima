@@ -1,4 +1,10 @@
 namespace L11_FudgeCraft_Compress {
+    interface Gain {
+        value: number;
+        popped: GridElement;
+        neighbor: GridElement;
+    }
+
     export class GridElement {
         public cube: Cube;
 
@@ -56,10 +62,35 @@ namespace L11_FudgeCraft_Compress {
         }
 
         public compress(_popped: GridElement[]): void {
+            let gains: Gain[] = [];
             for (let popped of _popped) {
                 let neighbors: GridElement[] = this.findNeighbors(popped.position);
-                for (let neighbor of neighbors)
-                    
+                for (let neighbor of neighbors) {
+                    let distanceToGain: number = neighbor.position.length - popped.position.length;
+                    if (distanceToGain > 0) {
+                        let gain: Gain = { value: distanceToGain, neighbor: neighbor, popped: popped };
+                        gains.push(gain);
+                    }
+                }
+            }
+
+            gains.sort((_a: Gain, _b: Gain) => _a.value < _b.value ? 1 : 0);
+
+            let moves: Gain[] = [];
+
+            for (let gain of gains) {
+                let alreadySet: number = moves.findIndex((_gain: Gain) => _gain.neighbor == gain.neighbor || _gain.popped == gain.popped);
+                if (alreadySet == -1)
+                    moves.push(gain);
+            }
+
+            for (let move of moves) {
+                let iPopped: number = _popped.indexOf(move.popped);
+                if (iPopped >= 0)
+                    _popped.splice(iPopped, 1);
+                _popped.push(move.neighbor);
+                grid.pop(move.neighbor.position);
+                grid.push(move.popped.position, move.neighbor);
             }
         }
 

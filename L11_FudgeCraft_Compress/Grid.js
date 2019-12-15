@@ -50,10 +50,31 @@ var L11_FudgeCraft_Compress;
             return found;
         }
         compress(_popped) {
+            let gains = [];
             for (let popped of _popped) {
                 let neighbors = this.findNeighbors(popped.position);
-                for (let neighbor of neighbors)
-                    ;
+                for (let neighbor of neighbors) {
+                    let distanceToGain = neighbor.position.length - popped.position.length;
+                    if (distanceToGain > 0) {
+                        let gain = { value: distanceToGain, neighbor: neighbor, popped: popped };
+                        gains.push(gain);
+                    }
+                }
+            }
+            gains.sort((_a, _b) => _a.value < _b.value ? 1 : 0);
+            let moves = [];
+            for (let gain of gains) {
+                let alreadySet = moves.findIndex((_gain) => _gain.neighbor == gain.neighbor || _gain.popped == gain.popped);
+                if (alreadySet == -1)
+                    moves.push(gain);
+            }
+            for (let move of moves) {
+                let iPopped = _popped.indexOf(move.popped);
+                if (iPopped >= 0)
+                    _popped.splice(iPopped, 1);
+                _popped.push(move.neighbor);
+                L11_FudgeCraft_Compress.grid.pop(move.neighbor.position);
+                L11_FudgeCraft_Compress.grid.push(move.popped.position, move.neighbor);
             }
         }
         toKey(_position) {

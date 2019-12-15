@@ -97,8 +97,7 @@ var L11_FudgeCraft_Compress;
         let timers = L11_FudgeCraft_Compress.ƒ.Time.game.getTimers();
         if (Object.keys(timers).length > 0)
             return;
-        let collisions = control.checkCollisions(move);
-        if (collisions.length > 0)
+        if (control.checkCollisions(move).length > 0)
             return;
         move.translation.scale(1 / animationSteps);
         move.rotation.scale(1 / animationSteps);
