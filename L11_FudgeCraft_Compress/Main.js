@@ -39,13 +39,13 @@ var L11_FudgeCraft_Compress;
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
         L11_FudgeCraft_Compress.game.appendChild(control);
-        //startGame();
-        L11_FudgeCraft_Compress.startTests();
+        startGame();
+        // startTests();
         updateDisplay();
         L11_FudgeCraft_Compress.ƒ.Debug.log("Game", L11_FudgeCraft_Compress.game);
     }
     function startGame() {
-        L11_FudgeCraft_Compress.grid.push(L11_FudgeCraft_Compress.ƒ.Vector3.ZERO(), new L11_FudgeCraft_Compress.GridElement(new L11_FudgeCraft_Compress.Cube(L11_FudgeCraft_Compress.CUBE_TYPE.GREY, L11_FudgeCraft_Compress.ƒ.Vector3.ZERO())));
+        L11_FudgeCraft_Compress.grid.push(L11_FudgeCraft_Compress.ƒ.Vector3.ZERO(), new L11_FudgeCraft_Compress.GridElement(new L11_FudgeCraft_Compress.Cube(L11_FudgeCraft_Compress.CUBE_TYPE.BLACK, L11_FudgeCraft_Compress.ƒ.Vector3.ZERO())));
         startRandomFragment();
     }
     function updateDisplay() {

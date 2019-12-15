@@ -8,7 +8,7 @@ namespace L11_FudgeCraft_Compress {
         YELLOW = "Yellow",
         MAGENTA = "Magenta",
         CYAN = "Cyan",
-        GREY = "Grey"
+        BLACK = "Black"
     }
     type Materials = Map<CUBE_TYPE, ƒ.Material>;
 
@@ -38,7 +38,7 @@ namespace L11_FudgeCraft_Compress {
                 [CUBE_TYPE.MAGENTA, new ƒ.Material(CUBE_TYPE.MAGENTA, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.MAGENTA))],
                 [CUBE_TYPE.YELLOW, new ƒ.Material(CUBE_TYPE.YELLOW, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.YELLOW))],
                 [CUBE_TYPE.CYAN, new ƒ.Material(CUBE_TYPE.CYAN, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CYAN))],
-                [CUBE_TYPE.GREY, new ƒ.Material(CUBE_TYPE.GREY, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.LIGHT_GREY))]
+                [CUBE_TYPE.BLACK, new ƒ.Material(CUBE_TYPE.BLACK, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.BLACK))]
             ]);
         }
     }

@@ -5,6 +5,12 @@ namespace L11_FudgeCraft_Compress {
         constructor(_cube: Cube = null) {
             this.cube = _cube;
         }
+
+        get position(): ƒ.Vector3 {
+            if (this.cube)
+                return this.cube.cmpTransform.local.translation;
+            return null;
+        }
     }
 
     export class Grid extends Map<string, GridElement> {
@@ -16,7 +22,7 @@ namespace L11_FudgeCraft_Compress {
         public push(_position: ƒ.Vector3, _element: GridElement = null): void {
             let key: string = this.toKey(_position);
             if (this.pop(_position))
-                ƒ.Debug.warn("Grid push to occupied position, popped: ", key;)
+                ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
             this.set(key, _element);
             if (_element)
                 game.appendChild(_element.cube);
@@ -47,6 +53,14 @@ namespace L11_FudgeCraft_Compress {
                     found.push(neighbor);
             }
             return found;
+        }
+
+        public compress(_popped: GridElement[]): void {
+            for (let popped of _popped) {
+                let neighbors: GridElement[] = this.findNeighbors(popped.position);
+                for (let neighbor of neighbors)
+                    
+            }
         }
 
         private toKey(_position: ƒ.Vector3): string {

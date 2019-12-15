@@ -11,7 +11,7 @@ var L11_FudgeCraft_Compress;
                 let type;
                 do {
                     type = Fragment.getRandomEnum(L11_FudgeCraft_Compress.CUBE_TYPE);
-                } while (type == L11_FudgeCraft_Compress.CUBE_TYPE.GREY);
+                } while (type == L11_FudgeCraft_Compress.CUBE_TYPE.BLACK);
                 let vctPosition = ƒ.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
                 let cube = new L11_FudgeCraft_Compress.Cube(type, vctPosition);

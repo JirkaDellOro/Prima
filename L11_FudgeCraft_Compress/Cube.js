@@ -10,7 +10,7 @@ var L11_FudgeCraft_Compress;
         CUBE_TYPE["YELLOW"] = "Yellow";
         CUBE_TYPE["MAGENTA"] = "Magenta";
         CUBE_TYPE["CYAN"] = "Cyan";
-        CUBE_TYPE["GREY"] = "Grey";
+        CUBE_TYPE["BLACK"] = "Black";
     })(CUBE_TYPE = L11_FudgeCraft_Compress.CUBE_TYPE || (L11_FudgeCraft_Compress.CUBE_TYPE = {}));
     class Cube extends ƒ.Node {
         constructor(_type, _position) {
@@ -31,7 +31,7 @@ var L11_FudgeCraft_Compress;
                 [CUBE_TYPE.MAGENTA, new ƒ.Material(CUBE_TYPE.MAGENTA, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.MAGENTA))],
                 [CUBE_TYPE.YELLOW, new ƒ.Material(CUBE_TYPE.YELLOW, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.YELLOW))],
                 [CUBE_TYPE.CYAN, new ƒ.Material(CUBE_TYPE.CYAN, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CYAN))],
-                [CUBE_TYPE.GREY, new ƒ.Material(CUBE_TYPE.GREY, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.LIGHT_GREY))]
+                [CUBE_TYPE.BLACK, new ƒ.Material(CUBE_TYPE.BLACK, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.BLACK))]
             ]);
         }
     }

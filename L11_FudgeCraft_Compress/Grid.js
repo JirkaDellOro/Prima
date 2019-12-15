@@ -5,6 +5,11 @@ var L11_FudgeCraft_Compress;
         constructor(_cube = null) {
             this.cube = _cube;
         }
+        get position() {
+            if (this.cube)
+                return this.cube.cmpTransform.local.translation;
+            return null;
+        }
     }
     L11_FudgeCraft_Compress.GridElement = GridElement;
     class Grid extends Map {
@@ -43,6 +48,13 @@ var L11_FudgeCraft_Compress;
                     found.push(neighbor);
             }
             return found;
+        }
+        compress(_popped) {
+            for (let popped of _popped) {
+                let neighbors = this.findNeighbors(popped.position);
+                for (let neighbor of neighbors)
+                    ;
+            }
         }
         toKey(_position) {
             let position = _position.map(Math.round);

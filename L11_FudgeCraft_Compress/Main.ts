@@ -47,8 +47,8 @@ namespace L11_FudgeCraft_Compress {
 
         game.appendChild(control);
 
-        //startGame();
-        startTests();
+        startGame();
+        // startTests();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);
@@ -56,7 +56,7 @@ namespace L11_FudgeCraft_Compress {
     }
 
     function startGame(): void {
-        grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.GREY, ƒ.Vector3.ZERO())));
+        grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.BLACK, ƒ.Vector3.ZERO())));
         startRandomFragment();
     }
 
