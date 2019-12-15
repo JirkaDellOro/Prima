@@ -16,7 +16,7 @@ var L08_FudgeCraft_Collision;
         logResult(empty == undefined, "Grid element deleted");
     }
     function logResult(_success, ..._args) {
-        let log = _success ? console.log : console.warn;
+        let log = _success ? L08_FudgeCraft_Collision.ƒ.Debug.log : L08_FudgeCraft_Collision.ƒ.Debug.warn;
         log(`Test success: ${_success}`, _args);
     }
 })(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));

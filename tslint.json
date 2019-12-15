@@ -16,7 +16,7 @@
 		"no-any": true,
 		"no-arg": true,
 		"no-bitwise": false,
-		"no-console": [false, "debug", "info", "time", "timeEnd", "trace"],
+		"no-ƒ.Debug": [false, "debug", "info", "time", "timeEnd", "trace"],
 		"no-construct": true,
 		"no-debugger": false,
 		"no-duplicate-variable": true,

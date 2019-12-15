@@ -1,4 +1,4 @@
-namespace L10_FudgeCraft_DetectCombos {
+namespace L11_FudgeCraft_Compress {
     export class GridElement {
         public cube: Cube;
 

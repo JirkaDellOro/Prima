@@ -1,6 +1,6 @@
 "use strict";
-var L10_FudgeCraft_DetectCombos;
-(function (L10_FudgeCraft_DetectCombos) {
+var L11_FudgeCraft_Compress;
+(function (L11_FudgeCraft_Compress) {
     class Combos {
         constructor(_elements) {
             this.found = [];
@@ -37,11 +37,11 @@ var L10_FudgeCraft_DetectCombos;
                 this.recurse(match, _combo);
         }
         findNeigborsOfSameColor(_element) {
-            let allNeighbors = L10_FudgeCraft_DetectCombos.grid.findNeighbors(_element.cube.cmpTransform.local.translation);
+            let allNeighbors = L11_FudgeCraft_Compress.grid.findNeighbors(_element.cube.cmpTransform.local.translation);
             let found = allNeighbors.filter(_neighbor => (_neighbor.cube.name == _element.cube.name));
             return found;
         }
     }
-    L10_FudgeCraft_DetectCombos.Combos = Combos;
-})(L10_FudgeCraft_DetectCombos || (L10_FudgeCraft_DetectCombos = {}));
+    L11_FudgeCraft_Compress.Combos = Combos;
+})(L11_FudgeCraft_Compress || (L11_FudgeCraft_Compress = {}));
 //# sourceMappingURL=Combos.js.map

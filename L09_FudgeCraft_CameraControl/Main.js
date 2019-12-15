@@ -48,7 +48,7 @@ var L09_FudgeCraft_CameraControl;
         viewport.draw();
     }
     function hndPointerMove(_event) {
-        // console.log(_event.movementX, _event.movementY);
+        // ƒ.Debug.log(_event.movementX, _event.movementY);
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
         updateDisplay();

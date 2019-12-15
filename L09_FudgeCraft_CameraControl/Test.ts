@@ -18,7 +18,7 @@ namespace L09_FudgeCraft_CameraControl {
     }
 
     function logResult(_success: boolean, ..._args: Object[]): void {
-        let log: Function = _success ? console.log : console.warn;
+        let log: Function = _success ? ƒ.Debug.log : ƒ.Debug.warn;
         log(`Test success: ${_success}`, _args);
     }
 }

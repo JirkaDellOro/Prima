@@ -97,7 +97,7 @@ namespace L06_PongFinal {
     }
 
     function processHit(_node: ƒ.Node): void {
-        console.log("Reflect at ", _node.name);
+        ƒ.Debug.log("Reflect at ", _node.name);
         switch (_node.name) {
             case "WallTop":
             case "WallBottom":
@@ -112,7 +112,7 @@ namespace L06_PongFinal {
                 reflectBall(_node);
                 break;
             default:
-                console.warn("Oh, no, I hit something unknown!!", _node.name);
+                ƒ.Debug.warn("Oh, no, I hit something unknown!!", _node.name);
                 break;
         }
     }

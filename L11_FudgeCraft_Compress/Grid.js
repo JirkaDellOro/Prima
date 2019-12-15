@@ -1,12 +1,12 @@
 "use strict";
-var L10_FudgeCraft_DetectCombos;
-(function (L10_FudgeCraft_DetectCombos) {
+var L11_FudgeCraft_Compress;
+(function (L11_FudgeCraft_Compress) {
     class GridElement {
         constructor(_cube = null) {
             this.cube = _cube;
         }
     }
-    L10_FudgeCraft_DetectCombos.GridElement = GridElement;
+    L11_FudgeCraft_Compress.GridElement = GridElement;
     class Grid extends Map {
         // private grid: Map<string, Cube> = new Map();
         constructor() {
@@ -15,10 +15,10 @@ var L10_FudgeCraft_DetectCombos;
         push(_position, _element = null) {
             let key = this.toKey(_position);
             if (this.pop(_position))
-                L10_FudgeCraft_DetectCombos.ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
+                L11_FudgeCraft_Compress.ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
             this.set(key, _element);
             if (_element)
-                L10_FudgeCraft_DetectCombos.game.appendChild(_element.cube);
+                L11_FudgeCraft_Compress.game.appendChild(_element.cube);
         }
         pull(_position) {
             let key = this.toKey(_position);
@@ -30,15 +30,15 @@ var L10_FudgeCraft_DetectCombos;
             let element = this.get(key);
             this.delete(key);
             if (element)
-                L10_FudgeCraft_DetectCombos.game.removeChild(element.cube);
+                L11_FudgeCraft_Compress.game.removeChild(element.cube);
             return element;
         }
         findNeighbors(_of) {
             let found = [];
             let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
             for (let offset of offsets) {
-                let posNeighbor = L10_FudgeCraft_DetectCombos.ƒ.Vector3.SUM(_of, new L10_FudgeCraft_DetectCombos.ƒ.Vector3(...offset));
-                let neighbor = L10_FudgeCraft_DetectCombos.grid.pull(posNeighbor);
+                let posNeighbor = L11_FudgeCraft_Compress.ƒ.Vector3.SUM(_of, new L11_FudgeCraft_Compress.ƒ.Vector3(...offset));
+                let neighbor = L11_FudgeCraft_Compress.grid.pull(posNeighbor);
                 if (neighbor)
                     found.push(neighbor);
             }
@@ -50,6 +50,6 @@ var L10_FudgeCraft_DetectCombos;
             return key;
         }
     }
-    L10_FudgeCraft_DetectCombos.Grid = Grid;
-})(L10_FudgeCraft_DetectCombos || (L10_FudgeCraft_DetectCombos = {}));
+    L11_FudgeCraft_Compress.Grid = Grid;
+})(L11_FudgeCraft_Compress || (L11_FudgeCraft_Compress = {}));
 //# sourceMappingURL=Grid.js.map

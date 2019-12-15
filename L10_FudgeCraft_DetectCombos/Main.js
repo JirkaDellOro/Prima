@@ -39,8 +39,8 @@ var L10_FudgeCraft_DetectCombos;
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
         L10_FudgeCraft_DetectCombos.game.appendChild(control);
-        startGame();
-        // startTests();
+        //startGame();
+        L10_FudgeCraft_DetectCombos.startTests();
         updateDisplay();
         L10_FudgeCraft_DetectCombos.ƒ.Debug.log("Game", L10_FudgeCraft_DetectCombos.game);
     }
@@ -53,7 +53,7 @@ var L10_FudgeCraft_DetectCombos;
     }
     L10_FudgeCraft_DetectCombos.updateDisplay = updateDisplay;
     function hndPointerMove(_event) {
-        // console.log(_event.movementX, _event.movementY);
+        // ƒ.Debug.log(_event.movementX, _event.movementY);
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
         updateDisplay();
@@ -79,7 +79,7 @@ var L10_FudgeCraft_DetectCombos;
             if (combo.length > 2)
                 for (let element of combo) {
                     let mtxLocal = element.cube.cmpTransform.local;
-                    console.log(element.cube.name, mtxLocal.translation.getMutator());
+                    L10_FudgeCraft_DetectCombos.ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
                     // mtxLocal.rotateX(45);
                     // mtxLocal.rotateY(45);
                     // mtxLocal.rotateY(45, true);

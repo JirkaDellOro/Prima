@@ -16,7 +16,7 @@ var L09_FudgeCraft_CameraControl;
         logResult(empty == undefined, "Grid element deleted");
     }
     function logResult(_success, ..._args) {
-        let log = _success ? console.log : console.warn;
+        let log = _success ? L09_FudgeCraft_CameraControl.ƒ.Debug.log : L09_FudgeCraft_CameraControl.ƒ.Debug.warn;
         log(`Test success: ${_success}`, _args);
     }
 })(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));

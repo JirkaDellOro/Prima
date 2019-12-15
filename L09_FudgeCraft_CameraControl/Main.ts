@@ -60,7 +60,7 @@ namespace L09_FudgeCraft_CameraControl {
     }
 
     function hndPointerMove(_event: ƒ.PointerEventƒ): void {
-        // console.log(_event.movementX, _event.movementY);
+        // ƒ.Debug.log(_event.movementX, _event.movementY);
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
         updateDisplay();

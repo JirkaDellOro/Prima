@@ -64,7 +64,7 @@ var L06_PongFinal;
         return rect.isInside(_position.toVector2());
     }
     function processHit(_node) {
-        console.log("Reflect at ", _node.name);
+        ƒ.Debug.log("Reflect at ", _node.name);
         switch (_node.name) {
             case "WallTop":
             case "WallBottom":
@@ -79,7 +79,7 @@ var L06_PongFinal;
                 reflectBall(_node);
                 break;
             default:
-                console.warn("Oh, no, I hit something unknown!!", _node.name);
+                ƒ.Debug.warn("Oh, no, I hit something unknown!!", _node.name);
                 break;
         }
     }

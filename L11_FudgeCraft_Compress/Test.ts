@@ -1,4 +1,4 @@
-namespace L10_FudgeCraft_DetectCombos {
+namespace L11_FudgeCraft_Compress {
     export function startTests(): void {
         //    testGrid();
         testCombos();
