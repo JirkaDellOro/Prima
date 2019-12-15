@@ -47,8 +47,8 @@ namespace L11_FudgeCraft_Compress {
 
         game.appendChild(control);
 
-        startGame();
-        // startTests();
+        // startGame();
+        startTests();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);
@@ -78,7 +78,7 @@ namespace L11_FudgeCraft_Compress {
 
     function hndKeyDown(_event: KeyboardEvent): void {
         if (_event.code == ƒ.KEYBOARD_CODE.SPACE) {
-            let frozen: GridElement[] = control.freeze();
+            let frozen: GridElement[] = control.freeze(); 
             let combos: Combos = new Combos(frozen);
             handleCombos(combos);
             startRandomFragment();

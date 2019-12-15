@@ -3,25 +3,45 @@ var L11_FudgeCraft_Compress;
 (function (L11_FudgeCraft_Compress) {
     function startTests() {
         //    testGrid();
-        testCombos();
+        // testCombos();
+        testCompression();
     }
     L11_FudgeCraft_Compress.startTests = startTests;
+    function testCompression() {
+        let setups = [
+            { type: L11_FudgeCraft_Compress.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
+            { type: L11_FudgeCraft_Compress.CUBE_TYPE.RED, positions: [[-2, -2, 0], [-2, -2, 1], [-2, -2, -1]] },
+            { type: L11_FudgeCraft_Compress.CUBE_TYPE.GREEN, positions: [[0, -2, 0], [1, -2, 0], [-1, -2, 0]] },
+            { type: L11_FudgeCraft_Compress.CUBE_TYPE.BLUE, positions: [[0, 0, 2], [0, -1, 2], [0, 1, 2]] },
+            { type: L11_FudgeCraft_Compress.CUBE_TYPE.YELLOW, positions: [[0, -2, -2], [1, -2, -2], [-1, -2, -2]] }
+        ];
+        setupGrid(setups);
+        L11_FudgeCraft_Compress.updateDisplay();
+        // debugger;
+        L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(3000, 1, compress);
+        //await ƒ.Time.game.lapse(1000);
+        function compress() {
+            let moves = L11_FudgeCraft_Compress.grid.compress();
+            for (let move of moves) {
+                L11_FudgeCraft_Compress.grid.pop(move.element.position);
+                move.element.position = move.target;
+                L11_FudgeCraft_Compress.grid.push(move.target, move.element);
+            }
+            L11_FudgeCraft_Compress.updateDisplay();
+            if (moves.length > 0)
+                L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(100, 1, compress);
+        }
+    }
     function testCombos() {
-        let setup = [
+        let setups = [
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.RED, positions: [[0, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, -1], [-1, 0, 0]] },
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.GREEN, positions: [[-5, 0, 0], [-5, 0, 1], [-5, 1, 2], [-5, -1, 2], [-5, 0, 2]] },
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.CYAN, positions: [[3, 0, 0], [3, 0, 1], [3, 0, 2], [3, 0, 3], [3, 0, 4], [3, 0, 5], [3, 0, 6], [3, 0, -1], [3, 0, -2]] },
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.BLUE, positions: [[0, 3, 0], [0, 3, 1], [0, 3, 2], [1, 3, 2], [2, 3, 2], [2, 3, 1], [2, 3, 0], [1, 3, 0], [0, 3, 0]] }
         ];
-        setup.forEach((_combo) => {
-            _combo.positions.forEach((_position) => {
-                let position = new L11_FudgeCraft_Compress.ƒ.Vector3(..._position);
-                let cube = new L11_FudgeCraft_Compress.Cube(_combo.type, position);
-                L11_FudgeCraft_Compress.grid.push(position, new L11_FudgeCraft_Compress.GridElement(cube));
-            });
-        });
-        let startElements = setup.map((_combo) => {
-            return L11_FudgeCraft_Compress.grid.pull(new L11_FudgeCraft_Compress.ƒ.Vector3(..._combo.positions[1]));
+        setupGrid(setups);
+        let startElements = setups.map((_setup) => {
+            return L11_FudgeCraft_Compress.grid.pull(new L11_FudgeCraft_Compress.ƒ.Vector3(..._setup.positions[1]));
         });
         let combos = new L11_FudgeCraft_Compress.Combos(startElements);
         for (let combo of combos.found)
@@ -45,6 +65,15 @@ var L11_FudgeCraft_Compress;
         logResult(cube == popped.cube, "Grid pop", cube, popped.cube, popped);
         let empty = L11_FudgeCraft_Compress.grid.pull(cube.cmpTransform.local.translation);
         logResult(empty == undefined, "Grid element deleted");
+    }
+    function setupGrid(_setups) {
+        _setups.forEach((_setup) => {
+            _setup.positions.forEach((_position) => {
+                let position = new L11_FudgeCraft_Compress.ƒ.Vector3(..._position);
+                let cube = new L11_FudgeCraft_Compress.Cube(_setup.type, position);
+                L11_FudgeCraft_Compress.grid.push(position, new L11_FudgeCraft_Compress.GridElement(cube));
+            });
+        });
     }
     function logResult(_success, ..._args) {
         let log = _success ? L11_FudgeCraft_Compress.ƒ.Debug.log : L11_FudgeCraft_Compress.ƒ.Debug.warn;

@@ -1,7 +1,7 @@
 namespace L11_FudgeCraft_Compress {
-    interface Gain {
+    export interface Move {
         value: number;
-        empty: ƒ.Vector3;
+        target: ƒ.Vector3;
         element: GridElement;
     }
 
@@ -69,39 +69,29 @@ namespace L11_FudgeCraft_Compress {
             return _empty ? empty : found;
         }
 
-        public compress(): void {
-            let gains: Gain[] = [];
+        public compress(): Move[] {
+            let movesGain: Move[] = [];
             for (let element of this) {
-                let emptySpaces: ƒ.Vector3[] = <ƒ.Vector3[]>this.findNeighbors(element[1].position);
+                let emptySpaces: ƒ.Vector3[] = <ƒ.Vector3[]>this.findNeighbors(element[1].position, true);
                 for (let emptySpace of emptySpaces) {
-                    let relativeGain: number = emptySpace.length / element[1].position.length;
-                    if (relativeGain < 1) {
-                        let gain: Gain = { value: relativeGain, empty: emptySpace, element: element[1] };
-                        gains.push(gain);
+                    let relativeGain: number = element[1].position.magnitude / emptySpace.magnitude;
+                    if (relativeGain > 1) {
+                        let move: Move = { value: relativeGain, target: emptySpace, element: element[1] };
+                        movesGain.push(move);
                     }
                 }
             }
 
-            gains.sort((_a: Gain, _b: Gain) => _a.value < _b.value ? 1 : 0);
+            movesGain.sort((_a: Move, _b: Move) => _a.value < _b.value ? 1 : -1);
 
-            let moves: Gain[] = [];
-
-            for (let gain of gains) {
-                let alreadySet: number = moves.findIndex((_gain: Gain) => _gain.empty == gain.empty || _gain.element == gain.element);
-                if (alreadySet == -1)
-                    moves.push(gain);
+            let movesChosen: Move[] = [];
+            for (let move of movesGain) {
+                let alreadyChosen: number = movesChosen.findIndex((_move: Move) => _move.target.equals(move.target) || _move.element == move.element);
+                if (alreadyChosen == -1)
+                    movesChosen.push(move);
             }
 
-            if (moves.length == 0)
-                return;
-
-            for (let move of moves) {
-                grid.pop(move.element.position);
-                move.element.position = move.empty;
-                grid.push(move.empty, move.element);
-            }
-
-            this.compress();
+            return movesChosen;
         }
 
         private toKey(_position: ƒ.Vector3): string {

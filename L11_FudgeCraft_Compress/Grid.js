@@ -57,32 +57,25 @@ var L11_FudgeCraft_Compress;
             return _empty ? empty : found;
         }
         compress() {
-            let gains = [];
+            let movesGain = [];
             for (let element of this) {
-                let emptySpaces = this.findNeighbors(element[1].position);
+                let emptySpaces = this.findNeighbors(element[1].position, true);
                 for (let emptySpace of emptySpaces) {
-                    let relativeGain = emptySpace.length / element[1].position.length;
-                    if (relativeGain < 1) {
-                        let gain = { value: relativeGain, empty: emptySpace, element: element[1] };
-                        gains.push(gain);
+                    let relativeGain = element[1].position.magnitude / emptySpace.magnitude;
+                    if (relativeGain > 1) {
+                        let move = { value: relativeGain, target: emptySpace, element: element[1] };
+                        movesGain.push(move);
                     }
                 }
             }
-            gains.sort((_a, _b) => _a.value < _b.value ? 1 : 0);
-            let moves = [];
-            for (let gain of gains) {
-                let alreadySet = moves.findIndex((_gain) => _gain.empty == gain.empty || _gain.element == gain.element);
-                if (alreadySet == -1)
-                    moves.push(gain);
+            movesGain.sort((_a, _b) => _a.value < _b.value ? 1 : -1);
+            let movesChosen = [];
+            for (let move of movesGain) {
+                let alreadyChosen = movesChosen.findIndex((_move) => _move.target.equals(move.target) || _move.element == move.element);
+                if (alreadyChosen == -1)
+                    movesChosen.push(move);
             }
-            if (moves.length == 0)
-                return;
-            for (let move of moves) {
-                L11_FudgeCraft_Compress.grid.pop(move.element.position);
-                move.element.position = move.empty;
-                L11_FudgeCraft_Compress.grid.push(move.empty, move.element);
-            }
-            this.compress();
+            return movesChosen;
         }
         toKey(_position) {
             let position = _position.map(Math.round);
