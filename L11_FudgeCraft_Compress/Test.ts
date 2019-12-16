@@ -7,7 +7,7 @@ namespace L11_FudgeCraft_Compress {
         testCompression();
     }
 
-    function testCompression(): void {
+    async function testCompression(): Promise<void> {
         let setups: Setup[] = [
             { type: CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
             { type: CUBE_TYPE.RED, positions: [[-2, -2, 0], [-2, -2, 1], [-2, -2, -1]] },
@@ -19,8 +19,10 @@ namespace L11_FudgeCraft_Compress {
         setupGrid(setups);
         updateDisplay();
         // debugger;
-        ƒ.Time.game.setTimer(3000, 1, compress);
-        //await ƒ.Time.game.lapse(1000);
+        // ƒ.Time.game.setTimer(3000, 1, compress);
+        ƒ.Time.game.setScale(1);
+        await ƒ.Time.game.delay(3000);
+        compress();
 
         function compress(): void {
             let moves: Move[] = grid.compress();

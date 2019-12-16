@@ -7,7 +7,7 @@ var L11_FudgeCraft_Compress;
         testCompression();
     }
     L11_FudgeCraft_Compress.startTests = startTests;
-    function testCompression() {
+    async function testCompression() {
         let setups = [
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.RED, positions: [[-2, -2, 0], [-2, -2, 1], [-2, -2, -1]] },
@@ -18,8 +18,10 @@ var L11_FudgeCraft_Compress;
         setupGrid(setups);
         L11_FudgeCraft_Compress.updateDisplay();
         // debugger;
-        L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(3000, 1, compress);
-        //await ƒ.Time.game.lapse(1000);
+        // ƒ.Time.game.setTimer(3000, 1, compress);
+        L11_FudgeCraft_Compress.ƒ.Time.game.setScale(1);
+        await L11_FudgeCraft_Compress.ƒ.Time.game.delay(3000);
+        compress();
         function compress() {
             let moves = L11_FudgeCraft_Compress.grid.compress();
             for (let move of moves) {
