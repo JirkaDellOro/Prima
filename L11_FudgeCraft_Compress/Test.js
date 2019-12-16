@@ -18,20 +18,25 @@ var L11_FudgeCraft_Compress;
         setupGrid(setups);
         L11_FudgeCraft_Compress.updateDisplay();
         // debugger;
-        // ƒ.Time.game.setTimer(3000, 1, compress);
-        L11_FudgeCraft_Compress.ƒ.Time.game.setScale(1);
-        await L11_FudgeCraft_Compress.ƒ.Time.game.delay(3000);
+        await L11_FudgeCraft_Compress.ƒ.Time.game.delay(1000);
         compress();
         function compress() {
             let moves = L11_FudgeCraft_Compress.grid.compress();
             for (let move of moves) {
                 L11_FudgeCraft_Compress.grid.pop(move.element.position);
-                move.element.position = move.target;
                 L11_FudgeCraft_Compress.grid.push(move.target, move.element);
             }
-            L11_FudgeCraft_Compress.updateDisplay();
+            let animationSteps = 10;
+            L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(10, animationSteps, function () {
+                for (let move of moves) {
+                    let translation = L11_FudgeCraft_Compress.ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
+                    translation.normalize(1 / animationSteps);
+                    move.element.position = L11_FudgeCraft_Compress.ƒ.Vector3.SUM(move.element.position, translation);
+                }
+                L11_FudgeCraft_Compress.updateDisplay();
+            });
             if (moves.length > 0)
-                L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(100, 1, compress);
+                L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(400, 1, compress);
         }
     }
     function testCombos() {

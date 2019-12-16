@@ -19,9 +19,7 @@ namespace L11_FudgeCraft_Compress {
         setupGrid(setups);
         updateDisplay();
         // debugger;
-        // ƒ.Time.game.setTimer(3000, 1, compress);
-        ƒ.Time.game.setScale(1);
-        await ƒ.Time.game.delay(3000);
+        await ƒ.Time.game.delay(1000);
         compress();
 
         function compress(): void {
@@ -29,13 +27,21 @@ namespace L11_FudgeCraft_Compress {
 
             for (let move of moves) {
                 grid.pop(move.element.position);
-                move.element.position = move.target;
                 grid.push(move.target, move.element);
             }
-            updateDisplay();
+
+            let animationSteps: number = 10;
+            ƒ.Time.game.setTimer(10, animationSteps, function (): void {
+                for (let move of moves) {
+                    let translation: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
+                    translation.normalize(1 / animationSteps);
+                    move.element.position = ƒ.Vector3.SUM(move.element.position, translation);
+                }
+                updateDisplay();
+            });
 
             if (moves.length > 0)
-                ƒ.Time.game.setTimer(100, 1, compress);
+                ƒ.Time.game.setTimer(400, 1, compress);
         }
     }
 
