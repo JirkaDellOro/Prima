@@ -148,9 +148,8 @@ var L11_FudgeCraft_Compress;
     }
     function startRandomFragment() {
         let fragment = L11_FudgeCraft_Compress.Fragment.getRandom();
-        control.cmpTransform.local = L11_FudgeCraft_Compress.ƒ.Matrix4x4.IDENTITY;
+        control.cmpTransform.local.translation = L11_FudgeCraft_Compress.ƒ.Vector3.Z(5);
         control.setFragment(fragment);
-        control.cmpTransform.local.translateZ(5);
     }
     L11_FudgeCraft_Compress.startRandomFragment = startRandomFragment;
     function compress() {

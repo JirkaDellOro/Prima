@@ -169,9 +169,8 @@ namespace L11_FudgeCraft_Compress {
 
     export function startRandomFragment(): void {
         let fragment: Fragment = Fragment.getRandom();
-        control.cmpTransform.local = ƒ.Matrix4x4.IDENTITY;
+        control.cmpTransform.local.translation = ƒ.Vector3.Z(5);
         control.setFragment(fragment);
-        control.cmpTransform.local.translateZ(5);
     }
 
     export function compress(): Move[] {
