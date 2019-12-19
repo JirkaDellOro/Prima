@@ -1,7 +1,7 @@
 namespace L10_FudgeCraft_DetectCombos {
     export function startTests(): void {
-        //    testGrid();
-        testCombos();
+        if (false) testGrid();
+        if (true) testCombos();
     }
 
     function testCombos(): void {

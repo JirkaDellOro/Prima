@@ -47,8 +47,8 @@ namespace L10_FudgeCraft_DetectCombos {
 
         game.appendChild(control);
 
-        //startGame();
-        startTests();
+        if (true) startGame();
+        if (true) startTests();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);

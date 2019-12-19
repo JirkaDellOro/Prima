@@ -2,8 +2,10 @@
 var L10_FudgeCraft_DetectCombos;
 (function (L10_FudgeCraft_DetectCombos) {
     function startTests() {
-        //    testGrid();
-        testCombos();
+        if (false)
+            testGrid();
+        if (true)
+            testCombos();
     }
     L10_FudgeCraft_DetectCombos.startTests = startTests;
     function testCombos() {

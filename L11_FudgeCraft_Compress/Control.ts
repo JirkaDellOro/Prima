@@ -52,6 +52,13 @@ namespace L11_FudgeCraft_Compress {
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
         }
+        
+        public rotatePerspektive(_angle: number): void {
+            let mtxContainer: ƒ.Matrix4x4 = this.cmpTransform.local;
+            let mtxFragment: ƒ.Matrix4x4 = this.fragment.cmpTransform.local;
+            mtxContainer.rotateY(_angle);
+            mtxFragment.rotateY(-_angle, true);
+        }
 
         public checkCollisions(_transformation: Transformation): Collision[] {
             let mtxContainer: ƒ.Matrix4x4 = this.cmpTransform.local;
@@ -75,7 +82,7 @@ namespace L11_FudgeCraft_Compress {
             return collisions;
         }
 
-        public freeze(): GridElement[] {
+        public dropFragment(): GridElement[] {
             let frozen: GridElement[] = [];
             for (let cube of this.fragment.getChildren()) {
                 let position: ƒ.Vector3 = cube.mtxWorld.translation;
@@ -84,6 +91,8 @@ namespace L11_FudgeCraft_Compress {
                 grid.push(position, element);
                 frozen.push(element);
             }
+            for (let child of this.getChildren())
+                this.removeChild(child);
             return frozen;
         }
     }

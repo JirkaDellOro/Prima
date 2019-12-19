@@ -47,8 +47,8 @@ namespace L11_FudgeCraft_Compress {
 
         game.appendChild(control);
 
-        // startGame();
-        startTests();
+        if (1) startGame();
+        if (0) startTests();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);
@@ -78,11 +78,13 @@ namespace L11_FudgeCraft_Compress {
 
     function hndKeyDown(_event: KeyboardEvent): void {
         if (_event.code == ƒ.KEYBOARD_CODE.SPACE) {
-            let frozen: GridElement[] = control.freeze(); 
-            let combos: Combos = new Combos(frozen);
-            handleCombos(combos);
-            startRandomFragment();
+            dropFragment();
         }
+
+        if (_event.code == ƒ.KEYBOARD_CODE.Q)
+            control.rotatePerspektive(-90);
+        if (_event.code == ƒ.KEYBOARD_CODE.E)
+            control.rotatePerspektive(90);
 
         let transformation: Transformation = Control.transformations[_event.code];
         if (transformation)
@@ -91,9 +93,33 @@ namespace L11_FudgeCraft_Compress {
         updateDisplay();
     }
 
-    function handleCombos(_combos: Combos): void {
+    function dropFragment(): void {
+        let dropped: GridElement[] = control.dropFragment();
+        let combos: Combos = new Combos(dropped);
+
+        let combosPopped: boolean = handleCombos(combos);
+        if (combosPopped)
+            compressAndHandleCombos();
+        startRandomFragment();
+    }
+
+    export async function compressAndHandleCombos(): Promise<void> {
+        let moves: Move[];
+        do {
+            moves = compress();
+            await ƒ.Time.game.delay(400);
+
+            let moved: GridElement[] = moves.map(_move => _move.element);
+            let combos: Combos = new Combos(moved);
+            handleCombos(combos);
+        } while (moves.length > 0);
+    }
+
+    function handleCombos(_combos: Combos): boolean {
+        let pop: boolean = false;
         for (let combo of _combos.found)
-            if (combo.length > 2)
+            if (combo.length > 2) {
+                pop = true;
                 for (let element of combo) {
                     let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
                     ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
@@ -101,7 +127,11 @@ namespace L11_FudgeCraft_Compress {
                     // mtxLocal.rotateY(45);
                     // mtxLocal.rotateY(45, true);
                     mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+                    grid.pop(element.position);
                 }
+            }
+        updateDisplay();
+        return pop;
     }
 
     function move(_transformation: Transformation): void {
@@ -117,7 +147,7 @@ namespace L11_FudgeCraft_Compress {
         if (Object.keys(timers).length > 0)
             return;
 
-        if ( control.checkCollisions(move).length > 0)
+        if (control.checkCollisions(move).length > 0)
             return;
 
         move.translation.scale(1 / animationSteps);
@@ -133,5 +163,27 @@ namespace L11_FudgeCraft_Compress {
         let fragment: Fragment = Fragment.getRandom();
         control.cmpTransform.local = ƒ.Matrix4x4.IDENTITY;
         control.setFragment(fragment);
+        control.cmpTransform.local.translateZ(5);
+    }
+
+    export function compress(): Move[] {
+        let moves: Move[] = grid.compress();
+
+        for (let move of moves) {
+            grid.pop(move.element.position);
+            grid.push(move.target, move.element);
+        }
+
+        let animationSteps: number = 10;
+        ƒ.Time.game.setTimer(10, animationSteps, function (): void {
+            for (let move of moves) {
+                let translation: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
+                translation.normalize(1 / animationSteps);
+                move.element.position = ƒ.Vector3.SUM(move.element.position, translation);
+            }
+            updateDisplay();
+        });
+
+        return moves;
     }
 }

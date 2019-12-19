@@ -39,8 +39,10 @@ var L11_FudgeCraft_Compress;
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
         L11_FudgeCraft_Compress.game.appendChild(control);
-        // startGame();
-        L11_FudgeCraft_Compress.startTests();
+        if (1)
+            startGame();
+        if (0)
+            L11_FudgeCraft_Compress.startTests();
         updateDisplay();
         L11_FudgeCraft_Compress.ƒ.Debug.log("Game", L11_FudgeCraft_Compress.game);
     }
@@ -64,19 +66,41 @@ var L11_FudgeCraft_Compress;
     }
     function hndKeyDown(_event) {
         if (_event.code == L11_FudgeCraft_Compress.ƒ.KEYBOARD_CODE.SPACE) {
-            let frozen = control.freeze();
-            let combos = new L11_FudgeCraft_Compress.Combos(frozen);
-            handleCombos(combos);
-            startRandomFragment();
+            dropFragment();
         }
+        if (_event.code == L11_FudgeCraft_Compress.ƒ.KEYBOARD_CODE.Q)
+            control.rotatePerspektive(-90);
+        if (_event.code == L11_FudgeCraft_Compress.ƒ.KEYBOARD_CODE.E)
+            control.rotatePerspektive(90);
         let transformation = L11_FudgeCraft_Compress.Control.transformations[_event.code];
         if (transformation)
             move(transformation);
         updateDisplay();
     }
+    function dropFragment() {
+        let dropped = control.dropFragment();
+        let combos = new L11_FudgeCraft_Compress.Combos(dropped);
+        let combosPopped = handleCombos(combos);
+        if (combosPopped)
+            compressAndHandleCombos();
+        startRandomFragment();
+    }
+    async function compressAndHandleCombos() {
+        let moves;
+        do {
+            moves = compress();
+            await L11_FudgeCraft_Compress.ƒ.Time.game.delay(400);
+            let moved = moves.map(_move => _move.element);
+            let combos = new L11_FudgeCraft_Compress.Combos(moved);
+            handleCombos(combos);
+        } while (moves.length > 0);
+    }
+    L11_FudgeCraft_Compress.compressAndHandleCombos = compressAndHandleCombos;
     function handleCombos(_combos) {
+        let pop = false;
         for (let combo of _combos.found)
-            if (combo.length > 2)
+            if (combo.length > 2) {
+                pop = true;
                 for (let element of combo) {
                     let mtxLocal = element.cube.cmpTransform.local;
                     L11_FudgeCraft_Compress.ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
@@ -84,7 +108,11 @@ var L11_FudgeCraft_Compress;
                     // mtxLocal.rotateY(45);
                     // mtxLocal.rotateY(45, true);
                     mtxLocal.scale(L11_FudgeCraft_Compress.ƒ.Vector3.ONE(0.5));
+                    L11_FudgeCraft_Compress.grid.pop(element.position);
                 }
+            }
+        updateDisplay();
+        return pop;
     }
     function move(_transformation) {
         let animationSteps = 10;
@@ -110,7 +138,26 @@ var L11_FudgeCraft_Compress;
         let fragment = L11_FudgeCraft_Compress.Fragment.getRandom();
         control.cmpTransform.local = L11_FudgeCraft_Compress.ƒ.Matrix4x4.IDENTITY;
         control.setFragment(fragment);
+        control.cmpTransform.local.translateZ(5);
     }
     L11_FudgeCraft_Compress.startRandomFragment = startRandomFragment;
+    function compress() {
+        let moves = L11_FudgeCraft_Compress.grid.compress();
+        for (let move of moves) {
+            L11_FudgeCraft_Compress.grid.pop(move.element.position);
+            L11_FudgeCraft_Compress.grid.push(move.target, move.element);
+        }
+        let animationSteps = 10;
+        L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(10, animationSteps, function () {
+            for (let move of moves) {
+                let translation = L11_FudgeCraft_Compress.ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
+                translation.normalize(1 / animationSteps);
+                move.element.position = L11_FudgeCraft_Compress.ƒ.Vector3.SUM(move.element.position, translation);
+            }
+            updateDisplay();
+        });
+        return moves;
+    }
+    L11_FudgeCraft_Compress.compress = compress;
 })(L11_FudgeCraft_Compress || (L11_FudgeCraft_Compress = {}));
 //# sourceMappingURL=Main.js.map

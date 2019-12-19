@@ -39,8 +39,10 @@ var L10_FudgeCraft_DetectCombos;
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
         L10_FudgeCraft_DetectCombos.game.appendChild(control);
-        //startGame();
-        L10_FudgeCraft_DetectCombos.startTests();
+        if (true)
+            startGame();
+        if (true)
+            L10_FudgeCraft_DetectCombos.startTests();
         updateDisplay();
         L10_FudgeCraft_DetectCombos.ƒ.Debug.log("Game", L10_FudgeCraft_DetectCombos.game);
     }

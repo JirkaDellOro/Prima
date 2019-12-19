@@ -33,6 +33,12 @@ var L11_FudgeCraft_Compress;
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
         }
+        rotatePerspektive(_angle) {
+            let mtxContainer = this.cmpTransform.local;
+            let mtxFragment = this.fragment.cmpTransform.local;
+            mtxContainer.rotateY(_angle);
+            mtxFragment.rotateY(-_angle, true);
+        }
         checkCollisions(_transformation) {
             let mtxContainer = this.cmpTransform.local;
             let mtxFragment = this.fragment.cmpTransform.local;
@@ -50,7 +56,7 @@ var L11_FudgeCraft_Compress;
             mtxFragment.mutate(save[1]);
             return collisions;
         }
-        freeze() {
+        dropFragment() {
             let frozen = [];
             for (let cube of this.fragment.getChildren()) {
                 let position = cube.mtxWorld.translation;
@@ -59,6 +65,8 @@ var L11_FudgeCraft_Compress;
                 L11_FudgeCraft_Compress.grid.push(position, element);
                 frozen.push(element);
             }
+            for (let child of this.getChildren())
+                this.removeChild(child);
             return frozen;
         }
     }
