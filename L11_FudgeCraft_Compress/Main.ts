@@ -66,8 +66,16 @@ namespace L11_FudgeCraft_Compress {
 
     function hndPointerMove(_event: ƒ.PointerEventƒ): void {
         // ƒ.Debug.log(_event.movementX, _event.movementY);
+        let segmentBefore: number = camera.getSegmentY();
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
+        let segmentAfter: number = camera.getSegmentY();
+
+        switch (segmentAfter - segmentBefore) {
+            case 1: case -3: control.rotatePerspektive(-90); break;
+            case -1: case 3: control.rotatePerspektive(90); break;
+        }
+
         updateDisplay();
     }
 

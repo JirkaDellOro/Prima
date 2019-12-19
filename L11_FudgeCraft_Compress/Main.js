@@ -56,8 +56,20 @@ var L11_FudgeCraft_Compress;
     L11_FudgeCraft_Compress.updateDisplay = updateDisplay;
     function hndPointerMove(_event) {
         // ƒ.Debug.log(_event.movementX, _event.movementY);
+        let segmentBefore = camera.getSegmentY();
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
+        let segmentAfter = camera.getSegmentY();
+        switch (segmentAfter - segmentBefore) {
+            case 1:
+            case -3:
+                control.rotatePerspektive(-90);
+                break;
+            case -1:
+            case 3:
+                control.rotatePerspektive(90);
+                break;
+        }
         updateDisplay();
     }
     function hndWheelMove(_event) {

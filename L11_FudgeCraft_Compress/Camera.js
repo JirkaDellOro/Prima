@@ -5,7 +5,6 @@ var L11_FudgeCraft_Compress;
     class CameraOrbit extends ƒ.Node {
         constructor(_maxRotX) {
             super("CameraOrbit");
-            //rotatorX: ƒ.Node;
             this.maxRotX = 75;
             this.minDistance = 10;
             this.maxRotX = Math.min(_maxRotX, 89);
@@ -49,6 +48,12 @@ var L11_FudgeCraft_Compress;
         translate(_delta) {
             let distance = this.cmpCamera.pivot.translation.z + _delta;
             this.setDistance(distance);
+        }
+        getRotationY() {
+            return this.cmpTransform.local.rotation.y;
+        }
+        getSegmentY() {
+            return (4 + Math.floor((-this.getRotationY() + 45) / 90)) % 4;
         }
     }
     L11_FudgeCraft_Compress.CameraOrbit = CameraOrbit;

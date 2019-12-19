@@ -2,11 +2,10 @@ namespace L11_FudgeCraft_Compress {
     import ƒ = FudgeCore;
 
     export class CameraOrbit extends ƒ.Node {
-        //rotatorX: ƒ.Node;
-        maxRotX: number = 75;
-        minDistance: number = 10;
+        private maxRotX: number = 75;
+        private minDistance: number = 10;
 
-        constructor(_maxRotX: number) {
+        public constructor(_maxRotX: number) {
             super("CameraOrbit");
 
             this.maxRotX = Math.min(_maxRotX, 89);
@@ -24,43 +23,52 @@ namespace L11_FudgeCraft_Compress {
             this.setDistance(20);
         }
 
-        get cmpCamera(): ƒ.ComponentCamera {
+        public get cmpCamera(): ƒ.ComponentCamera {
             return this.rotatorX.getComponent(ƒ.ComponentCamera);
         }
 
-        get rotatorX(): ƒ.Node {
+        public get rotatorX(): ƒ.Node {
             return this.getChildrenByName("CameraRotX")[0];
         }
 
-        setDistance(_distance: number): void {
+        public setDistance(_distance: number): void {
             let newDistance: number = Math.max(this.minDistance, _distance);
             this.cmpCamera.pivot.translation = ƒ.Vector3.Z(newDistance);
         }
 
-        moveDistance(_delta: number): void {
+        public moveDistance(_delta: number): void {
             this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
         }
 
-        setRotationY(_angle: number): void {
+        public setRotationY(_angle: number): void {
             this.cmpTransform.local.rotation = ƒ.Vector3.Y(_angle);
         }
 
-        setRotationX(_angle: number): void {
+
+        public setRotationX(_angle: number): void {
             _angle = Math.min(Math.max(-this.maxRotX, _angle), this.maxRotX);
             this.rotatorX.cmpTransform.local.rotation = ƒ.Vector3.X(_angle);
         }
 
-        rotateY(_delta: number): void {
+        public rotateY(_delta: number): void {
             this.cmpTransform.local.rotateY(_delta);
         }
-        
-        rotateX(_delta: number): void {
+
+        public rotateX(_delta: number): void {
             let angle: number = this.rotatorX.cmpTransform.local.rotation.x + _delta;
             this.setRotationX(angle);
         }
-        translate(_delta: number): void {
+
+        public translate(_delta: number): void {
             let distance: number = this.cmpCamera.pivot.translation.z + _delta;
             this.setDistance(distance);
+        }
+
+        public getRotationY(): number {
+            return this.cmpTransform.local.rotation.y;
+        }
+        public getSegmentY(): number {
+            return (4 + Math.floor((-this.getRotationY() + 45) / 90)) % 4;
         }
     }
 }
