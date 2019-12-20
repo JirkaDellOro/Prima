@@ -64,7 +64,7 @@ namespace L11_FudgeCraft_Compress {
                 if (neighbor)
                     found.push(neighbor);
                 else
-                    empty.push(posNeighbor);
+                    empty.push(posNeighbor.map(Math.round));
             }
             return _empty ? empty : found;
         }

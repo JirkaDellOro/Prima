@@ -47,8 +47,8 @@ namespace L11_FudgeCraft_Compress {
 
         game.appendChild(control);
 
-        if (1) startGame();
-        if (0) startTests();
+        if (0) startGame();
+        if (1) startTests();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);

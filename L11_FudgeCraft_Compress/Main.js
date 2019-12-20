@@ -39,9 +39,9 @@ var L11_FudgeCraft_Compress;
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
         L11_FudgeCraft_Compress.game.appendChild(control);
-        if (1)
-            startGame();
         if (0)
+            startGame();
+        if (1)
             L11_FudgeCraft_Compress.startTests();
         updateDisplay();
         L11_FudgeCraft_Compress.ƒ.Debug.log("Game", L11_FudgeCraft_Compress.game);
