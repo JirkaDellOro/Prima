@@ -12,9 +12,27 @@ var L11_FudgeCraft_Compress;
             case "compression":
                 testCompression();
                 break;
+            case "camera":
+                testCamera();
+                break;
         }
     }
     L11_FudgeCraft_Compress.startTests = startTests;
+    function testCamera() {
+        let setups = [
+            { type: L11_FudgeCraft_Compress.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] }
+        ];
+        setupGrid(setups);
+        L11_FudgeCraft_Compress.startRandomFragment();
+        L11_FudgeCraft_Compress.ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, rotateY);
+        L11_FudgeCraft_Compress.ƒ.Loop.start();
+        // ƒ.Time.game.setTimer(4, 0, rotateY);
+        function rotateY(_event) {
+            L11_FudgeCraft_Compress.camera.rotateY(1 * L11_FudgeCraft_Compress.ƒ.Loop.timeFrameReal);
+            // camera.rotateX(5 * Math.sin(ƒ.Time.game.get() / 100));
+            L11_FudgeCraft_Compress.updateDisplay();
+        }
+    }
     async function testCompression() {
         let setups = [
             { type: L11_FudgeCraft_Compress.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },

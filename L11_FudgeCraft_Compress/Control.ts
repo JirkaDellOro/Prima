@@ -18,6 +18,7 @@ namespace L11_FudgeCraft_Compress {
     export class Control extends ƒ.Node {
         public static transformations: Transformations = Control.defineControls();
         private fragment: Fragment;
+        private segment: number = 0;
 
         constructor() {
             super("Control");
@@ -52,12 +53,19 @@ namespace L11_FudgeCraft_Compress {
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
         }
-        
+
         public rotatePerspektive(_angle: number): void {
             let mtxContainer: ƒ.Matrix4x4 = this.cmpTransform.local;
             let mtxFragment: ƒ.Matrix4x4 = this.fragment.cmpTransform.local;
             mtxContainer.rotateY(_angle);
             mtxFragment.rotateY(-_angle, true);
+        }
+
+        public rotateToSegment(_segment: number): void {
+            while (_segment != this.segment) {
+                this.rotatePerspektive(-90);
+                this.segment = ++this.segment % 4;
+            }
         }
 
         public checkCollisions(_transformation: Transformation): Collision[] {

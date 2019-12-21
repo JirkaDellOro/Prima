@@ -5,6 +5,7 @@ var L11_FudgeCraft_Compress;
     class Control extends ƒ.Node {
         constructor() {
             super("Control");
+            this.segment = 0;
             this.addComponent(new ƒ.ComponentTransform());
         }
         static defineControls() {
@@ -38,6 +39,12 @@ var L11_FudgeCraft_Compress;
             let mtxFragment = this.fragment.cmpTransform.local;
             mtxContainer.rotateY(_angle);
             mtxFragment.rotateY(-_angle, true);
+        }
+        rotateToSegment(_segment) {
+            while (_segment != this.segment) {
+                this.rotatePerspektive(-90);
+                this.segment = ++this.segment % 4;
+            }
         }
         checkCollisions(_transformation) {
             let mtxContainer = this.cmpTransform.local;

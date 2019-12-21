@@ -7,7 +7,6 @@ var L11_FudgeCraft_Compress;
     L11_FudgeCraft_Compress.grid = new L11_FudgeCraft_Compress.Grid();
     let control = new L11_FudgeCraft_Compress.Control();
     let viewport;
-    let camera;
     let speedCameraRotation = 0.2;
     let speedCameraTranslation = 0.02;
     function hndLoad(_event) {
@@ -24,14 +23,14 @@ var L11_FudgeCraft_Compress;
         let cmpLightAmbient = new L11_FudgeCraft_Compress.ƒ.ComponentLight(new L11_FudgeCraft_Compress.ƒ.LightAmbient(L11_FudgeCraft_Compress.ƒ.Color.DARK_GREY));
         L11_FudgeCraft_Compress.game.addComponent(cmpLightAmbient);
         // setup orbiting camera
-        camera = new L11_FudgeCraft_Compress.CameraOrbit(75);
-        L11_FudgeCraft_Compress.game.appendChild(camera);
-        camera.setRotationX(-20);
-        camera.setRotationY(20);
-        camera.cmpCamera.getContainer().addComponent(cmpLight);
+        L11_FudgeCraft_Compress.camera = new L11_FudgeCraft_Compress.CameraOrbit(75);
+        L11_FudgeCraft_Compress.game.appendChild(L11_FudgeCraft_Compress.camera);
+        L11_FudgeCraft_Compress.camera.setRotationX(-20);
+        L11_FudgeCraft_Compress.camera.setRotationY(20);
+        L11_FudgeCraft_Compress.camera.cmpCamera.getContainer().addComponent(cmpLight);
         // setup viewport
         viewport = new L11_FudgeCraft_Compress.ƒ.Viewport();
-        viewport.initialize("Viewport", L11_FudgeCraft_Compress.game, camera.cmpCamera, canvas);
+        viewport.initialize("Viewport", L11_FudgeCraft_Compress.game, L11_FudgeCraft_Compress.camera.cmpCamera, canvas);
         L11_FudgeCraft_Compress.ƒ.Debug.log("Viewport", viewport);
         // setup event handling
         viewport.activatePointerEvent("\u0192pointermove" /* MOVE */, true);
@@ -56,28 +55,24 @@ var L11_FudgeCraft_Compress;
     }
     L11_FudgeCraft_Compress.updateDisplay = updateDisplay;
     function hndPointerMove(_event) {
-        // ƒ.Debug.log(_event.movementX, _event.movementY);
-        let segmentBefore = camera.getSegmentY();
-        camera.rotateY(_event.movementX * speedCameraRotation);
-        camera.rotateX(_event.movementY * speedCameraRotation);
-        let segmentAfter = camera.getSegmentY();
-        switch (segmentAfter - segmentBefore) {
-            case 1:
-            case -3:
-                control.rotatePerspektive(-90);
-                break;
-            case -1:
-            case 3:
-                control.rotatePerspektive(90);
-                break;
+        if (L11_FudgeCraft_Compress.ƒ.Time.game.hasTimers())
+            return;
+        let segmentBefore = L11_FudgeCraft_Compress.camera.getSegmentY();
+        L11_FudgeCraft_Compress.camera.rotateY(_event.movementX * speedCameraRotation);
+        L11_FudgeCraft_Compress.camera.rotateX(_event.movementY * speedCameraRotation);
+        let segmentAfter = L11_FudgeCraft_Compress.camera.getSegmentY();
+        if (segmentAfter - segmentBefore) {
+            control.rotateToSegment(segmentAfter);
         }
         updateDisplay();
     }
     function hndWheelMove(_event) {
-        camera.translate(_event.deltaY * speedCameraTranslation);
+        L11_FudgeCraft_Compress.camera.translate(_event.deltaY * speedCameraTranslation);
         updateDisplay();
     }
     function hndKeyDown(_event) {
+        if (L11_FudgeCraft_Compress.ƒ.Time.game.hasTimers())
+            return;
         if (_event.code == L11_FudgeCraft_Compress.ƒ.KEYBOARD_CODE.SPACE) {
             dropFragment();
         }
@@ -135,14 +130,11 @@ var L11_FudgeCraft_Compress;
             rotation: _transformation.rotation ? L11_FudgeCraft_Compress.ƒ.Vector3.SCALE(_transformation.rotation, fullRotation) : new L11_FudgeCraft_Compress.ƒ.Vector3(),
             translation: _transformation.translation ? L11_FudgeCraft_Compress.ƒ.Vector3.SCALE(_transformation.translation, fullTranslation) : new L11_FudgeCraft_Compress.ƒ.Vector3()
         };
-        let timers = L11_FudgeCraft_Compress.ƒ.Time.game.getTimers();
-        if (Object.keys(timers).length > 0)
-            return;
         if (control.checkCollisions(move).length > 0)
             return;
         move.translation.scale(1 / animationSteps);
         move.rotation.scale(1 / animationSteps);
-        L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(10, animationSteps, function () {
+        L11_FudgeCraft_Compress.ƒ.Time.game.setTimer(10, animationSteps, function (_event) {
             control.move(move);
             updateDisplay();
         });

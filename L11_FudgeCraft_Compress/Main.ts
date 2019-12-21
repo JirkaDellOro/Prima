@@ -6,9 +6,9 @@ namespace L11_FudgeCraft_Compress {
     export let game: ƒ.Node = new ƒ.Node("FudgeCraft");
     export let grid: Grid = new Grid();
     export let args: URLSearchParams;
+    export let camera: CameraOrbit;
     let control: Control = new Control();
     let viewport: ƒ.Viewport;
-    let camera: CameraOrbit;
     let speedCameraRotation: number = 0.2;
     let speedCameraTranslation: number = 0.02;
 
@@ -69,15 +69,15 @@ namespace L11_FudgeCraft_Compress {
     }
 
     function hndPointerMove(_event: ƒ.PointerEventƒ): void {
-        // ƒ.Debug.log(_event.movementX, _event.movementY);
+        if (ƒ.Time.game.hasTimers())
+            return;
         let segmentBefore: number = camera.getSegmentY();
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
         let segmentAfter: number = camera.getSegmentY();
 
-        switch (segmentAfter - segmentBefore) {
-            case 1: case -3: control.rotatePerspektive(-90); break;
-            case -1: case 3: control.rotatePerspektive(90); break;
+        if (segmentAfter - segmentBefore) {
+            control.rotateToSegment(segmentAfter);
         }
 
         updateDisplay();
@@ -89,6 +89,9 @@ namespace L11_FudgeCraft_Compress {
     }
 
     function hndKeyDown(_event: KeyboardEvent): void {
+        if (ƒ.Time.game.hasTimers())
+            return;
+        
         if (_event.code == ƒ.KEYBOARD_CODE.SPACE) {
             dropFragment();
         }
@@ -155,17 +158,13 @@ namespace L11_FudgeCraft_Compress {
             translation: _transformation.translation ? ƒ.Vector3.SCALE(_transformation.translation, fullTranslation) : new ƒ.Vector3()
         };
 
-        let timers: ƒ.Timers = ƒ.Time.game.getTimers();
-        if (Object.keys(timers).length > 0)
-            return;
-
         if (control.checkCollisions(move).length > 0)
             return;
 
         move.translation.scale(1 / animationSteps);
         move.rotation.scale(1 / animationSteps);
 
-        ƒ.Time.game.setTimer(10, animationSteps, function (): void {
+        ƒ.Time.game.setTimer(10, animationSteps, function (_event: ƒ.TimerEventƒ): void {
             control.move(move);
             updateDisplay();
         });

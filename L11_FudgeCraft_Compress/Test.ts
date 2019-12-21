@@ -6,6 +6,23 @@ namespace L11_FudgeCraft_Compress {
             case "grid": testGrid(); break;
             case "combos": testCombos(); break;
             case "compression": testCompression(); break;
+            case "camera": testCamera(); break;
+        }
+    }
+
+    function testCamera(): void {
+        let setups: Setup[] = [
+            { type: CUBE_TYPE.BLACK, positions: [[0, 0, 0]] }
+        ];
+        setupGrid(setups);
+        startRandomFragment();
+        ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, rotateY);
+        ƒ.Loop.start();
+        // ƒ.Time.game.setTimer(4, 0, rotateY);
+        function rotateY(_event: Event): void {
+            camera.rotateY(1 * ƒ.Loop.timeFrameReal);
+            // camera.rotateX(5 * Math.sin(ƒ.Time.game.get() / 100));
+            updateDisplay();
         }
     }
 
