@@ -2,12 +2,17 @@
 var L11_FudgeCraft_Compress;
 (function (L11_FudgeCraft_Compress) {
     function startTests() {
-        if (0)
-            testGrid();
-        if (0)
-            testCombos();
-        if (1)
-            testCompression();
+        switch (L11_FudgeCraft_Compress.args.get("test")) {
+            case "grid":
+                testGrid();
+                break;
+            case "combos":
+                testCombos();
+                break;
+            case "compression":
+                testCompression();
+                break;
+        }
     }
     L11_FudgeCraft_Compress.startTests = startTests;
     async function testCompression() {

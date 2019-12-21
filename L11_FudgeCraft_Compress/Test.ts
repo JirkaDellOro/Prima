@@ -2,9 +2,11 @@ namespace L11_FudgeCraft_Compress {
     type Setup = { type: CUBE_TYPE, positions: number[][] };
 
     export function startTests(): void {
-        if (0) testGrid();
-        if (0) testCombos();
-        if (1) testCompression();
+        switch (args.get("test")) {
+            case "grid": testGrid(); break;
+            case "combos": testCombos(); break;
+            case "compression": testCompression(); break;
+        }
     }
 
     async function testCompression(): Promise<void> {
@@ -13,7 +15,7 @@ namespace L11_FudgeCraft_Compress {
             // { type: CUBE_TYPE.RED, positions: [[-2, -2, 0], [-2, -2, 1], [-2, -2, -1]] },
             // { type: CUBE_TYPE.GREEN, positions: [[0, -2 , 0], [1, -2, 0], [-1, -2, 0]] },
             // { type: CUBE_TYPE.BLUE, positions: [[1, 0, 0] /*, [0, 0, 2], [0, -1, 2], [0, 1, 2]*/] },
-            { type: CUBE_TYPE.YELLOW, positions: [ [3, 1, 0 ], [2, 0, 1], [2, 1, 1]] }
+            { type: CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
             // { type: CUBE_TYPE.YELLOW, positions: [[0, -2, -2], [1, -2, -2], [-1, -2, -2]] }
         ];
 

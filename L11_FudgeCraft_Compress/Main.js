@@ -12,6 +12,7 @@ var L11_FudgeCraft_Compress;
     let speedCameraTranslation = 0.02;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
+        L11_FudgeCraft_Compress.args = new URLSearchParams(location.search);
         L11_FudgeCraft_Compress.ƒ.RenderManager.initialize(true);
         L11_FudgeCraft_Compress.ƒ.Debug.log("Canvas", canvas);
         // enable unlimited mouse-movement (user needs to click on canvas first)
@@ -39,10 +40,10 @@ var L11_FudgeCraft_Compress;
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
         L11_FudgeCraft_Compress.game.appendChild(control);
-        if (0)
-            startGame();
-        if (1)
+        if (L11_FudgeCraft_Compress.args.get("test"))
             L11_FudgeCraft_Compress.startTests();
+        else
+            startGame();
         updateDisplay();
         L11_FudgeCraft_Compress.ƒ.Debug.log("Game", L11_FudgeCraft_Compress.game);
     }

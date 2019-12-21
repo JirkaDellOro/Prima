@@ -5,6 +5,7 @@ namespace L11_FudgeCraft_Compress {
 
     export let game: ƒ.Node = new ƒ.Node("FudgeCraft");
     export let grid: Grid = new Grid();
+    export let args: URLSearchParams;
     let control: Control = new Control();
     let viewport: ƒ.Viewport;
     let camera: CameraOrbit;
@@ -13,6 +14,7 @@ namespace L11_FudgeCraft_Compress {
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
+        args = new URLSearchParams(location.search);
         ƒ.RenderManager.initialize(true);
         ƒ.Debug.log("Canvas", canvas);
 
@@ -47,8 +49,10 @@ namespace L11_FudgeCraft_Compress {
 
         game.appendChild(control);
 
-        if (0) startGame();
-        if (1) startTests();
+        if (args.get("test"))
+            startTests();
+        else
+            startGame();
 
         updateDisplay();
         ƒ.Debug.log("Game", game);
