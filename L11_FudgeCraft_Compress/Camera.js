@@ -28,6 +28,9 @@ var L11_FudgeCraft_Compress;
             let newDistance = Math.max(this.minDistance, _distance);
             this.cmpCamera.pivot.translation = ƒ.Vector3.Z(newDistance);
         }
+        getDistance() {
+            return this.cmpCamera.pivot.translation.z;
+        }
         moveDistance(_delta) {
             this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
         }

@@ -36,6 +36,10 @@ namespace L11_FudgeCraft_Compress {
             this.cmpCamera.pivot.translation = ƒ.Vector3.Z(newDistance);
         }
 
+        public getDistance(): number {
+            return this.cmpCamera.pivot.translation.z;
+        }
+
         public moveDistance(_delta: number): void {
             this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
         }
