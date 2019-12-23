@@ -68,6 +68,8 @@ namespace L12_FudgeCraft_Points {
     viewport.draw();
   }
 
+  //#region Interaction
+
   function hndPointerMove(_event: ƒ.PointerEventƒ): void {
     // if (ƒ.Time.game.hasTimers())
     //   return;
@@ -108,6 +110,15 @@ namespace L12_FudgeCraft_Points {
     updateDisplay();
   }
 
+  //#endregion
+
+  //#region Start/Drop Fragments
+  export function startRandomFragment(): void {
+    let fragment: Fragment = Fragment.getRandom();
+    control.cmpTransform.local.translation = ƒ.Vector3.Z(5);
+    control.setFragment(fragment);
+  }
+
   async function dropFragment(): Promise<void> {
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
@@ -118,7 +129,9 @@ namespace L12_FudgeCraft_Points {
     startRandomFragment();
     updateDisplay();
   }
+  //#endregion
 
+  //#region Combos & Compression
   export async function compressAndHandleCombos(): Promise<void> {
     let moves: Move[];
     do {
@@ -172,12 +185,6 @@ namespace L12_FudgeCraft_Points {
     });
   }
 
-  export function startRandomFragment(): void {
-    let fragment: Fragment = Fragment.getRandom();
-    control.cmpTransform.local.translation = ƒ.Vector3.Z(5);
-    control.setFragment(fragment);
-  }
-
   export function compress(): Move[] {
     let moves: Move[] = grid.compress();
 
@@ -198,4 +205,5 @@ namespace L12_FudgeCraft_Points {
 
     return moves;
   }
+  //#endregion
 }

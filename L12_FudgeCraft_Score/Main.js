@@ -54,6 +54,7 @@ var L12_FudgeCraft_Points;
         viewport.draw();
     }
     L12_FudgeCraft_Points.updateDisplay = updateDisplay;
+    //#region Interaction
     function hndPointerMove(_event) {
         // if (ƒ.Time.game.hasTimers())
         //   return;
@@ -85,6 +86,14 @@ var L12_FudgeCraft_Points;
             move(transformation);
         updateDisplay();
     }
+    //#endregion
+    //#region Start/Drop Fragments
+    function startRandomFragment() {
+        let fragment = L12_FudgeCraft_Points.Fragment.getRandom();
+        control.cmpTransform.local.translation = L12_FudgeCraft_Points.ƒ.Vector3.Z(5);
+        control.setFragment(fragment);
+    }
+    L12_FudgeCraft_Points.startRandomFragment = startRandomFragment;
     async function dropFragment() {
         let dropped = control.dropFragment();
         let combos = new L12_FudgeCraft_Points.Combos(dropped);
@@ -94,6 +103,8 @@ var L12_FudgeCraft_Points;
         startRandomFragment();
         updateDisplay();
     }
+    //#endregion
+    //#region Combos & Compression
     async function compressAndHandleCombos() {
         let moves;
         do {
@@ -142,12 +153,6 @@ var L12_FudgeCraft_Points;
             updateDisplay();
         });
     }
-    function startRandomFragment() {
-        let fragment = L12_FudgeCraft_Points.Fragment.getRandom();
-        control.cmpTransform.local.translation = L12_FudgeCraft_Points.ƒ.Vector3.Z(5);
-        control.setFragment(fragment);
-    }
-    L12_FudgeCraft_Points.startRandomFragment = startRandomFragment;
     function compress() {
         let moves = L12_FudgeCraft_Points.grid.compress();
         for (let move of moves) {
@@ -166,5 +171,6 @@ var L12_FudgeCraft_Points;
         return moves;
     }
     L12_FudgeCraft_Points.compress = compress;
+    //#endregion
 })(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
 //# sourceMappingURL=Main.js.map
