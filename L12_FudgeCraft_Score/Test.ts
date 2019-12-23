@@ -7,6 +7,8 @@ namespace L12_FudgeCraft_Points {
       case "combos": testCombos(); break;
       case "compression": testCompression(); break;
       case "camera": testCamera(); break;
+      default:
+        alert("Test not defined");
     }
   }
 
@@ -29,11 +31,17 @@ namespace L12_FudgeCraft_Points {
   async function testCompression(): Promise<void> {
     let setups: Setup[] = [
       { type: CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
+      // four combos
       // { type: CUBE_TYPE.RED, positions: [[-2, -2, 0], [-2, -2, 1], [-2, -2, -1]] },
       // { type: CUBE_TYPE.GREEN, positions: [[0, -2 , 0], [1, -2, 0], [-1, -2, 0]] },
-      // { type: CUBE_TYPE.BLUE, positions: [[1, 0, 0] /*, [0, 0, 2], [0, -1, 2], [0, 1, 2]*/] },
-      { type: CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
+      // { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2], [0, -1, 2], [0, 1, 2]] },
       // { type: CUBE_TYPE.YELLOW, positions: [[0, -2, -2], [1, -2, -2], [-1, -2, -2]] }
+      // one combo travel
+      // { type: CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
+      // two combos following up
+      { type: CUBE_TYPE.BLUE, positions: [[-1, 0, 0], [1, 0, 0]] },
+      { type: CUBE_TYPE.RED, positions: [[-1, 0, -1], [0, 0, -1], [1, 0, -4]] },
+      { type: CUBE_TYPE.GREEN, positions: [[0, 0 , -2], [1, 0, -3], [1, 0, -1]] },
     ];
 
     setupGrid(setups);
@@ -60,17 +68,7 @@ namespace L12_FudgeCraft_Points {
     });
 
     let combos: Combos = new Combos(startElements);
-    for (let combo of combos.found)
-      for (let element of combo) {
-        let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
-        ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
-        // mtxLocal.rotateX(45);
-        // mtxLocal.rotateY(45);
-        // mtxLocal.rotateY(45, true);
-        // mtxLocal.translateX(1);
-        mtxLocal.scale(ƒ.Vector3.ONE(0.5));
-      }
-    updateDisplay();
+    handleCombos(combos);
   }
 
   function testGrid(): void {

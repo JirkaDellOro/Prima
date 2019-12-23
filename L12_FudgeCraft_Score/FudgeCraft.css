@@ -3,12 +3,31 @@ html, body {
 }
 
 body {
-  background-color: lightgrey;
+  background-color: whitesmoke;
   display: grid;
   grid-template-rows: min-content auto min-content;
+  color: white;
+  text-shadow: 2px 2px 2px black, -2px 2px 2px black, -2px -2px 2px black, 2px -2px 2px black;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 canvas {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+span {
+  z-index: 25;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: red;
+}
+
+div {
+  position: relative;
+  display: inline-block;
   width: 100%;
   height: 100%;
 }

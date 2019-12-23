@@ -55,8 +55,8 @@ var L12_FudgeCraft_Points;
     }
     L12_FudgeCraft_Points.updateDisplay = updateDisplay;
     function hndPointerMove(_event) {
-        if (L12_FudgeCraft_Points.ƒ.Time.game.hasTimers())
-            return;
+        // if (ƒ.Time.game.hasTimers())
+        //   return;
         let segmentBefore = L12_FudgeCraft_Points.camera.getSegmentY();
         L12_FudgeCraft_Points.camera.rotateY(_event.movementX * speedCameraRotation);
         L12_FudgeCraft_Points.camera.rotateX(_event.movementY * speedCameraRotation);
@@ -85,13 +85,14 @@ var L12_FudgeCraft_Points;
             move(transformation);
         updateDisplay();
     }
-    function dropFragment() {
+    async function dropFragment() {
         let dropped = control.dropFragment();
         let combos = new L12_FudgeCraft_Points.Combos(dropped);
-        let combosPopped = handleCombos(combos);
+        let combosPopped = await handleCombos(combos);
         if (combosPopped)
             compressAndHandleCombos();
         startRandomFragment();
+        updateDisplay();
     }
     async function compressAndHandleCombos() {
         let moves;
@@ -100,28 +101,30 @@ var L12_FudgeCraft_Points;
             await L12_FudgeCraft_Points.ƒ.Time.game.delay(400);
             let moved = moves.map(_move => _move.element);
             let combos = new L12_FudgeCraft_Points.Combos(moved);
-            handleCombos(combos);
+            await handleCombos(combos);
         } while (moves.length > 0);
     }
     L12_FudgeCraft_Points.compressAndHandleCombos = compressAndHandleCombos;
-    function handleCombos(_combos) {
+    async function handleCombos(_combos) {
         let pop = false;
         for (let combo of _combos.found)
             if (combo.length > 2) {
                 pop = true;
-                for (let element of combo) {
-                    let mtxLocal = element.cube.cmpTransform.local;
-                    L12_FudgeCraft_Points.ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
-                    // mtxLocal.rotateX(45);
-                    // mtxLocal.rotateY(45);
-                    // mtxLocal.rotateY(45, true);
-                    mtxLocal.scale(L12_FudgeCraft_Points.ƒ.Vector3.ONE(0.5));
-                    L12_FudgeCraft_Points.grid.pop(element.position);
+                for (let shrink = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.1) {
+                    for (let element of combo) {
+                        let mtxLocal = element.cube.cmpTransform.local;
+                        mtxLocal.scaling = L12_FudgeCraft_Points.ƒ.Vector3.ONE(Math.sin(shrink) * 1.2);
+                    }
+                    updateDisplay();
+                    await L12_FudgeCraft_Points.ƒ.Time.game.delay(10);
                 }
+                for (let element of combo)
+                    L12_FudgeCraft_Points.grid.pop(element.position);
             }
         updateDisplay();
         return pop;
     }
+    L12_FudgeCraft_Points.handleCombos = handleCombos;
     function move(_transformation) {
         let animationSteps = 10;
         let fullRotation = 90;

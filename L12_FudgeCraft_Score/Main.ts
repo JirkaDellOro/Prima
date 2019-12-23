@@ -69,8 +69,8 @@ namespace L12_FudgeCraft_Points {
   }
 
   function hndPointerMove(_event: ƒ.PointerEventƒ): void {
-    if (ƒ.Time.game.hasTimers())
-      return;
+    // if (ƒ.Time.game.hasTimers())
+    //   return;
     let segmentBefore: number = camera.getSegmentY();
     camera.rotateY(_event.movementX * speedCameraRotation);
     camera.rotateX(_event.movementY * speedCameraRotation);
@@ -108,14 +108,15 @@ namespace L12_FudgeCraft_Points {
     updateDisplay();
   }
 
-  function dropFragment(): void {
+  async function dropFragment(): Promise<void> {
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
 
-    let combosPopped: boolean = handleCombos(combos);
+    let combosPopped: boolean = await handleCombos(combos);
     if (combosPopped)
       compressAndHandleCombos();
     startRandomFragment();
+    updateDisplay();
   }
 
   export async function compressAndHandleCombos(): Promise<void> {
@@ -126,24 +127,25 @@ namespace L12_FudgeCraft_Points {
 
       let moved: GridElement[] = moves.map(_move => _move.element);
       let combos: Combos = new Combos(moved);
-      handleCombos(combos);
+      await handleCombos(combos);
     } while (moves.length > 0);
   }
 
-  function handleCombos(_combos: Combos): boolean {
+  export async function handleCombos(_combos: Combos): Promise<boolean> {
     let pop: boolean = false;
     for (let combo of _combos.found)
       if (combo.length > 2) {
         pop = true;
-        for (let element of combo) {
-          let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
-          ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
-          // mtxLocal.rotateX(45);
-          // mtxLocal.rotateY(45);
-          // mtxLocal.rotateY(45, true);
-          mtxLocal.scale(ƒ.Vector3.ONE(0.5));
-          grid.pop(element.position);
+        for (let shrink: number = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.1) {
+          for (let element of combo) {
+            let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
+            mtxLocal.scaling = ƒ.Vector3.ONE(Math.sin(shrink) * 1.2);
+          }
+          updateDisplay();
+          await ƒ.Time.game.delay(10);
         }
+        for (let element of combo)
+          grid.pop(element.position);
       }
     updateDisplay();
     return pop;

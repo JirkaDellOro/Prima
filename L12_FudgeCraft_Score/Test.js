@@ -15,6 +15,8 @@ var L12_FudgeCraft_Points;
             case "camera":
                 testCamera();
                 break;
+            default:
+                alert("Test not defined");
         }
     }
     L12_FudgeCraft_Points.startTests = startTests;
@@ -36,11 +38,17 @@ var L12_FudgeCraft_Points;
     async function testCompression() {
         let setups = [
             { type: L12_FudgeCraft_Points.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
+            // four combos
             // { type: CUBE_TYPE.RED, positions: [[-2, -2, 0], [-2, -2, 1], [-2, -2, -1]] },
             // { type: CUBE_TYPE.GREEN, positions: [[0, -2 , 0], [1, -2, 0], [-1, -2, 0]] },
-            // { type: CUBE_TYPE.BLUE, positions: [[1, 0, 0] /*, [0, 0, 2], [0, -1, 2], [0, 1, 2]*/] },
-            { type: L12_FudgeCraft_Points.CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
+            // { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2], [0, -1, 2], [0, 1, 2]] },
             // { type: CUBE_TYPE.YELLOW, positions: [[0, -2, -2], [1, -2, -2], [-1, -2, -2]] }
+            // one combo travel
+            // { type: CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
+            // two combos following up
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.BLUE, positions: [[-1, 0, 0], [1, 0, 0]] },
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.RED, positions: [[-1, 0, -1], [0, 0, -1], [1, 0, -4]] },
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] },
         ];
         setupGrid(setups);
         L12_FudgeCraft_Points.updateDisplay();
@@ -61,17 +69,7 @@ var L12_FudgeCraft_Points;
             return L12_FudgeCraft_Points.grid.pull(new L12_FudgeCraft_Points.ƒ.Vector3(..._setup.positions[1]));
         });
         let combos = new L12_FudgeCraft_Points.Combos(startElements);
-        for (let combo of combos.found)
-            for (let element of combo) {
-                let mtxLocal = element.cube.cmpTransform.local;
-                L12_FudgeCraft_Points.ƒ.Debug.log(element.cube.name, mtxLocal.translation.getMutator());
-                // mtxLocal.rotateX(45);
-                // mtxLocal.rotateY(45);
-                // mtxLocal.rotateY(45, true);
-                // mtxLocal.translateX(1);
-                mtxLocal.scale(L12_FudgeCraft_Points.ƒ.Vector3.ONE(0.5));
-            }
-        L12_FudgeCraft_Points.updateDisplay();
+        L12_FudgeCraft_Points.handleCombos(combos);
     }
     function testGrid() {
         let cube = new L12_FudgeCraft_Points.Cube(L12_FudgeCraft_Points.CUBE_TYPE.GREEN, L12_FudgeCraft_Points.ƒ.Vector3.ZERO());
