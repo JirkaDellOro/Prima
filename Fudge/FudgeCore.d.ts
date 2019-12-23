@@ -1413,7 +1413,13 @@ declare namespace FudgeCore {
         LOG = 2,
         WARN = 4,
         ERROR = 8,
-        ALL = 15
+        CLEAR = 16,
+        GROUP = 32,
+        GROUPCOLLAPSED = 64,
+        GROUPEND = 128,
+        MESSAGES = 15,
+        FORMAT = 240,
+        ALL = 255
     }
     type MapDebugTargetToDelegate = Map<DebugTarget, Function>;
     interface MapDebugFilterToDelegate {
@@ -1450,6 +1456,7 @@ declare namespace FudgeCore {
     /**
      * The Debug-Class offers functions known from the console-object and additions,
      * routing the information to various [[DebugTargets]] that can be easily defined by the developers and registerd by users
+     * Override functions in subclasses of [[DebugTarget]] and register them as their delegates
      */
     class Debug {
         /**
@@ -1458,43 +1465,42 @@ declare namespace FudgeCore {
         private static delegates;
         /**
          * De- / Activate a filter for the given DebugTarget.
-         * @param _target
-         * @param _filter
          */
         static setFilter(_target: DebugTarget, _filter: DEBUG_FILTER): void;
         /**
-         * Debug function to be implemented by the DebugTarget.
-         * info(...) displays additional information with low priority
-         * @param _message
-         * @param _args
+         * Info(...) displays additional information with low priority
          */
         static info(_message: Object, ..._args: Object[]): void;
         /**
-         * Debug function to be implemented by the DebugTarget.
-         * log(...) displays information with medium priority
-         * @param _message
-         * @param _args
+         * Displays information with medium priority
          */
         static log(_message: Object, ..._args: Object[]): void;
         /**
-         * Debug function to be implemented by the DebugTarget.
-         * warn(...) displays information about non-conformities in usage, which is emphasized e.g. by color
-         * @param _message
-         * @param _args
+         * Displays information about non-conformities in usage, which is emphasized e.g. by color
          */
         static warn(_message: Object, ..._args: Object[]): void;
         /**
-         * Debug function to be implemented by the DebugTarget.
-         * error(...) displays critical information about failures, which is emphasized e.g. by color
-         * @param _message
-         * @param _args
+         * Displays critical information about failures, which is emphasized e.g. by color
          */
         static error(_message: Object, ..._args: Object[]): void;
         /**
+         * Clears the output and removes previous messages if possible
+         */
+        static clear(): void;
+        /**
+         * Opens a new group for messages
+         */
+        static group(_name: string): void;
+        /**
+         * Opens a new group for messages that is collapsed at first
+         */
+        static groupCollapsed(_name: string): void;
+        /**
+         * Closes the youngest group
+         */
+        static groupEnd(): void;
+        /**
          * Lookup all delegates registered to the filter and call them using the given arguments
-         * @param _filter
-         * @param _message
-         * @param _args
          */
         private static delegate;
     }
@@ -1513,7 +1519,13 @@ declare namespace FudgeCore {
     class DebugTextArea extends DebugTarget {
         static textArea: HTMLTextAreaElement;
         static delegates: MapDebugFilterToDelegate;
+        private static groups;
+        static clear(): void;
+        static group(_name: string): void;
+        static groupEnd(): void;
         static createDelegate(_headline: string): Function;
+        private static getIndentation;
+        private static print;
     }
 }
 declare namespace FudgeCore {
@@ -1707,6 +1719,54 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    /**
+     * Defines the origin of a rectangle
+     */
+    enum ORIGIN2D {
+        TOPLEFT = 0,
+        TOPCENTER = 1,
+        TOPRIGHT = 2,
+        CENTERLEFT = 16,
+        CENTER = 17,
+        CENTERRIGHT = 18,
+        BOTTOMLEFT = 32,
+        BOTTOMCENTER = 33,
+        BOTTOMRIGHT = 34
+    }
+    /**
+     * Defines a rectangle with position and size and add comfortable methods to it
+     * @author Jirka Dell'Oro-Friedl, HFU, 2019
+     */
+    class Rectangle extends Mutable {
+        position: Vector2;
+        size: Vector2;
+        constructor(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D);
+        /**
+         * Returns a new rectangle created with the given parameters
+         */
+        static GET(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): Rectangle;
+        /**
+         * Sets the position and size of the rectangle according to the given parameters
+         */
+        setPositionAndSize(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): void;
+        pointToRect(_point: Vector2, _target: Rectangle): Vector2;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        left: number;
+        top: number;
+        right: number;
+        bottom: number;
+        /**
+         * Returns true if the given point is inside of this rectangle or on the border
+         * @param _point
+         */
+        isInside(_point: Vector2): boolean;
+        protected reduceMutator(_mutator: Mutator): void;
+    }
+}
+declare namespace FudgeCore {
     type MapLightTypeToLightList = Map<TypeOfLight, ComponentLight[]>;
     /**
      * Controls the rendering of a branch of a scenetree, using the given [[ComponentCamera]],
@@ -1800,6 +1860,12 @@ declare namespace FudgeCore {
          * which stretches from -1 to 1 in both dimensions, y pointing up
          */
         pointClipToClient(_normed: Vector2): Vector2;
+        /**
+         * Returns a point in the client rectangle matching the given point in normed clipspace rectangle,
+         * which stretches from -1 to 1 in both dimensions, y pointing up
+         */
+        pointClipToCanvas(_normed: Vector2): Vector2;
+        pointClientToScreen(_client: Vector2): Vector2;
         /**
          * Returns true if this viewport currently has focus and thus receives keyboard events
          */
@@ -2149,6 +2215,7 @@ declare namespace FudgeCore {
     class FramingFixed extends Framing {
         width: number;
         height: number;
+        constructor(_width?: number, _height?: number);
         setSize(_width: number, _height: number): void;
         getPoint(_pointInFrame: Vector2, _rectFrame: Rectangle): Vector2;
         getPointInverse(_point: Vector2, _rect: Rectangle): Vector2;
@@ -2371,53 +2438,6 @@ declare namespace FudgeCore {
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
         protected reduceMutator(_mutator: Mutator): void;
         private resetCache;
-    }
-}
-declare namespace FudgeCore {
-    /**
-     * Defines the origin of a rectangle
-     */
-    enum ORIGIN2D {
-        TOPLEFT = 0,
-        TOPCENTER = 1,
-        TOPRIGHT = 2,
-        CENTERLEFT = 16,
-        CENTER = 17,
-        CENTERRIGHT = 18,
-        BOTTOMLEFT = 32,
-        BOTTOMCENTER = 33,
-        BOTTOMRIGHT = 34
-    }
-    /**
-     * Defines a rectangle with position and size and add comfortable methods to it
-     * @author Jirka Dell'Oro-Friedl, HFU, 2019
-     */
-    class Rectangle extends Mutable {
-        position: Vector2;
-        size: Vector2;
-        constructor(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D);
-        /**
-         * Returns a new rectangle created with the given parameters
-         */
-        static GET(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): Rectangle;
-        /**
-         * Sets the position and size of the rectangle according to the given parameters
-         */
-        setPositionAndSize(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): void;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        left: number;
-        top: number;
-        right: number;
-        bottom: number;
-        /**
-         * Returns true if the given point is inside of this rectangle or on the border
-         * @param _point
-         */
-        isInside(_point: Vector2): boolean;
-        protected reduceMutator(_mutator: Mutator): void;
     }
 }
 declare namespace FudgeCore {
@@ -2961,6 +2981,7 @@ declare namespace FudgeCore {
      * With these references, the already buffered data is retrieved when rendering.
      */
     abstract class RenderManager extends RenderOperator {
+        static rectClip: Rectangle;
         /** Stores references to the compiled shader programs and makes them available via the references to shaders */
         private static renderShaders;
         /** Stores references to the vertex array objects and makes them available via the references to coats */

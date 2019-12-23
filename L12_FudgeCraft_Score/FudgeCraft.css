@@ -1,0 +1,14 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: lightgrey;
+  display: grid;
+  grid-template-rows: min-content auto min-content;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
