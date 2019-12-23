@@ -145,11 +145,10 @@ namespace L12_FudgeCraft_Points {
   }
 
   export async function handleCombos(_combos: Combos): Promise<boolean> {
-    let pop: boolean = false;
+    let iCombo: number = 0;
     for (let combo of _combos.found)
       if (combo.length > 2) {
-        pop = true;
-        let points: number = 1;
+        showComboPoints(combo, ++iCombo);
         for (let shrink: number = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
           for (let element of combo) {
             let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
@@ -162,7 +161,7 @@ namespace L12_FudgeCraft_Points {
           grid.pop(element.position);
       }
     updateDisplay();
-    return pop;
+    return iCombo > 0;
   }
 
   function move(_transformation: Transformation): void {
@@ -205,6 +204,30 @@ namespace L12_FudgeCraft_Points {
     });
 
     return moves;
+  }
+  //#endregion
+
+  //#region Score
+  function showComboPoints(_combo: GridElement[], _iCombo: number): void {
+    let points: number = 1;
+    for (let element of _combo) {
+      showElementPoints(element, points);
+      points *= 2;
+    }
+  }
+
+  function showElementPoints(_element: GridElement, _points: number): void {
+    let domPoints: HTMLSpanElement = document.createElement("span");
+    document.querySelector("div#PointsAnimation").appendChild(domPoints);
+    // document.body.appendChild(domPoints);
+
+    let projection: ƒ.Vector3 = viewport.camera.project(_element.position);
+    let position: ƒ.Vector2 = viewport.pointClipToClient(projection.toVector2());
+    position = viewport.pointClientToScreen(position);
+
+    domPoints.textContent = _points.toString();
+    domPoints.style.top = position.x + "px";
+    domPoints.style.left = position.y + "px";
   }
   //#endregion
 }
