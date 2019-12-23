@@ -149,13 +149,14 @@ namespace L12_FudgeCraft_Points {
     for (let combo of _combos.found)
       if (combo.length > 2) {
         pop = true;
-        for (let shrink: number = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.1) {
+        let points: number = 1;
+        for (let shrink: number = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
           for (let element of combo) {
             let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
             mtxLocal.scaling = ƒ.Vector3.ONE(Math.sin(shrink) * 1.2);
           }
           updateDisplay();
-          await ƒ.Time.game.delay(10);
+          await ƒ.Time.game.delay(20);
         }
         for (let element of combo)
           grid.pop(element.position);
@@ -165,7 +166,7 @@ namespace L12_FudgeCraft_Points {
   }
 
   function move(_transformation: Transformation): void {
-    let animationSteps: number = 10;
+    let animationSteps: number = 5;
     let fullRotation: number = 90;
     let fullTranslation: number = 1;
     let move: Transformation = {
@@ -179,7 +180,7 @@ namespace L12_FudgeCraft_Points {
     move.translation.scale(1 / animationSteps);
     move.rotation.scale(1 / animationSteps);
 
-    ƒ.Time.game.setTimer(10, animationSteps, function (_event: ƒ.TimerEventƒ): void {
+    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.TimerEventƒ): void {
       control.move(move);
       updateDisplay();
     });
@@ -193,8 +194,8 @@ namespace L12_FudgeCraft_Points {
       grid.push(move.target, move.element);
     }
 
-    let animationSteps: number = 10;
-    ƒ.Time.game.setTimer(10, animationSteps, function (): void {
+    let animationSteps: number = 5;
+    ƒ.Time.game.setTimer(20, animationSteps, function (): void {
       for (let move of moves) {
         let translation: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
         translation.normalize(1 / animationSteps);

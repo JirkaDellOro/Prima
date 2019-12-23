@@ -121,13 +121,14 @@ var L12_FudgeCraft_Points;
         for (let combo of _combos.found)
             if (combo.length > 2) {
                 pop = true;
-                for (let shrink = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.1) {
+                let points = 1;
+                for (let shrink = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
                     for (let element of combo) {
                         let mtxLocal = element.cube.cmpTransform.local;
                         mtxLocal.scaling = L12_FudgeCraft_Points.ƒ.Vector3.ONE(Math.sin(shrink) * 1.2);
                     }
                     updateDisplay();
-                    await L12_FudgeCraft_Points.ƒ.Time.game.delay(10);
+                    await L12_FudgeCraft_Points.ƒ.Time.game.delay(20);
                 }
                 for (let element of combo)
                     L12_FudgeCraft_Points.grid.pop(element.position);
@@ -137,7 +138,7 @@ var L12_FudgeCraft_Points;
     }
     L12_FudgeCraft_Points.handleCombos = handleCombos;
     function move(_transformation) {
-        let animationSteps = 10;
+        let animationSteps = 5;
         let fullRotation = 90;
         let fullTranslation = 1;
         let move = {
@@ -148,7 +149,7 @@ var L12_FudgeCraft_Points;
             return;
         move.translation.scale(1 / animationSteps);
         move.rotation.scale(1 / animationSteps);
-        L12_FudgeCraft_Points.ƒ.Time.game.setTimer(10, animationSteps, function (_event) {
+        L12_FudgeCraft_Points.ƒ.Time.game.setTimer(20, animationSteps, function (_event) {
             control.move(move);
             updateDisplay();
         });
@@ -159,8 +160,8 @@ var L12_FudgeCraft_Points;
             L12_FudgeCraft_Points.grid.pop(move.element.position);
             L12_FudgeCraft_Points.grid.push(move.target, move.element);
         }
-        let animationSteps = 10;
-        L12_FudgeCraft_Points.ƒ.Time.game.setTimer(10, animationSteps, function () {
+        let animationSteps = 5;
+        L12_FudgeCraft_Points.ƒ.Time.game.setTimer(20, animationSteps, function () {
             for (let move of moves) {
                 let translation = L12_FudgeCraft_Points.ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
                 translation.normalize(1 / animationSteps);
