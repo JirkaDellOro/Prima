@@ -34,6 +34,9 @@ var L12_FudgeCraft_Points;
                 [CUBE_TYPE.BLACK, new ƒ.Material(CUBE_TYPE.BLACK, ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.BLACK))]
             ]);
         }
+        getColor() {
+            return this.getComponent(ƒ.ComponentMaterial).material.getCoat().color;
+        }
     }
     Cube.mesh = new ƒ.MeshCube();
     Cube.materials = Cube.createMaterials();

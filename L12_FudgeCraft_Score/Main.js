@@ -180,17 +180,20 @@ var L12_FudgeCraft_Points;
             points *= 2;
         }
     }
+    L12_FudgeCraft_Points.showComboPoints = showComboPoints;
     function showElementPoints(_element, _points) {
         let domPoints = document.createElement("span");
         document.querySelector("div#PointsAnimation").appendChild(domPoints);
         // document.body.appendChild(domPoints);
-        let projection = viewport.camera.project(_element.position);
+        let projection = viewport.camera.project(_element.cube.mtxWorld.translation);
         let position = viewport.pointClipToClient(projection.toVector2());
         position = viewport.pointClientToScreen(position);
         domPoints.textContent = _points.toString();
-        domPoints.style.top = position.x + "px";
-        domPoints.style.left = position.y + "px";
+        domPoints.style.left = position.x + "px";
+        domPoints.style.top = position.y + "px";
+        domPoints.style.color = _element.cube.getColor().getCSS();
     }
+    L12_FudgeCraft_Points.showElementPoints = showElementPoints;
     //#endregion
 })(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
 //# sourceMappingURL=Main.js.map

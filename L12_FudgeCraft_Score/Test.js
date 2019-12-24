@@ -15,11 +15,27 @@ var L12_FudgeCraft_Points;
             case "camera":
                 testCamera();
                 break;
+            case "points":
+                testPoints();
+                break;
             default:
                 alert("Test not defined");
         }
     }
     L12_FudgeCraft_Points.startTests = startTests;
+    function testPoints() {
+        let setups = [
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.RED, positions: [[2, 0, 0]] },
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.GREEN, positions: [[0, 2, 0]] },
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.BLUE, positions: [[0, 0, 2]] },
+        ];
+        setupGrid(setups);
+        L12_FudgeCraft_Points.updateDisplay();
+        let elements = Array.from(L12_FudgeCraft_Points.grid.values());
+        L12_FudgeCraft_Points.ƒ.Debug.log(elements);
+        L12_FudgeCraft_Points.showComboPoints(elements, 1);
+    }
     function testCamera() {
         let setups = [
             { type: L12_FudgeCraft_Points.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] }
@@ -48,7 +64,7 @@ var L12_FudgeCraft_Points;
             // two combos following up
             { type: L12_FudgeCraft_Points.CUBE_TYPE.BLUE, positions: [[-1, 0, 0], [1, 0, 0]] },
             { type: L12_FudgeCraft_Points.CUBE_TYPE.RED, positions: [[-1, 0, -1], [0, 0, -1], [1, 0, -4]] },
-            { type: L12_FudgeCraft_Points.CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] },
+            { type: L12_FudgeCraft_Points.CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] }
         ];
         setupGrid(setups);
         L12_FudgeCraft_Points.updateDisplay();

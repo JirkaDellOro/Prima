@@ -7,9 +7,27 @@ namespace L12_FudgeCraft_Points {
       case "combos": testCombos(); break;
       case "compression": testCompression(); break;
       case "camera": testCamera(); break;
+      case "points": testPoints(); break;
       default:
         alert("Test not defined");
     }
+  }
+
+  function testPoints(): void {
+    let setups: Setup[] = [
+      { type: CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
+      { type: CUBE_TYPE.RED, positions: [[2, 0, 0]] },
+      { type: CUBE_TYPE.GREEN, positions: [[0, 2, 0]] },
+      { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2]] },
+      // { type: CUBE_TYPE.YELLOW, positions: [[-2, 0, 0]] },
+      // { type: CUBE_TYPE.CYAN, positions: [[0, -2, 0]] },
+      // { type: CUBE_TYPE.MAGENTA, positions: [[0, 0, -2]] }
+    ];
+    setupGrid(setups);
+    updateDisplay();
+    let elements: GridElement[] = Array.from(grid.values());
+    ƒ.Debug.log(elements);
+    showComboPoints(elements, 1);
   }
 
   function testCamera(): void {
@@ -41,7 +59,7 @@ namespace L12_FudgeCraft_Points {
       // two combos following up
       { type: CUBE_TYPE.BLUE, positions: [[-1, 0, 0], [1, 0, 0]] },
       { type: CUBE_TYPE.RED, positions: [[-1, 0, -1], [0, 0, -1], [1, 0, -4]] },
-      { type: CUBE_TYPE.GREEN, positions: [[0, 0 , -2], [1, 0, -3], [1, 0, -1]] },
+      { type: CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] }
     ];
 
     setupGrid(setups);
