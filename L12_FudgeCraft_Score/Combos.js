@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     class Combos {
         constructor(_elements) {
             this.found = [];
@@ -37,11 +37,11 @@ var L12_FudgeCraft_Points;
                 this.recurse(match, _combo);
         }
         findNeigborsOfSameColor(_element) {
-            let allNeighbors = L12_FudgeCraft_Points.grid.findNeighbors(_element.position);
+            let allNeighbors = L12_FudgeCraft_Score.grid.findNeighbors(_element.position);
             let found = allNeighbors.filter(_neighbor => (_neighbor.cube.name == _element.cube.name));
             return found;
         }
     }
-    L12_FudgeCraft_Points.Combos = Combos;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.Combos = Combos;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Combos.js.map

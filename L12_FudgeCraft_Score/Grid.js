@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     class GridElement {
         constructor(_cube = null) {
             this.cube = _cube;
@@ -15,7 +15,7 @@ var L12_FudgeCraft_Points;
                 this.cube.cmpTransform.local.translation = _new;
         }
     }
-    L12_FudgeCraft_Points.GridElement = GridElement;
+    L12_FudgeCraft_Score.GridElement = GridElement;
     class Grid extends Map {
         // private grid: Map<string, Cube> = new Map();
         constructor() {
@@ -24,10 +24,10 @@ var L12_FudgeCraft_Points;
         push(_position, _element = null) {
             let key = this.toKey(_position);
             if (this.pop(_position))
-                L12_FudgeCraft_Points.ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
+                L12_FudgeCraft_Score.ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
             this.set(key, _element);
             if (_element)
-                L12_FudgeCraft_Points.game.appendChild(_element.cube);
+                L12_FudgeCraft_Score.game.appendChild(_element.cube);
         }
         pull(_position) {
             let key = this.toKey(_position);
@@ -39,7 +39,7 @@ var L12_FudgeCraft_Points;
             let element = this.get(key);
             this.delete(key);
             if (element)
-                L12_FudgeCraft_Points.game.removeChild(element.cube);
+                L12_FudgeCraft_Score.game.removeChild(element.cube);
             return element;
         }
         findNeighbors(_of, _empty = false) {
@@ -47,8 +47,8 @@ var L12_FudgeCraft_Points;
             let empty = [];
             let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
             for (let offset of offsets) {
-                let posNeighbor = L12_FudgeCraft_Points.ƒ.Vector3.SUM(_of, new L12_FudgeCraft_Points.ƒ.Vector3(...offset));
-                let neighbor = L12_FudgeCraft_Points.grid.pull(posNeighbor);
+                let posNeighbor = L12_FudgeCraft_Score.ƒ.Vector3.SUM(_of, new L12_FudgeCraft_Score.ƒ.Vector3(...offset));
+                let neighbor = L12_FudgeCraft_Score.grid.pull(posNeighbor);
                 if (neighbor)
                     found.push(neighbor);
                 else
@@ -83,6 +83,6 @@ var L12_FudgeCraft_Points;
             return key;
         }
     }
-    L12_FudgeCraft_Points.Grid = Grid;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.Grid = Grid;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Grid.js.map

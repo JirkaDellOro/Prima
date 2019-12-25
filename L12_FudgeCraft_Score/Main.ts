@@ -1,4 +1,4 @@
-namespace L12_FudgeCraft_Points {
+namespace L12_FudgeCraft_Score {
   export import ƒ = FudgeCore;
 
   window.addEventListener("load", hndLoad);
@@ -40,7 +40,7 @@ namespace L12_FudgeCraft_Points {
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", game, camera.cmpCamera, canvas);
     ƒ.Debug.log("Viewport", viewport);
-    points = new Points(viewport);
+    points = new Points(viewport, document.querySelector("#score"));
 
     // setup event handling
     viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);

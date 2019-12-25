@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     var ƒ = FudgeCore;
     class CameraOrbit extends ƒ.Node {
         constructor(_maxRotX) {
@@ -59,6 +59,6 @@ var L12_FudgeCraft_Points;
             return (4 + Math.floor((-this.getRotationY() + 45) / 90)) % 4;
         }
     }
-    L12_FudgeCraft_Points.CameraOrbit = CameraOrbit;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.CameraOrbit = CameraOrbit;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Camera.js.map

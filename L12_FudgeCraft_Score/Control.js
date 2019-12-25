@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     var ƒ = FudgeCore;
     class Control extends ƒ.Node {
         constructor() {
@@ -55,7 +55,7 @@ var L12_FudgeCraft_Points;
             ƒ.RenderManager.update();
             let collisions = [];
             for (let cube of this.fragment.getChildren()) {
-                let element = L12_FudgeCraft_Points.grid.pull(cube.mtxWorld.translation);
+                let element = L12_FudgeCraft_Score.grid.pull(cube.mtxWorld.translation);
                 if (element)
                     collisions.push({ element: element, cube: cube });
             }
@@ -68,8 +68,8 @@ var L12_FudgeCraft_Points;
             for (let cube of this.fragment.getChildren()) {
                 let position = cube.mtxWorld.translation;
                 cube.cmpTransform.local.translation = position;
-                let element = new L12_FudgeCraft_Points.GridElement(cube);
-                L12_FudgeCraft_Points.grid.push(position, element);
+                let element = new L12_FudgeCraft_Score.GridElement(cube);
+                L12_FudgeCraft_Score.grid.push(position, element);
                 frozen.push(element);
             }
             for (let child of this.getChildren())
@@ -78,6 +78,6 @@ var L12_FudgeCraft_Points;
         }
     }
     Control.transformations = Control.defineControls();
-    L12_FudgeCraft_Points.Control = Control;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.Control = Control;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Control.js.map

@@ -1,4 +1,4 @@
-namespace L12_FudgeCraft_Points {
+namespace L12_FudgeCraft_Score {
   export type GridPosition = string;
 
   export interface Move {

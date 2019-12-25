@@ -1,4 +1,5 @@
-namespace L12_FudgeCraft_Points {
+
+namespace L12_FudgeCraft_Score {
   export class Combos {
     found: GridElement[][] = [];
 

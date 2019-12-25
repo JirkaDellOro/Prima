@@ -1,4 +1,4 @@
-namespace L12_FudgeCraft_Points {
+namespace L12_FudgeCraft_Score {
 
   class DomLabel {
     private static maxLifeTime: number = 1000; // in milliseconds
@@ -23,29 +23,32 @@ namespace L12_FudgeCraft_Points {
       this.domElement.style.left = position.x + "px";
       this.domElement.style.top = (position.y - 40 + 40 * this.lifeTime / DomLabel.maxLifeTime) + "px";
 
-      // let posNew: string = (parseInt(domLabel.domElement.style.top) - 2) + "px";
-      //   domLabel.domElement.style.top = posNew;
       return true;
     }
   }
 
   export class Points extends Array<DomLabel> {
+    public score: number = 0;
     private viewport: ƒ.Viewport;
     private time: ƒ.Time = new ƒ.Time();
+    private domScore: HTMLElement;
 
-    constructor(_viewport: ƒ.Viewport) {
+
+    constructor(_viewport: ƒ.Viewport, _domScore: HTMLElement) {
       super();
       this.viewport = _viewport;
+      this.domScore = _domScore;
       this.time.setTimer(40, 0, this.animate);
     }
 
-
     public showCombo(_combo: GridElement[], _iCombo: number): void {
-      let points: number = 1;
+      let points: number = Math.pow(2, _iCombo - 1);
       for (let element of _combo) {
         this.create(element, points);
         points *= 2;
       }
+      this.score += points;
+      this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + points + " | total: " + this.score; 
     }
 
     public create(_element: GridElement, _points: number): void {
@@ -72,7 +75,7 @@ namespace L12_FudgeCraft_Points {
         let stillAlive: boolean = domLabel.place(this.viewport, lapse);
         if (stillAlive)
           continue;
-        this.remove(i);
+        this.remove(i); 
       }
     }
   }

@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     class DomLabel {
         constructor(_domElement, _node) {
             this.lifeTime = DomLabel.maxLifeTime;
@@ -16,16 +16,15 @@ var L12_FudgeCraft_Points;
                 return false;
             this.domElement.style.left = position.x + "px";
             this.domElement.style.top = (position.y - 40 + 40 * this.lifeTime / DomLabel.maxLifeTime) + "px";
-            // let posNew: string = (parseInt(domLabel.domElement.style.top) - 2) + "px";
-            //   domLabel.domElement.style.top = posNew;
             return true;
         }
     }
     DomLabel.maxLifeTime = 1000; // in milliseconds
     class Points extends Array {
-        constructor(_viewport) {
+        constructor(_viewport, _domScore) {
             super();
-            this.time = new L12_FudgeCraft_Points.ƒ.Time();
+            this.score = 0;
+            this.time = new L12_FudgeCraft_Score.ƒ.Time();
             this.animate = (_event) => {
                 let lapse = _event.target.lapse;
                 for (let i = this.length - 1; i >= 0; i--) {
@@ -37,14 +36,17 @@ var L12_FudgeCraft_Points;
                 }
             };
             this.viewport = _viewport;
+            this.domScore = _domScore;
             this.time.setTimer(40, 0, this.animate);
         }
         showCombo(_combo, _iCombo) {
-            let points = 1;
+            let points = Math.pow(2, _iCombo - 1);
             for (let element of _combo) {
                 this.create(element, points);
                 points *= 2;
             }
+            this.score += points;
+            this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + points + " | total: " + this.score;
         }
         create(_element, _points) {
             let domPoints = document.createElement("span");
@@ -60,6 +62,6 @@ var L12_FudgeCraft_Points;
             this.splice(_index, 1);
         }
     }
-    L12_FudgeCraft_Points.Points = Points;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.Points = Points;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Points.js.map

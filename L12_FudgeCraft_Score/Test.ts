@@ -1,4 +1,5 @@
-namespace L12_FudgeCraft_Points {
+namespace L12_FudgeCraft_Score
+ {
   type Setup = { type: CUBE_TYPE, positions: number[][] };
 
   export function startTests(): void {

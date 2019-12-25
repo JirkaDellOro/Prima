@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     var ƒ = FudgeCore;
     let CUBE_TYPE;
     (function (CUBE_TYPE) {
@@ -11,7 +11,7 @@ var L12_FudgeCraft_Points;
         CUBE_TYPE["MAGENTA"] = "Magenta";
         CUBE_TYPE["CYAN"] = "Cyan";
         CUBE_TYPE["BLACK"] = "Black";
-    })(CUBE_TYPE = L12_FudgeCraft_Points.CUBE_TYPE || (L12_FudgeCraft_Points.CUBE_TYPE = {}));
+    })(CUBE_TYPE = L12_FudgeCraft_Score.CUBE_TYPE || (L12_FudgeCraft_Score.CUBE_TYPE = {}));
     class Cube extends ƒ.Node {
         constructor(_type, _position) {
             super("Cube." + _type);
@@ -40,6 +40,6 @@ var L12_FudgeCraft_Points;
     }
     Cube.mesh = new ƒ.MeshCube();
     Cube.materials = Cube.createMaterials();
-    L12_FudgeCraft_Points.Cube = Cube;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.Cube = Cube;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Cube.js.map

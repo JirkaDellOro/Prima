@@ -1,6 +1,6 @@
 "use strict";
-var L12_FudgeCraft_Points;
-(function (L12_FudgeCraft_Points) {
+var L12_FudgeCraft_Score;
+(function (L12_FudgeCraft_Score) {
     var ƒ = FudgeCore;
     class Fragment extends ƒ.Node {
         constructor(_shape, _position = ƒ.Vector3.ZERO()) {
@@ -10,11 +10,11 @@ var L12_FudgeCraft_Points;
             for (let position of shape) {
                 let type;
                 do {
-                    type = Fragment.getRandomEnum(L12_FudgeCraft_Points.CUBE_TYPE);
-                } while (type == L12_FudgeCraft_Points.CUBE_TYPE.BLACK);
+                    type = Fragment.getRandomEnum(L12_FudgeCraft_Score.CUBE_TYPE);
+                } while (type == L12_FudgeCraft_Score.CUBE_TYPE.BLACK);
                 let vctPosition = ƒ.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
-                let cube = new L12_FudgeCraft_Points.Cube(type, vctPosition);
+                let cube = new L12_FudgeCraft_Score.Cube(type, vctPosition);
                 this.appendChild(cube);
             }
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
@@ -40,6 +40,6 @@ var L12_FudgeCraft_Points;
         }
     }
     Fragment.shapes = Fragment.getShapeArray();
-    L12_FudgeCraft_Points.Fragment = Fragment;
-})(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
+    L12_FudgeCraft_Score.Fragment = Fragment;
+})(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Fragment.js.map

@@ -28,3 +28,7 @@ div#PointsAnimation > span {
   position: fixed;
   /* background-color: lightgray; */
 }
+
+h1 {
+  display: inline;
+}

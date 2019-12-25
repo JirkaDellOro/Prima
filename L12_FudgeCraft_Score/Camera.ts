@@ -1,4 +1,4 @@
-namespace L12_FudgeCraft_Points {
+namespace L12_FudgeCraft_Score {
   import ƒ = FudgeCore;
 
   export class CameraOrbit extends ƒ.Node {
