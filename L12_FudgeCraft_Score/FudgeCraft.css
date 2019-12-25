@@ -26,5 +26,5 @@ div#PointsAnimation > span {
   font-size: 3em;
   font-weight: bolder;
   position: fixed;
-  background-color: lightgray;
+  /* background-color: lightgray; */
 }

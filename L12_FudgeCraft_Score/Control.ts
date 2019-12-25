@@ -81,7 +81,7 @@ namespace L12_FudgeCraft_Points {
       for (let cube of this.fragment.getChildren()) {
         let element: GridElement = grid.pull(cube.mtxWorld.translation);
         if (element)
-          collisions.push({ element, cube });
+          collisions.push({ element: element, cube: (<Cube>cube) });
       }
 
       mtxContainer.mutate(save[0]);
@@ -95,7 +95,7 @@ namespace L12_FudgeCraft_Points {
       for (let cube of this.fragment.getChildren()) {
         let position: ƒ.Vector3 = cube.mtxWorld.translation;
         cube.cmpTransform.local.translation = position;
-        let element: GridElement = new GridElement(cube);
+        let element: GridElement = new GridElement(<Cube>cube);
         grid.push(position, element);
         frozen.push(element);
       }

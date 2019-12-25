@@ -57,7 +57,7 @@ var L12_FudgeCraft_Points;
             for (let cube of this.fragment.getChildren()) {
                 let element = L12_FudgeCraft_Points.grid.pull(cube.mtxWorld.translation);
                 if (element)
-                    collisions.push({ element, cube });
+                    collisions.push({ element: element, cube: cube });
             }
             mtxContainer.mutate(save[0]);
             mtxFragment.mutate(save[1]);

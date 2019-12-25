@@ -32,6 +32,7 @@ var L12_FudgeCraft_Points;
         viewport = new L12_FudgeCraft_Points.ƒ.Viewport();
         viewport.initialize("Viewport", L12_FudgeCraft_Points.game, L12_FudgeCraft_Points.camera.cmpCamera, canvas);
         L12_FudgeCraft_Points.ƒ.Debug.log("Viewport", viewport);
+        L12_FudgeCraft_Points.points = new L12_FudgeCraft_Points.Points(viewport);
         // setup event handling
         viewport.activatePointerEvent("\u0192pointermove" /* MOVE */, true);
         viewport.activateWheelEvent("\u0192wheel" /* WHEEL */, true);
@@ -120,7 +121,7 @@ var L12_FudgeCraft_Points;
         let iCombo = 0;
         for (let combo of _combos.found)
             if (combo.length > 2) {
-                showComboPoints(combo, ++iCombo);
+                L12_FudgeCraft_Points.points.showCombo(combo, ++iCombo);
                 for (let shrink = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
                     for (let element of combo) {
                         let mtxLocal = element.cube.cmpTransform.local;
@@ -171,29 +172,6 @@ var L12_FudgeCraft_Points;
         return moves;
     }
     L12_FudgeCraft_Points.compress = compress;
-    //#endregion
-    //#region Score
-    function showComboPoints(_combo, _iCombo) {
-        let points = 1;
-        for (let element of _combo) {
-            showElementPoints(element, points);
-            points *= 2;
-        }
-    }
-    L12_FudgeCraft_Points.showComboPoints = showComboPoints;
-    function showElementPoints(_element, _points) {
-        let domPoints = document.createElement("span");
-        document.querySelector("div#PointsAnimation").appendChild(domPoints);
-        // document.body.appendChild(domPoints);
-        let projection = viewport.camera.project(_element.cube.mtxWorld.translation);
-        let position = viewport.pointClipToClient(projection.toVector2());
-        position = viewport.pointClientToScreen(position);
-        domPoints.textContent = _points.toString();
-        domPoints.style.left = position.x + "px";
-        domPoints.style.top = position.y + "px";
-        domPoints.style.color = _element.cube.getColor().getCSS();
-    }
-    L12_FudgeCraft_Points.showElementPoints = showElementPoints;
     //#endregion
 })(L12_FudgeCraft_Points || (L12_FudgeCraft_Points = {}));
 //# sourceMappingURL=Main.js.map

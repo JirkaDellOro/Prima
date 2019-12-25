@@ -34,7 +34,7 @@ var L12_FudgeCraft_Points;
         L12_FudgeCraft_Points.updateDisplay();
         let elements = Array.from(L12_FudgeCraft_Points.grid.values());
         L12_FudgeCraft_Points.ƒ.Debug.log(elements);
-        L12_FudgeCraft_Points.showComboPoints(elements, 1);
+        L12_FudgeCraft_Points.points.showCombo(elements, 1);
     }
     function testCamera() {
         let setups = [

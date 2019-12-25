@@ -1,4 +1,6 @@
 namespace L12_FudgeCraft_Points {
+  export type GridPosition = string;
+
   export interface Move {
     value: number;
     target: ƒ.Vector3;
@@ -24,14 +26,14 @@ namespace L12_FudgeCraft_Points {
     }
   }
 
-  export class Grid extends Map<string, GridElement> {
+  export class Grid extends Map<GridPosition, GridElement> {
     // private grid: Map<string, Cube> = new Map();
     constructor() {
       super();
     }
 
     public push(_position: ƒ.Vector3, _element: GridElement = null): void {
-      let key: string = this.toKey(_position);
+      let key: GridPosition = this.toKey(_position);
       if (this.pop(_position))
         ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
       this.set(key, _element);
@@ -40,13 +42,13 @@ namespace L12_FudgeCraft_Points {
     }
 
     public pull(_position: ƒ.Vector3): GridElement {
-      let key: string = this.toKey(_position);
+      let key: GridPosition = this.toKey(_position);
       let element: GridElement = this.get(key);
       return element;
     }
 
     public pop(_position: ƒ.Vector3): GridElement {
-      let key: string = this.toKey(_position);
+      let key: GridPosition = this.toKey(_position);
       let element: GridElement = this.get(key);
       this.delete(key);
       if (element)
@@ -94,9 +96,9 @@ namespace L12_FudgeCraft_Points {
       return movesChosen;
     }
 
-    private toKey(_position: ƒ.Vector3): string {
+    private toKey(_position: ƒ.Vector3): GridPosition {
       let position: ƒ.Vector3 = _position.map(Math.round);
-      let key: string = position.toString();
+      let key: GridPosition = position.toString();
       return key;
     }
   }

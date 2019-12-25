@@ -27,7 +27,7 @@ namespace L12_FudgeCraft_Points {
     updateDisplay();
     let elements: GridElement[] = Array.from(grid.values());
     ƒ.Debug.log(elements);
-    showComboPoints(elements, 1);
+    points.showCombo(elements, 1);
   }
 
   function testCamera(): void {

@@ -7,6 +7,7 @@ namespace L12_FudgeCraft_Points {
   export let grid: Grid = new Grid();
   export let args: URLSearchParams;
   export let camera: CameraOrbit;
+  export let points: Points;
   let control: Control = new Control();
   let viewport: ƒ.Viewport;
   let speedCameraRotation: number = 0.2;
@@ -39,6 +40,7 @@ namespace L12_FudgeCraft_Points {
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", game, camera.cmpCamera, canvas);
     ƒ.Debug.log("Viewport", viewport);
+    points = new Points(viewport);
 
     // setup event handling
     viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
@@ -148,7 +150,7 @@ namespace L12_FudgeCraft_Points {
     let iCombo: number = 0;
     for (let combo of _combos.found)
       if (combo.length > 2) {
-        showComboPoints(combo, ++iCombo);
+        points.showCombo(combo, ++iCombo);
         for (let shrink: number = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
           for (let element of combo) {
             let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
@@ -204,31 +206,6 @@ namespace L12_FudgeCraft_Points {
     });
 
     return moves;
-  }
-  //#endregion
-
-  //#region Score
-  export function showComboPoints(_combo: GridElement[], _iCombo: number): void {
-    let points: number = 1;
-    for (let element of _combo) {
-      showElementPoints(element, points);
-      points *= 2;
-    }
-  }
-
-  export function showElementPoints(_element: GridElement, _points: number): void {
-    let domPoints: HTMLSpanElement = document.createElement("span");
-    document.querySelector("div#PointsAnimation").appendChild(domPoints);
-    // document.body.appendChild(domPoints);
-
-    let projection: ƒ.Vector3 = viewport.camera.project(_element.cube.mtxWorld.translation);
-    let position: ƒ.Vector2 = viewport.pointClipToClient(projection.toVector2());
-    position = viewport.pointClientToScreen(position);
-
-    domPoints.textContent = _points.toString();
-    domPoints.style.left = position.x + "px";
-    domPoints.style.top = position.y + "px";
-    domPoints.style.color = _element.cube.getColor().getCSS();
   }
   //#endregion
 }
