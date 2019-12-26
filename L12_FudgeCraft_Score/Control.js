@@ -76,6 +76,15 @@ var L12_FudgeCraft_Score;
                 this.removeChild(child);
             return frozen;
         }
+        isConnected() {
+            let neighbors = [];
+            let children = this.fragment.getChildren();
+            for (let cube of children) {
+                let found = L12_FudgeCraft_Score.grid.findNeighbors(cube.mtxWorld.translation);
+                neighbors.push(...found);
+            }
+            return neighbors.length > 0;
+        }
     }
     Control.transformations = Control.defineControls();
     L12_FudgeCraft_Score.Control = Control;

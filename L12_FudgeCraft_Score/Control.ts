@@ -103,5 +103,15 @@ namespace L12_FudgeCraft_Score {
         this.removeChild(child);
       return frozen;
     }
+
+    public isConnected(): boolean {
+      let neighbors: GridElement[] = [];
+      let children: ƒ.Node[] = this.fragment.getChildren();
+      for (let cube of children) {
+        let found: GridElement[] = <GridElement[]>grid.findNeighbors(cube.mtxWorld.translation);
+        neighbors.push(...found);
+      }
+      return neighbors.length > 0;
+    }
   }
 }

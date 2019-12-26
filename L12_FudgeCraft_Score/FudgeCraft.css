@@ -9,12 +9,14 @@ html, body {
 }
 
 body {
-  background-color: whitesmoke;
+  background-color: white;
   display: grid;
   grid-template-rows: min-content auto min-content 0;
   color: white;
   text-shadow: 2px 2px 2px black, -2px 2px 2px black, -2px -2px 2px black, 2px -2px 2px black;
   font-family: 'Courier New', Courier, monospace;
+  font-size: 1.5em;
+  font-weight: bolder;
 }
 
 canvas {
@@ -22,7 +24,7 @@ canvas {
   height: 100%;
 }
 
-div#PointsAnimation > span {
+div#PointsAnimation>span {
   font-size: 3em;
   font-weight: bolder;
   position: fixed;
@@ -31,4 +33,13 @@ div#PointsAnimation > span {
 
 h1 {
   display: inline;
+}
+
+#score, #callToAction {
+  float: right;
+}
+
+#callToAction {
+  color: white;
+  /* text-shadow: none; */
 }

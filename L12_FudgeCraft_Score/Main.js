@@ -95,6 +95,8 @@ var L12_FudgeCraft_Score;
     }
     L12_FudgeCraft_Score.startRandomFragment = startRandomFragment;
     async function dropFragment() {
+        if (!control.isConnected())
+            return;
         let dropped = control.dropFragment();
         let combos = new L12_FudgeCraft_Score.Combos(dropped);
         let iCombo = await handleCombos(combos, 0);

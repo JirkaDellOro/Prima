@@ -121,6 +121,8 @@ namespace L12_FudgeCraft_Score {
   }
 
   async function dropFragment(): Promise<void> {
+    if (!control.isConnected()) 
+      return;
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
 
