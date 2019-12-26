@@ -38,11 +38,12 @@ namespace L12_FudgeCraft_Score {
       super();
       this.viewport = _viewport;
       this.domScore = _domScore;
-      this.time.setTimer(40, 0, this.animate);
+      if (this.domScore)
+        this.time.setTimer(40, 0, this.animate);
     }
 
     public showCombo(_combo: GridElement[], _iCombo: number): void {
-      let pointsCombo: number = 0; 
+      let pointsCombo: number = 0;
       let pointsCube: number = Math.pow(2, _iCombo - 1);
       for (let element of _combo) {
         this.create(element, pointsCube);
@@ -50,7 +51,9 @@ namespace L12_FudgeCraft_Score {
         pointsCube *= 2;
       }
       this.score += pointsCombo;
-      this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score; 
+      let text: string = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score;
+      this.domScore.textContent = text;
+      ƒ.Debug.log(text);
     }
 
     public create(_element: GridElement, _points: number): void {
@@ -77,7 +80,7 @@ namespace L12_FudgeCraft_Score {
         let stillAlive: boolean = domLabel.place(this.viewport, lapse);
         if (stillAlive)
           continue;
-        this.remove(i); 
+        this.remove(i);
       }
     }
   }

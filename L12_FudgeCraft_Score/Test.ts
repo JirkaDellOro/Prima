@@ -1,5 +1,4 @@
-namespace L12_FudgeCraft_Score
- {
+namespace L12_FudgeCraft_Score {
   type Setup = { type: CUBE_TYPE, positions: number[][] };
 
   export function startTests(): void {
@@ -19,7 +18,7 @@ namespace L12_FudgeCraft_Score
       { type: CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
       { type: CUBE_TYPE.RED, positions: [[2, 0, 0]] },
       { type: CUBE_TYPE.GREEN, positions: [[0, 2, 0]] },
-      { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2]] },
+      { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2]] }
       // { type: CUBE_TYPE.YELLOW, positions: [[-2, 0, 0]] },
       // { type: CUBE_TYPE.CYAN, positions: [[0, -2, 0]] },
       // { type: CUBE_TYPE.MAGENTA, positions: [[0, 0, -2]] }
@@ -56,11 +55,11 @@ namespace L12_FudgeCraft_Score
       // { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2], [0, -1, 2], [0, 1, 2]] },
       // { type: CUBE_TYPE.YELLOW, positions: [[0, -2, -2], [1, -2, -2], [-1, -2, -2]] }
       // one combo travel
-      // { type: CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
       // two combos following up
       { type: CUBE_TYPE.BLUE, positions: [[-1, 0, 0], [1, 0, 0]] },
       { type: CUBE_TYPE.RED, positions: [[-1, 0, -1], [0, 0, -1], [1, 0, -4]] },
-      { type: CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] }
+      { type: CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] },
+      { type: CUBE_TYPE.YELLOW, positions: [[-3, 0, -2], [0, 0, -5], [0, 0, -10]] }
     ];
 
     setupGrid(setups);
@@ -69,7 +68,7 @@ namespace L12_FudgeCraft_Score
 
     // ƒ.Time.game.setScale(0.2);
     await ƒ.Time.game.delay(2000);
-    compressAndHandleCombos();
+    compressAndHandleCombos(0);
   }
 
   function testCombos(): void {
@@ -87,7 +86,7 @@ namespace L12_FudgeCraft_Score
     });
 
     let combos: Combos = new Combos(startElements);
-    handleCombos(combos);
+    handleCombos(combos, 1);
   }
 
   function testGrid(): void {

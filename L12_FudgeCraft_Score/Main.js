@@ -98,30 +98,33 @@ var L12_FudgeCraft_Score;
     async function dropFragment() {
         let dropped = control.dropFragment();
         let combos = new L12_FudgeCraft_Score.Combos(dropped);
-        let combosPopped = await handleCombos(combos);
-        if (combosPopped)
-            compressAndHandleCombos();
+        let iCombo = await handleCombos(combos, 0);
+        if (iCombo > 0)
+            compressAndHandleCombos(iCombo);
         startRandomFragment();
         updateDisplay();
     }
     //#endregion
     //#region Combos & Compression
-    async function compressAndHandleCombos() {
+    async function compressAndHandleCombos(_iCombo) {
         let moves;
+        let iCombo = _iCombo;
         do {
             moves = compress();
             await L12_FudgeCraft_Score.ƒ.Time.game.delay(400);
             let moved = moves.map(_move => _move.element);
             let combos = new L12_FudgeCraft_Score.Combos(moved);
-            await handleCombos(combos);
+            let iCounted = await handleCombos(combos, iCombo);
+            iCombo += iCounted;
         } while (moves.length > 0);
     }
     L12_FudgeCraft_Score.compressAndHandleCombos = compressAndHandleCombos;
-    async function handleCombos(_combos) {
+    async function handleCombos(_combos, _iCombo) {
         let iCombo = 0;
         for (let combo of _combos.found)
             if (combo.length > 2) {
-                L12_FudgeCraft_Score.points.showCombo(combo, ++iCombo);
+                iCombo++;
+                L12_FudgeCraft_Score.points.showCombo(combo, _iCombo + iCombo);
                 for (let shrink = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
                     for (let element of combo) {
                         let mtxLocal = element.cube.cmpTransform.local;
@@ -134,7 +137,7 @@ var L12_FudgeCraft_Score;
                     L12_FudgeCraft_Score.grid.pop(element.position);
             }
         updateDisplay();
-        return iCombo > 0;
+        return iCombo;
     }
     L12_FudgeCraft_Score.handleCombos = handleCombos;
     function move(_transformation) {

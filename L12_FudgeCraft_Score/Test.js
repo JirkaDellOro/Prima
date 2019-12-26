@@ -28,7 +28,10 @@ var L12_FudgeCraft_Score;
             { type: L12_FudgeCraft_Score.CUBE_TYPE.BLACK, positions: [[0, 0, 0]] },
             { type: L12_FudgeCraft_Score.CUBE_TYPE.RED, positions: [[2, 0, 0]] },
             { type: L12_FudgeCraft_Score.CUBE_TYPE.GREEN, positions: [[0, 2, 0]] },
-            { type: L12_FudgeCraft_Score.CUBE_TYPE.BLUE, positions: [[0, 0, 2]] },
+            { type: L12_FudgeCraft_Score.CUBE_TYPE.BLUE, positions: [[0, 0, 2]] }
+            // { type: CUBE_TYPE.YELLOW, positions: [[-2, 0, 0]] },
+            // { type: CUBE_TYPE.CYAN, positions: [[0, -2, 0]] },
+            // { type: CUBE_TYPE.MAGENTA, positions: [[0, 0, -2]] }
         ];
         setupGrid(setups);
         L12_FudgeCraft_Score.updateDisplay();
@@ -60,18 +63,18 @@ var L12_FudgeCraft_Score;
             // { type: CUBE_TYPE.BLUE, positions: [[0, 0, 2], [0, -1, 2], [0, 1, 2]] },
             // { type: CUBE_TYPE.YELLOW, positions: [[0, -2, -2], [1, -2, -2], [-1, -2, -2]] }
             // one combo travel
-            // { type: CUBE_TYPE.YELLOW, positions: [[3, 1, 0], [2, 0, 1], [2, 1, 1]] }
             // two combos following up
             { type: L12_FudgeCraft_Score.CUBE_TYPE.BLUE, positions: [[-1, 0, 0], [1, 0, 0]] },
             { type: L12_FudgeCraft_Score.CUBE_TYPE.RED, positions: [[-1, 0, -1], [0, 0, -1], [1, 0, -4]] },
-            { type: L12_FudgeCraft_Score.CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] }
+            { type: L12_FudgeCraft_Score.CUBE_TYPE.GREEN, positions: [[0, 0, -2], [1, 0, -3], [1, 0, -1]] },
+            { type: L12_FudgeCraft_Score.CUBE_TYPE.YELLOW, positions: [[-3, 0, -2], [0, 0, -5], [0, 0, -10]] }
         ];
         setupGrid(setups);
         L12_FudgeCraft_Score.updateDisplay();
         // debugger;
         // ƒ.Time.game.setScale(0.2);
         await L12_FudgeCraft_Score.ƒ.Time.game.delay(2000);
-        L12_FudgeCraft_Score.compressAndHandleCombos();
+        L12_FudgeCraft_Score.compressAndHandleCombos(0);
     }
     function testCombos() {
         let setups = [
@@ -85,7 +88,7 @@ var L12_FudgeCraft_Score;
             return L12_FudgeCraft_Score.grid.pull(new L12_FudgeCraft_Score.ƒ.Vector3(..._setup.positions[1]));
         });
         let combos = new L12_FudgeCraft_Score.Combos(startElements);
-        L12_FudgeCraft_Score.handleCombos(combos);
+        L12_FudgeCraft_Score.handleCombos(combos, 1);
     }
     function testGrid() {
         let cube = new L12_FudgeCraft_Score.Cube(L12_FudgeCraft_Score.CUBE_TYPE.GREEN, L12_FudgeCraft_Score.ƒ.Vector3.ZERO());

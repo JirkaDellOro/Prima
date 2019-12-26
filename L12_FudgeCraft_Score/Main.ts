@@ -125,32 +125,35 @@ namespace L12_FudgeCraft_Score {
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
 
-    let combosPopped: boolean = await handleCombos(combos);
-    if (combosPopped)
-      compressAndHandleCombos();
+    let iCombo: number = await handleCombos(combos, 0);
+    if (iCombo > 0)
+      compressAndHandleCombos(iCombo);
     startRandomFragment();
     updateDisplay();
   }
   //#endregion
 
   //#region Combos & Compression
-  export async function compressAndHandleCombos(): Promise<void> {
+  export async function compressAndHandleCombos(_iCombo: number): Promise<void> {
     let moves: Move[];
+    let iCombo: number = _iCombo;
     do {
       moves = compress();
       await ƒ.Time.game.delay(400);
 
       let moved: GridElement[] = moves.map(_move => _move.element);
       let combos: Combos = new Combos(moved);
-      await handleCombos(combos);
+      let iCounted: number = await handleCombos(combos, iCombo);
+      iCombo += iCounted;
     } while (moves.length > 0);
   }
 
-  export async function handleCombos(_combos: Combos): Promise<boolean> {
+  export async function handleCombos(_combos: Combos, _iCombo: number): Promise<number> {
     let iCombo: number = 0;
     for (let combo of _combos.found)
       if (combo.length > 2) {
-        points.showCombo(combo, ++iCombo);
+        iCombo++;
+        points.showCombo(combo, _iCombo + iCombo);
         for (let shrink: number = Math.PI - Math.asin(0.9); shrink >= 0; shrink -= 0.2) {
           for (let element of combo) {
             let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
@@ -163,7 +166,7 @@ namespace L12_FudgeCraft_Score {
           grid.pop(element.position);
       }
     updateDisplay();
-    return iCombo > 0;
+    return iCombo;
   }
 
   function move(_transformation: Transformation): void {

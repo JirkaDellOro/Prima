@@ -37,7 +37,8 @@ var L12_FudgeCraft_Score;
             };
             this.viewport = _viewport;
             this.domScore = _domScore;
-            this.time.setTimer(40, 0, this.animate);
+            if (this.domScore)
+                this.time.setTimer(40, 0, this.animate);
         }
         showCombo(_combo, _iCombo) {
             let pointsCombo = 0;
@@ -48,7 +49,9 @@ var L12_FudgeCraft_Score;
                 pointsCube *= 2;
             }
             this.score += pointsCombo;
-            this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score;
+            let text = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score;
+            this.domScore.textContent = text;
+            L12_FudgeCraft_Score.ƒ.Debug.log(text);
         }
         create(_element, _points) {
             let domPoints = document.createElement("span");
