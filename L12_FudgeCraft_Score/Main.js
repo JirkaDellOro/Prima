@@ -57,15 +57,14 @@ var L12_FudgeCraft_Score;
     L12_FudgeCraft_Score.updateDisplay = updateDisplay;
     //#region Interaction
     function hndPointerMove(_event) {
-        // if (ƒ.Time.game.hasTimers())
-        //   return;
-        let segmentBefore = L12_FudgeCraft_Score.camera.getSegmentY();
+        // let segmentBefore: number = camera.getSegmentY();
         L12_FudgeCraft_Score.camera.rotateY(_event.movementX * speedCameraRotation);
         L12_FudgeCraft_Score.camera.rotateX(_event.movementY * speedCameraRotation);
-        let segmentAfter = L12_FudgeCraft_Score.camera.getSegmentY();
-        if (segmentAfter - segmentBefore) {
-            control.rotateToSegment(segmentAfter);
-        }
+        // let segmentAfter: number = camera.getSegmentY();
+        // if (segmentAfter - segmentBefore) {
+        if (!L12_FudgeCraft_Score.ƒ.Time.game.hasTimers())
+            control.rotateToSegment(L12_FudgeCraft_Score.camera.getSegmentY());
+        // }
         updateDisplay();
     }
     function hndWheelMove(_event) {
@@ -164,11 +163,13 @@ var L12_FudgeCraft_Score;
             L12_FudgeCraft_Score.grid.push(move.target, move.element);
         }
         let animationSteps = 5;
-        L12_FudgeCraft_Score.ƒ.Time.game.setTimer(20, animationSteps, function () {
+        L12_FudgeCraft_Score.ƒ.Time.game.setTimer(20, animationSteps, function (_event) {
             for (let move of moves) {
                 let translation = L12_FudgeCraft_Score.ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
                 translation.normalize(1 / animationSteps);
                 move.element.position = L12_FudgeCraft_Score.ƒ.Vector3.SUM(move.element.position, translation);
+                if (_event.lastCall)
+                    move.element.position = move.target;
             }
             updateDisplay();
         });

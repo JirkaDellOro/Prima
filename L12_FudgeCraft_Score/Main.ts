@@ -73,16 +73,15 @@ namespace L12_FudgeCraft_Score {
   //#region Interaction
 
   function hndPointerMove(_event: ƒ.PointerEventƒ): void {
-    // if (ƒ.Time.game.hasTimers())
-    //   return;
-    let segmentBefore: number = camera.getSegmentY();
+    // let segmentBefore: number = camera.getSegmentY();
     camera.rotateY(_event.movementX * speedCameraRotation);
     camera.rotateX(_event.movementY * speedCameraRotation);
-    let segmentAfter: number = camera.getSegmentY();
+    // let segmentAfter: number = camera.getSegmentY();
 
-    if (segmentAfter - segmentBefore) {
-      control.rotateToSegment(segmentAfter);
-    }
+    // if (segmentAfter - segmentBefore) {
+    if (!ƒ.Time.game.hasTimers())
+      control.rotateToSegment(camera.getSegmentY());
+    // }
 
     updateDisplay();
   }
@@ -199,11 +198,14 @@ namespace L12_FudgeCraft_Score {
     }
 
     let animationSteps: number = 5;
-    ƒ.Time.game.setTimer(20, animationSteps, function (): void {
+    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.TimerEventƒ): void {
       for (let move of moves) {
         let translation: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
         translation.normalize(1 / animationSteps);
         move.element.position = ƒ.Vector3.SUM(move.element.position, translation);
+        if (_event.lastCall)
+          move.element.position = move.target;
+
       }
       updateDisplay();
     });
