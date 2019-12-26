@@ -40,13 +40,15 @@ var L12_FudgeCraft_Score;
             this.time.setTimer(40, 0, this.animate);
         }
         showCombo(_combo, _iCombo) {
-            let points = Math.pow(2, _iCombo - 1);
+            let pointsCombo = 0;
+            let pointsCube = Math.pow(2, _iCombo - 1);
             for (let element of _combo) {
-                this.create(element, points);
-                points *= 2;
+                this.create(element, pointsCube);
+                pointsCombo += pointsCube;
+                pointsCube *= 2;
             }
-            this.score += points;
-            this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + points + " | total: " + this.score;
+            this.score += pointsCombo;
+            this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score;
         }
         create(_element, _points) {
             let domPoints = document.createElement("span");

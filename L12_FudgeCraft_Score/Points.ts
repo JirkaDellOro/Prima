@@ -42,13 +42,15 @@ namespace L12_FudgeCraft_Score {
     }
 
     public showCombo(_combo: GridElement[], _iCombo: number): void {
-      let points: number = Math.pow(2, _iCombo - 1);
+      let pointsCombo: number = 0; 
+      let pointsCube: number = Math.pow(2, _iCombo - 1);
       for (let element of _combo) {
-        this.create(element, points);
-        points *= 2;
+        this.create(element, pointsCube);
+        pointsCombo += pointsCube;
+        pointsCube *= 2;
       }
-      this.score += points;
-      this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + points + " | total: " + this.score; 
+      this.score += pointsCombo;
+      this.domScore.textContent = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score; 
     }
 
     public create(_element: GridElement, _points: number): void {
