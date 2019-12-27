@@ -32,7 +32,7 @@ var L12_FudgeCraft_Score;
         viewport = new L12_FudgeCraft_Score.ƒ.Viewport();
         viewport.initialize("Viewport", L12_FudgeCraft_Score.game, L12_FudgeCraft_Score.camera.cmpCamera, canvas);
         L12_FudgeCraft_Score.ƒ.Debug.log("Viewport", viewport);
-        L12_FudgeCraft_Score.points = new L12_FudgeCraft_Score.Points(viewport, document.querySelector("#score"));
+        L12_FudgeCraft_Score.points = new L12_FudgeCraft_Score.Points(viewport, document.querySelector("#Score"), document.querySelector("div#Calculation"));
         // setup event handling
         viewport.activatePointerEvent("\u0192pointermove" /* MOVE */, true);
         viewport.activateWheelEvent("\u0192wheel" /* WHEEL */, true);
@@ -115,6 +115,7 @@ var L12_FudgeCraft_Score;
             callToAction("CONNECT TO EXISTING CUBES!");
             return;
         }
+        L12_FudgeCraft_Score.points.clearCalc();
         let dropped = control.dropFragment();
         let combos = new L12_FudgeCraft_Score.Combos(dropped);
         callToAction("CREATE COMBOS OF 3 OR MORE!");
@@ -204,7 +205,7 @@ var L12_FudgeCraft_Score;
     L12_FudgeCraft_Score.compress = compress;
     //#endregion
     function callToAction(_message) {
-        let span = document.querySelector("span#callToAction");
+        let span = document.querySelector("span#CallToAction");
         span.textContent = _message;
         span.style.animation = "none";
         isNaN(span.offsetHeight); // stupid hack to restart css-animation, read offsetHeight

@@ -21,7 +21,7 @@ var L12_FudgeCraft_Score;
     }
     DomLabel.maxLifeTime = 1000; // in milliseconds
     class Points extends Array {
-        constructor(_viewport, _domScore) {
+        constructor(_viewport, _domScore, _domCalculation) {
             super();
             this.score = 0;
             this.time = new L12_FudgeCraft_Score.ƒ.Time();
@@ -36,6 +36,7 @@ var L12_FudgeCraft_Score;
                 }
             };
             this.viewport = _viewport;
+            this.domCalculation = _domCalculation;
             this.domScore = _domScore;
             if (this.domScore)
                 this.time.setTimer(40, 0, this.animate);
@@ -49,8 +50,9 @@ var L12_FudgeCraft_Score;
                 pointsCube *= 2;
             }
             this.score += pointsCombo;
-            let text = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score;
-            this.domScore.textContent = text;
+            let text = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo;
+            this.addLineCalc(text, _combo[0].cube.getColor().getCSS());
+            this.domScore.textContent = "Score: " + this.score;
             L12_FudgeCraft_Score.ƒ.Debug.log(text);
         }
         create(_element, _points) {
@@ -65,6 +67,15 @@ var L12_FudgeCraft_Score;
             let domLabel = this[_index];
             domLabel.domElement.parentNode.removeChild(domLabel.domElement);
             this.splice(_index, 1);
+        }
+        addLineCalc(_text, _color) {
+            let line = document.createElement("div");
+            line.textContent = _text;
+            line.style.color = _color;
+            this.domCalculation.appendChild(line);
+        }
+        clearCalc() {
+            this.domCalculation.innerHTML = "";
         }
     }
     L12_FudgeCraft_Score.Points = Points;

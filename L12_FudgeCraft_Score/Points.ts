@@ -32,11 +32,13 @@ namespace L12_FudgeCraft_Score {
     private viewport: ƒ.Viewport;
     private time: ƒ.Time = new ƒ.Time();
     private domScore: HTMLElement;
+    private domCalculation: HTMLElement;
 
 
-    constructor(_viewport: ƒ.Viewport, _domScore: HTMLElement) {
+    constructor(_viewport: ƒ.Viewport, _domScore: HTMLElement, _domCalculation: HTMLElement) {
       super();
       this.viewport = _viewport;
+      this.domCalculation = _domCalculation;
       this.domScore = _domScore;
       if (this.domScore)
         this.time.setTimer(40, 0, this.animate);
@@ -51,8 +53,9 @@ namespace L12_FudgeCraft_Score {
         pointsCube *= 2;
       }
       this.score += pointsCombo;
-      let text: string = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo + " | total: " + this.score;
-      this.domScore.textContent = text;
+      let text: string = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo;
+      this.addLineCalc(text, _combo[0].cube.getColor().getCSS());
+      this.domScore.textContent = "Score: " + this.score;
       ƒ.Debug.log(text);
     }
 
@@ -71,6 +74,17 @@ namespace L12_FudgeCraft_Score {
       let domLabel: DomLabel = this[_index];
       domLabel.domElement.parentNode.removeChild(domLabel.domElement);
       this.splice(_index, 1);
+    }
+
+    public addLineCalc(_text: string, _color: string): void {
+      let line: HTMLElement = document.createElement("div");
+      line.textContent = _text;
+      line.style.color = _color;
+      this.domCalculation.appendChild(line);
+    }
+
+    public clearCalc(): void {
+      this.domCalculation.innerHTML = "";
     }
 
     private animate: ƒ.TimerHandler = (_event: ƒ.TimerEventƒ) => {

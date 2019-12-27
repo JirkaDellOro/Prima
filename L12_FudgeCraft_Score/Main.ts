@@ -40,7 +40,7 @@ namespace L12_FudgeCraft_Score {
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", game, camera.cmpCamera, canvas);
     ƒ.Debug.log("Viewport", viewport);
-    points = new Points(viewport, document.querySelector("#score"));
+    points = new Points(viewport, document.querySelector("#Score"), document.querySelector("div#Calculation"));
 
     // setup event handling
     viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
@@ -128,7 +128,7 @@ namespace L12_FudgeCraft_Score {
         start = { translation: ƒ.Vector3.SCALE(offset, 5), rotation: ƒ.Vector3.ZERO() };
         // ƒ.Debug.log(control.checkCollisions(start).length );
       } while (control.checkCollisions(start).length > 0);
-    } catch(_error) {
+    } catch (_error) {
       callToAction("GAME OVER");
     }
     control.move(start);
@@ -140,6 +140,8 @@ namespace L12_FudgeCraft_Score {
       callToAction("CONNECT TO EXISTING CUBES!");
       return;
     }
+    points.clearCalc();
+    
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
 
@@ -240,7 +242,7 @@ namespace L12_FudgeCraft_Score {
   //#endregion
 
   function callToAction(_message: string): void {
-    let span: HTMLElement = document.querySelector("span#callToAction");
+    let span: HTMLElement = document.querySelector("span#CallToAction");
     span.textContent = _message;
     span.style.animation = "none";
     isNaN(span.offsetHeight); // stupid hack to restart css-animation, read offsetHeight
