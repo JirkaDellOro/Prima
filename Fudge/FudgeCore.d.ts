@@ -2761,7 +2761,6 @@ declare namespace FudgeCore {
         reflect(_normal: Vector3): void;
         toString(): string;
         map(_function: (value: number, index: number, array: Float32Array) => number): Vector3;
-        freeze(): void;
         getMutator(): Mutator;
         protected reduceMutator(_mutator: Mutator): void;
     }
