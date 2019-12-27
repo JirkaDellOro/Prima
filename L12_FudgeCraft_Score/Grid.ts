@@ -1,4 +1,5 @@
 namespace L12_FudgeCraft_Score {
+  import ƒ = FudgeCore;
   export type GridPosition = string;
 
   export interface Move {
@@ -27,6 +28,7 @@ namespace L12_FudgeCraft_Score {
   }
 
   export class Grid extends Map<GridPosition, GridElement> {
+    public static readonly cardinals: ƒ.Vector3[] = [ƒ.Vector3.X(1), ƒ.Vector3.X(-1), ƒ.Vector3.Y(1), ƒ.Vector3.Y(-1), ƒ.Vector3.Z(1), ƒ.Vector3.Z(-1)];
     // private grid: Map<string, Cube> = new Map();
     constructor() {
       super();
@@ -59,9 +61,8 @@ namespace L12_FudgeCraft_Score {
     public findNeighbors(_of: ƒ.Vector3, _empty: boolean = false): GridElement[] | ƒ.Vector3[] {
       let found: GridElement[] = [];
       let empty: ƒ.Vector3[] = [];
-      let offsets: number[][] = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
-      for (let offset of offsets) {
-        let posNeighbor: ƒ.Vector3 = ƒ.Vector3.SUM(_of, new ƒ.Vector3(...offset));
+      for (let offset of Grid.cardinals) {
+        let posNeighbor: ƒ.Vector3 = ƒ.Vector3.SUM(_of, offset);
         let neighbor: GridElement = grid.pull(posNeighbor);
         if (neighbor)
           found.push(neighbor);

@@ -116,8 +116,23 @@ namespace L12_FudgeCraft_Score {
   //#region Start/Drop Fragments
   export function startRandomFragment(): void {
     let fragment: Fragment = Fragment.getRandom();
-    control.cmpTransform.local.translation = ƒ.Vector3.Z(5);
+    let cardinals: ƒ.Vector3[] = Array.from(Grid.cardinals);
+    control.cmpTransform.local.translation = ƒ.Vector3.ZERO();
     control.setFragment(fragment);
+    updateDisplay();
+    let start: Transformation;
+    try {
+      do {
+        let index: number = ƒ.random.getIndex(cardinals);
+        let offset: ƒ.Vector3 = cardinals.splice(index, 1)[0];
+        start = { translation: ƒ.Vector3.SCALE(offset, 5), rotation: ƒ.Vector3.ZERO() };
+        // ƒ.Debug.log(control.checkCollisions(start).length );
+      } while (control.checkCollisions(start).length > 0);
+    } catch(_error) {
+      callToAction("GAME OVER");
+    }
+    control.move(start);
+    updateDisplay();
   }
 
   async function dropFragment(): Promise<void> {
@@ -228,7 +243,7 @@ namespace L12_FudgeCraft_Score {
     let span: HTMLElement = document.querySelector("span#callToAction");
     span.textContent = _message;
     span.style.animation = "none";
-    span.offsetHeight; /* trigger reflow */
+    isNaN(span.offsetHeight); // stupid hack to restart css-animation, read offsetHeight
     span.style.animation = null;
   }
 }

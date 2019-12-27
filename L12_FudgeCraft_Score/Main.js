@@ -90,8 +90,24 @@ var L12_FudgeCraft_Score;
     //#region Start/Drop Fragments
     function startRandomFragment() {
         let fragment = L12_FudgeCraft_Score.Fragment.getRandom();
-        control.cmpTransform.local.translation = L12_FudgeCraft_Score.ƒ.Vector3.Z(5);
+        let cardinals = Array.from(L12_FudgeCraft_Score.Grid.cardinals);
+        control.cmpTransform.local.translation = L12_FudgeCraft_Score.ƒ.Vector3.ZERO();
         control.setFragment(fragment);
+        updateDisplay();
+        let start;
+        try {
+            do {
+                let index = L12_FudgeCraft_Score.ƒ.random.getIndex(cardinals);
+                let offset = cardinals.splice(index, 1)[0];
+                start = { translation: L12_FudgeCraft_Score.ƒ.Vector3.SCALE(offset, 5), rotation: L12_FudgeCraft_Score.ƒ.Vector3.ZERO() };
+                // ƒ.Debug.log(control.checkCollisions(start).length );
+            } while (control.checkCollisions(start).length > 0);
+        }
+        catch (_error) {
+            callToAction("GAME OVER");
+        }
+        control.move(start);
+        updateDisplay();
     }
     L12_FudgeCraft_Score.startRandomFragment = startRandomFragment;
     async function dropFragment() {
@@ -191,7 +207,7 @@ var L12_FudgeCraft_Score;
         let span = document.querySelector("span#callToAction");
         span.textContent = _message;
         span.style.animation = "none";
-        span.offsetHeight; /* trigger reflow */
+        isNaN(span.offsetHeight); // stupid hack to restart css-animation, read offsetHeight
         span.style.animation = null;
     }
 })(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));

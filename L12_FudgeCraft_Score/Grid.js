@@ -1,6 +1,7 @@
 "use strict";
 var L12_FudgeCraft_Score;
 (function (L12_FudgeCraft_Score) {
+    var ƒ = FudgeCore;
     class GridElement {
         constructor(_cube = null) {
             this.cube = _cube;
@@ -24,7 +25,7 @@ var L12_FudgeCraft_Score;
         push(_position, _element = null) {
             let key = this.toKey(_position);
             if (this.pop(_position))
-                L12_FudgeCraft_Score.ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
+                ƒ.Debug.warn("Grid push to occupied position, popped: ", key);
             this.set(key, _element);
             if (_element)
                 L12_FudgeCraft_Score.game.appendChild(_element.cube);
@@ -45,9 +46,8 @@ var L12_FudgeCraft_Score;
         findNeighbors(_of, _empty = false) {
             let found = [];
             let empty = [];
-            let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
-            for (let offset of offsets) {
-                let posNeighbor = L12_FudgeCraft_Score.ƒ.Vector3.SUM(_of, new L12_FudgeCraft_Score.ƒ.Vector3(...offset));
+            for (let offset of Grid.cardinals) {
+                let posNeighbor = ƒ.Vector3.SUM(_of, offset);
                 let neighbor = L12_FudgeCraft_Score.grid.pull(posNeighbor);
                 if (neighbor)
                     found.push(neighbor);
@@ -83,6 +83,7 @@ var L12_FudgeCraft_Score;
             return key;
         }
     }
+    Grid.cardinals = [ƒ.Vector3.X(1), ƒ.Vector3.X(-1), ƒ.Vector3.Y(1), ƒ.Vector3.Y(-1), ƒ.Vector3.Z(1), ƒ.Vector3.Z(-1)];
     L12_FudgeCraft_Score.Grid = Grid;
 })(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Grid.js.map
