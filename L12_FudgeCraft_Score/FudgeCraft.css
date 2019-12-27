@@ -42,4 +42,11 @@ h1 {
 #callToAction {
   color: white;
   /* text-shadow: none; */
+  animation-name: example;
+  animation-duration: 1s;
+}
+
+@keyframes example {
+  from {color: red;}
+  to {color: white;}
 }

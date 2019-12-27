@@ -121,14 +121,22 @@ namespace L12_FudgeCraft_Score {
   }
 
   async function dropFragment(): Promise<void> {
-    if (!control.isConnected()) 
+    if (!control.isConnected()) {
+      callToAction("CONNECT TO EXISTING CUBES!");
       return;
+    }
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
 
+    callToAction("CREATE COMBOS OF 3 OR MORE!");
     let iCombo: number = await handleCombos(combos, 0);
-    if (iCombo > 0)
+    if (iCombo > 0) {
       compressAndHandleCombos(iCombo);
+      if (ƒ.random.getBoolean())
+        callToAction("MULTIPLE COMBOS SCORE HIGHER!");
+      else
+        callToAction("LARGER COMBOS SCORE HIGHER!");
+    }
     startRandomFragment();
     updateDisplay();
   }
@@ -215,4 +223,12 @@ namespace L12_FudgeCraft_Score {
     return moves;
   }
   //#endregion
+
+  function callToAction(_message: string): void {
+    let span: HTMLElement = document.querySelector("span#callToAction");
+    span.textContent = _message;
+    span.style.animation = "none";
+    span.offsetHeight; /* trigger reflow */
+    span.style.animation = null;
+  }
 }

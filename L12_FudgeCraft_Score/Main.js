@@ -95,13 +95,21 @@ var L12_FudgeCraft_Score;
     }
     L12_FudgeCraft_Score.startRandomFragment = startRandomFragment;
     async function dropFragment() {
-        if (!control.isConnected())
+        if (!control.isConnected()) {
+            callToAction("CONNECT TO EXISTING CUBES!");
             return;
+        }
         let dropped = control.dropFragment();
         let combos = new L12_FudgeCraft_Score.Combos(dropped);
+        callToAction("CREATE COMBOS OF 3 OR MORE!");
         let iCombo = await handleCombos(combos, 0);
-        if (iCombo > 0)
+        if (iCombo > 0) {
             compressAndHandleCombos(iCombo);
+            if (L12_FudgeCraft_Score.ƒ.random.getBoolean())
+                callToAction("MULTIPLE COMBOS SCORE HIGHER!");
+            else
+                callToAction("LARGER COMBOS SCORE HIGHER!");
+        }
         startRandomFragment();
         updateDisplay();
     }
@@ -179,5 +187,12 @@ var L12_FudgeCraft_Score;
     }
     L12_FudgeCraft_Score.compress = compress;
     //#endregion
+    function callToAction(_message) {
+        let span = document.querySelector("span#callToAction");
+        span.textContent = _message;
+        span.style.animation = "none";
+        span.offsetHeight; /* trigger reflow */
+        span.style.animation = null;
+    }
 })(L12_FudgeCraft_Score || (L12_FudgeCraft_Score = {}));
 //# sourceMappingURL=Main.js.map
