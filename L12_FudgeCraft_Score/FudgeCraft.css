@@ -11,13 +11,12 @@ html, body {
 body {
   background-color: white;
   display: grid;
-  grid-template-rows: min-content auto min-content 0;
+  grid-template-rows: min-content auto min-content 0 0;
   color: white;
-  text-shadow: 2px 2px 2px black, -2px 2px 2px black, -2px -2px 2px black, 2px -2px 2px black;
+  text-shadow: 2px 0px 2px black, -2px 0px 2px black, 0px 2px 2px black, 0px -2px 2px black;
   font-family: 'Courier New', Courier, monospace;
   font-size: 1.5em;
   font-weight: bolder;
-  /* overflow: hidden; */
 }
 
 canvas {
@@ -25,9 +24,9 @@ canvas {
   height: 100%;
 }
 
-/* div { */
-  /* padding: 0 0.5em; */
-/* } */
+div {
+  padding: 0 0.5em;
+}
 
 div#PointsAnimation>span {
   font-size: 3em;
@@ -52,9 +51,10 @@ h1 {
 }
 
 div#Calculation {
-  display: inline;
+  display: inline-block;
   position: absolute;
   right: 3px;
+  top: 100px;
 }
 
 @keyframes example {

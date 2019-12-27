@@ -53,7 +53,7 @@ namespace L12_FudgeCraft_Score {
         pointsCube *= 2;
       }
       this.score += pointsCombo;
-      let text: string = _iCombo + ". combo: " + _combo.length + " cubes = " + pointsCombo;
+      let text: string = _iCombo + ". combo of " + _combo.length + " cubes ⇨ " + pointsCombo;
       this.addLineCalc(text, _combo[0].cube.getColor().getCSS());
       this.domScore.textContent = "Score: " + this.score;
       ƒ.Debug.log(text);
