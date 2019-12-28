@@ -50,6 +50,17 @@ var L12_FudgeCraft_Score;
     function startGame() {
         L12_FudgeCraft_Score.grid.push(L12_FudgeCraft_Score.ƒ.Vector3.ZERO(), new L12_FudgeCraft_Score.GridElement(new L12_FudgeCraft_Score.Cube(L12_FudgeCraft_Score.CUBE_TYPE.BLACK, L12_FudgeCraft_Score.ƒ.Vector3.ZERO())));
         startRandomFragment();
+        startCountDown();
+    }
+    function startCountDown() {
+        let domTime = document.querySelector("h1#Time");
+        let countDown = new L12_FudgeCraft_Score.ƒ.Time();
+        countDown.setTimer(1000, 0, showCountDown);
+        function showCountDown(_event) {
+            let remain = 3 * 60 * 1000 - countDown.get();
+            let units = L12_FudgeCraft_Score.ƒ.Time.getUnits(remain);
+            domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
+        }
     }
     function updateDisplay() {
         viewport.draw();

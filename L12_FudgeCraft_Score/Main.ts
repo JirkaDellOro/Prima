@@ -8,6 +8,7 @@ namespace L12_FudgeCraft_Score {
   export let args: URLSearchParams;
   export let camera: CameraOrbit;
   export let points: Points;
+
   let control: Control = new Control();
   let viewport: ƒ.Viewport;
   let speedCameraRotation: number = 0.2;
@@ -64,6 +65,18 @@ namespace L12_FudgeCraft_Score {
   function startGame(): void {
     grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.BLACK, ƒ.Vector3.ZERO())));
     startRandomFragment();
+    startCountDown();
+  }
+
+  function startCountDown(): void {
+    let domTime: HTMLElement = document.querySelector("h1#Time");
+    let countDown: ƒ.Time = new ƒ.Time();
+    countDown.setTimer(1000, 0, showCountDown);
+    function showCountDown(_event: ƒ.TimerEventƒ): void {
+      let remain: number = 3 * 60 * 1000 - countDown.get();
+      let units: ƒ.TimeUnits = ƒ.Time.getUnits(remain);
+      domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
+    }
   }
 
   export function updateDisplay(): void {
@@ -141,7 +154,7 @@ namespace L12_FudgeCraft_Score {
       return;
     }
     points.clearCalc();
-    
+
     let dropped: GridElement[] = control.dropFragment();
     let combos: Combos = new Combos(dropped);
 

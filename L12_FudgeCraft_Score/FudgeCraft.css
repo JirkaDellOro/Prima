@@ -11,7 +11,7 @@ html, body {
 body {
   background-color: white;
   display: grid;
-  grid-template-rows: min-content auto min-content 0 0;
+  grid-template-rows: min-content auto min-content 0;
   color: white;
   text-shadow: 2px 0px 2px black, -2px 0px 2px black, 0px 2px 2px black, 0px -2px 2px black;
   font-family: 'Courier New', Courier, monospace;
@@ -26,6 +26,12 @@ canvas {
 
 div {
   padding: 0 0.5em;
+}
+
+div#head {
+  grid-template-columns: 1fr 1fr 1fr;
+  display: grid;
+  text-align: center; 
 }
 
 div#PointsAnimation>span {
