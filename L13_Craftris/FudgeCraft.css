@@ -1,0 +1,73 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-color: white;
+  display: grid;
+  grid-template-rows: min-content auto min-content 0;
+  color: white;
+  text-shadow: 2px 0px 2px black, -2px 0px 2px black, 0px 2px 2px black, 0px -2px 2px black;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.5em;
+  font-weight: bolder;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+div {
+  padding: 0 0.5em;
+}
+
+div#head {
+  grid-template-columns: 1fr 1fr 1fr;
+  display: grid;
+  text-align: center; 
+}
+
+div#PointsAnimation>span {
+  font-size: 3em;
+  font-weight: bolder;
+  position: fixed;
+  /* background-color: lightgray; */
+}
+
+h1 {
+  display: inline;
+}
+
+#Score, #CallToAction, #LineCalc {
+  float: right;
+}
+
+#CallToAction {
+  color: white;
+  /* text-shadow: none; */
+  animation-name: example;
+  animation-duration: 1s;
+}
+
+div#Calculation {
+  display: inline-block;
+  position: absolute;
+  right: 3px;
+  top: 100px;
+}
+
+@keyframes example {
+  from {
+    color: red;
+  }
+  to {
+    color: white;
+  }
+}
