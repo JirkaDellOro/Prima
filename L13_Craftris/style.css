@@ -31,7 +31,7 @@ div {
 div#head {
   grid-template-columns: 1fr 1fr 1fr;
   display: grid;
-  text-align: center; 
+  text-align: center;
 }
 
 div#PointsAnimation>span {
@@ -61,6 +61,15 @@ div#Calculation {
   position: absolute;
   right: 3px;
   top: 100px;
+}
+
+div#Menu {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* background-color: rgba(100%, 100%, 100%, 0.0); */
+  transform: translate(-50%, -50%);
 }
 
 @keyframes example {

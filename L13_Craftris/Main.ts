@@ -1,6 +1,10 @@
 namespace L13_Craftris {
   export import ƒ = FudgeCore;
 
+  enum GAME_STATE {
+    START, MENU, PLAY, OVER
+  }
+
   window.addEventListener("load", hndLoad);
 
   export let game: ƒ.Node = new ƒ.Node("FudgeCraft");
@@ -9,6 +13,7 @@ namespace L13_Craftris {
   export let camera: CameraOrbit;
   export let points: Points;
 
+  let state: GAME_STATE = GAME_STATE.START;
   let control: Control = new Control();
   let viewport: ƒ.Viewport;
   let speedCameraRotation: number = 0.2;
@@ -48,7 +53,6 @@ namespace L13_Craftris {
     viewport.activateWheelEvent(ƒ.EVENT_WHEEL.WHEEL, true);
     viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, hndPointerMove);
     viewport.addEventListener(ƒ.EVENT_WHEEL.WHEEL, hndWheelMove);
-    window.addEventListener("keydown", hndKeyDown);
 
     game.appendChild(control);
 
@@ -62,10 +66,30 @@ namespace L13_Craftris {
 
   }
 
-  function startGame(): void {
+  async function startGame(): Promise<void> {
+    state = GAME_STATE.MENU;
     grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.BLACK, ƒ.Vector3.ZERO())));
     startRandomFragment();
+    ƒ.Debug.log("Wait for space");
+    await waitForKeyPress(ƒ.KEYBOARD_CODE.SPACE);
+    ƒ.Debug.log("Space pressed");
+    let menu: HTMLElement = document.querySelector("div#Menu");
+    menu.style.visibility = "hidden";
+    window.addEventListener("keydown", hndKeyDown);  // activate when user starts...
     startCountDown();
+    state = GAME_STATE.PLAY;
+  }
+
+  async function waitForKeyPress(_code: ƒ.KEYBOARD_CODE): Promise<void> {
+    return new Promise(_resolve => {
+      window.addEventListener("keydown", hndKeyDown);
+      function hndKeyDown(_event: KeyboardEvent): void {
+        if (_event.code == _code) {
+          window.removeEventListener("keydown", hndKeyDown);
+          _resolve();
+        }
+      }
+    });
   }
 
   function startCountDown(): void {

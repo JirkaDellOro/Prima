@@ -2,9 +2,17 @@
 var L13_Craftris;
 (function (L13_Craftris) {
     L13_Craftris.ƒ = FudgeCore;
+    let GAME_STATE;
+    (function (GAME_STATE) {
+        GAME_STATE[GAME_STATE["START"] = 0] = "START";
+        GAME_STATE[GAME_STATE["MENU"] = 1] = "MENU";
+        GAME_STATE[GAME_STATE["PLAY"] = 2] = "PLAY";
+        GAME_STATE[GAME_STATE["OVER"] = 3] = "OVER";
+    })(GAME_STATE || (GAME_STATE = {}));
     window.addEventListener("load", hndLoad);
     L13_Craftris.game = new L13_Craftris.ƒ.Node("FudgeCraft");
     L13_Craftris.grid = new L13_Craftris.Grid();
+    let state = GAME_STATE.START;
     let control = new L13_Craftris.Control();
     let viewport;
     let speedCameraRotation = 0.2;
@@ -38,7 +46,6 @@ var L13_Craftris;
         viewport.activateWheelEvent("\u0192wheel" /* WHEEL */, true);
         viewport.addEventListener("\u0192pointermove" /* MOVE */, hndPointerMove);
         viewport.addEventListener("\u0192wheel" /* WHEEL */, hndWheelMove);
-        window.addEventListener("keydown", hndKeyDown);
         L13_Craftris.game.appendChild(control);
         if (L13_Craftris.args.get("test"))
             L13_Craftris.startTests();
@@ -47,10 +54,29 @@ var L13_Craftris;
         updateDisplay();
         L13_Craftris.ƒ.Debug.log("Game", L13_Craftris.game);
     }
-    function startGame() {
+    async function startGame() {
+        state = GAME_STATE.MENU;
         L13_Craftris.grid.push(L13_Craftris.ƒ.Vector3.ZERO(), new L13_Craftris.GridElement(new L13_Craftris.Cube(L13_Craftris.CUBE_TYPE.BLACK, L13_Craftris.ƒ.Vector3.ZERO())));
         startRandomFragment();
+        L13_Craftris.ƒ.Debug.log("Wait for space");
+        await waitForKeyPress(L13_Craftris.ƒ.KEYBOARD_CODE.SPACE);
+        L13_Craftris.ƒ.Debug.log("Space pressed");
+        let menu = document.querySelector("div#Menu");
+        menu.style.visibility = "hidden";
+        window.addEventListener("keydown", hndKeyDown); // activate when user starts...
         startCountDown();
+        state = GAME_STATE.PLAY;
+    }
+    async function waitForKeyPress(_code) {
+        return new Promise(_resolve => {
+            window.addEventListener("keydown", hndKeyDown);
+            function hndKeyDown(_event) {
+                if (_event.code == _code) {
+                    window.removeEventListener("keydown", hndKeyDown);
+                    _resolve();
+                }
+            }
+        });
     }
     function startCountDown() {
         let domTime = document.querySelector("h1#Time");
