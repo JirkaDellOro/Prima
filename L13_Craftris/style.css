@@ -63,13 +63,18 @@ div#Calculation {
   top: 100px;
 }
 
-div#Menu {
+div#Menu, div#Over {
   display: inline-block;
   position: absolute;
   top: 50%;
   left: 50%;
-  /* background-color: rgba(100%, 100%, 100%, 0.0); */
   transform: translate(-50%, -50%);
+}
+
+div#Over {
+  visibility: hidden;
+  font-size: 3em;
+  text-align: center;
 }
 
 @keyframes example {

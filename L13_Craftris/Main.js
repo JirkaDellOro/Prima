@@ -50,22 +50,28 @@ var L13_Craftris;
         if (L13_Craftris.args.get("test"))
             L13_Craftris.startTests();
         else
-            startGame();
+            start();
         updateDisplay();
         L13_Craftris.ƒ.Debug.log("Game", L13_Craftris.game);
     }
-    async function startGame() {
+    async function start() {
         state = GAME_STATE.MENU;
         L13_Craftris.grid.push(L13_Craftris.ƒ.Vector3.ZERO(), new L13_Craftris.GridElement(new L13_Craftris.Cube(L13_Craftris.CUBE_TYPE.BLACK, L13_Craftris.ƒ.Vector3.ZERO())));
         startRandomFragment();
         L13_Craftris.ƒ.Debug.log("Wait for space");
         await waitForKeyPress(L13_Craftris.ƒ.KEYBOARD_CODE.SPACE);
         L13_Craftris.ƒ.Debug.log("Space pressed");
-        let menu = document.querySelector("div#Menu");
-        menu.style.visibility = "hidden";
+        let domMenu = document.querySelector("div#Menu");
+        domMenu.style.visibility = "hidden";
         window.addEventListener("keydown", hndKeyDown); // activate when user starts...
         startCountDown();
         state = GAME_STATE.PLAY;
+    }
+    function end() {
+        let domOver = document.querySelector("div#Over");
+        domOver.style.visibility = "visible";
+        window.removeEventListener("keydown", hndKeyDown); // activate when user starts...
+        state = GAME_STATE.OVER;
     }
     async function waitForKeyPress(_code) {
         return new Promise(_resolve => {
@@ -79,14 +85,22 @@ var L13_Craftris;
         });
     }
     function startCountDown() {
-        let domTime = document.querySelector("h1#Time");
         let countDown = new L13_Craftris.ƒ.Time();
         countDown.setTimer(1000, 0, showCountDown);
         function showCountDown(_event) {
-            let remain = 3 * 60 * 1000 - countDown.get();
-            let units = L13_Craftris.ƒ.Time.getUnits(remain);
-            domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
+            let time = 3 * 60 * 1000 - countDown.get();
+            displayTime(time);
+            if (time < 0) {
+                countDown.clearAllTimers();
+                displayTime(0);
+                end();
+            }
         }
+    }
+    function displayTime(_time) {
+        let units = L13_Craftris.ƒ.Time.getUnits(_time);
+        let domTime = document.querySelector("h1#Time");
+        domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
     }
     function updateDisplay() {
         viewport.draw();

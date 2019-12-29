@@ -59,25 +59,32 @@ namespace L13_Craftris {
     if (args.get("test"))
       startTests();
     else
-      startGame();
+      start();
 
     updateDisplay();
     ƒ.Debug.log("Game", game);
 
   }
 
-  async function startGame(): Promise<void> {
+  async function start(): Promise<void> {
     state = GAME_STATE.MENU;
     grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.BLACK, ƒ.Vector3.ZERO())));
     startRandomFragment();
     ƒ.Debug.log("Wait for space");
     await waitForKeyPress(ƒ.KEYBOARD_CODE.SPACE);
     ƒ.Debug.log("Space pressed");
-    let menu: HTMLElement = document.querySelector("div#Menu");
-    menu.style.visibility = "hidden";
+    let domMenu: HTMLElement = document.querySelector("div#Menu");
+    domMenu.style.visibility = "hidden";
     window.addEventListener("keydown", hndKeyDown);  // activate when user starts...
     startCountDown();
     state = GAME_STATE.PLAY;
+  }
+
+  function end(): void {
+    let domOver: HTMLElement = document.querySelector("div#Over");
+    domOver.style.visibility = "visible";
+    window.removeEventListener("keydown", hndKeyDown);  // activate when user starts...
+    state = GAME_STATE.OVER;
   }
 
   async function waitForKeyPress(_code: ƒ.KEYBOARD_CODE): Promise<void> {
@@ -93,16 +100,24 @@ namespace L13_Craftris {
   }
 
   function startCountDown(): void {
-    let domTime: HTMLElement = document.querySelector("h1#Time");
     let countDown: ƒ.Time = new ƒ.Time();
     countDown.setTimer(1000, 0, showCountDown);
     function showCountDown(_event: ƒ.TimerEventƒ): void {
-      let remain: number = 3 * 60 * 1000 - countDown.get();
-      let units: ƒ.TimeUnits = ƒ.Time.getUnits(remain);
-      domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
+      let time: number = 3 * 60 * 1000 - countDown.get();
+      displayTime(time);
+      if (time < 0) {
+        countDown.clearAllTimers();
+        displayTime(0);
+        end();
+      }
     }
   }
-
+  
+  function displayTime(_time: number): void {
+    let units: ƒ.TimeUnits = ƒ.Time.getUnits(_time);
+    let domTime: HTMLElement = document.querySelector("h1#Time");
+    domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
+  }
   export function updateDisplay(): void {
     viewport.draw();
   }
