@@ -54,8 +54,12 @@ var L13_Craftris;
         updateDisplay();
         L13_Craftris.ƒ.Debug.log("Game", L13_Craftris.game);
     }
+    function setState(_new) {
+        state = _new;
+        L13_Craftris.ƒ.Debug.log("State", state);
+    }
     async function start() {
-        state = GAME_STATE.MENU;
+        setState(GAME_STATE.MENU);
         L13_Craftris.grid.push(L13_Craftris.ƒ.Vector3.ZERO(), new L13_Craftris.GridElement(new L13_Craftris.Cube(L13_Craftris.CUBE_TYPE.BLACK, L13_Craftris.ƒ.Vector3.ZERO())));
         startRandomFragment();
         L13_Craftris.ƒ.Debug.log("Wait for space");
@@ -65,13 +69,13 @@ var L13_Craftris;
         domMenu.style.visibility = "hidden";
         window.addEventListener("keydown", hndKeyDown); // activate when user starts...
         startCountDown();
-        state = GAME_STATE.PLAY;
+        setState(GAME_STATE.PLAY);
     }
     function end() {
         let domOver = document.querySelector("div#Over");
         domOver.style.visibility = "visible";
         window.removeEventListener("keydown", hndKeyDown); // activate when user starts...
-        state = GAME_STATE.OVER;
+        setState(GAME_STATE.OVER);
     }
     async function waitForKeyPress(_code) {
         return new Promise(_resolve => {

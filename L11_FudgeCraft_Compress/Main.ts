@@ -68,7 +68,7 @@ namespace L11_FudgeCraft_Compress {
     viewport.draw();
   }
 
-  function hndPointerMove(_event: ƒ.PointerEventƒ): void {
+  function hndPointerMove(_event: ƒ.EventPointer): void {
     if (ƒ.Time.game.hasTimers())
       return;
     let segmentBefore: number = camera.getSegmentY();
@@ -164,7 +164,7 @@ namespace L11_FudgeCraft_Compress {
     move.translation.scale(1 / animationSteps);
     move.rotation.scale(1 / animationSteps);
 
-    ƒ.Time.game.setTimer(10, animationSteps, function (_event: ƒ.TimerEventƒ): void {
+    ƒ.Time.game.setTimer(10, animationSteps, function (_event: ƒ.EventTimer): void {
       control.move(move);
       updateDisplay();
     });

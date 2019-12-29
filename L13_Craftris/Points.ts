@@ -87,7 +87,7 @@ namespace L13_Craftris {
       this.domCalculation.innerHTML = "";
     }
 
-    private animate: ƒ.TimerHandler = (_event: ƒ.TimerEventƒ) => {
+    private animate: ƒ.TimerHandler = (_event: ƒ.EventTimer) => {
       let lapse: number = _event.target.lapse;
       for (let i: number = this.length - 1; i >= 0; i--) {
         let domLabel: DomLabel = this[i];

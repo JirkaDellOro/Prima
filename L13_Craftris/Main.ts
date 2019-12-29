@@ -63,11 +63,15 @@ namespace L13_Craftris {
 
     updateDisplay();
     ƒ.Debug.log("Game", game);
+  }
 
+  function setState(_new: GAME_STATE): void {
+    state = _new;
+    ƒ.Debug.log("State", state);
   }
 
   async function start(): Promise<void> {
-    state = GAME_STATE.MENU;
+    setState(GAME_STATE.MENU);
     grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.BLACK, ƒ.Vector3.ZERO())));
     startRandomFragment();
     ƒ.Debug.log("Wait for space");
@@ -77,14 +81,14 @@ namespace L13_Craftris {
     domMenu.style.visibility = "hidden";
     window.addEventListener("keydown", hndKeyDown);  // activate when user starts...
     startCountDown();
-    state = GAME_STATE.PLAY;
+    setState(GAME_STATE.PLAY);
   }
 
   function end(): void {
     let domOver: HTMLElement = document.querySelector("div#Over");
     domOver.style.visibility = "visible";
     window.removeEventListener("keydown", hndKeyDown);  // activate when user starts...
-    state = GAME_STATE.OVER;
+    setState(GAME_STATE.OVER);
   }
 
   async function waitForKeyPress(_code: ƒ.KEYBOARD_CODE): Promise<void> {
@@ -102,7 +106,7 @@ namespace L13_Craftris {
   function startCountDown(): void {
     let countDown: ƒ.Time = new ƒ.Time();
     countDown.setTimer(1000, 0, showCountDown);
-    function showCountDown(_event: ƒ.TimerEventƒ): void {
+    function showCountDown(_event: ƒ.EventTimer): void {
       let time: number = 3 * 60 * 1000 - countDown.get();
       displayTime(time);
       if (time < 0) {
@@ -112,7 +116,7 @@ namespace L13_Craftris {
       }
     }
   }
-  
+
   function displayTime(_time: number): void {
     let units: ƒ.TimeUnits = ƒ.Time.getUnits(_time);
     let domTime: HTMLElement = document.querySelector("h1#Time");
@@ -124,7 +128,7 @@ namespace L13_Craftris {
 
   //#region Interaction
 
-  function hndPointerMove(_event: ƒ.PointerEventƒ): void {
+  function hndPointerMove(_event: ƒ.EventPointer): void {
     // let segmentBefore: number = camera.getSegmentY();
     camera.rotateY(_event.movementX * speedCameraRotation);
     camera.rotateX(_event.movementY * speedCameraRotation);
@@ -262,7 +266,7 @@ namespace L13_Craftris {
     move.translation.scale(1 / animationSteps);
     move.rotation.scale(1 / animationSteps);
 
-    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.TimerEventƒ): void {
+    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.EventTimer): void {
       control.move(move);
       updateDisplay();
     });
@@ -277,7 +281,7 @@ namespace L13_Craftris {
     }
 
     let animationSteps: number = 5;
-    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.TimerEventƒ): void {
+    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.EventTimer): void {
       for (let move of moves) {
         let translation: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
         translation.normalize(1 / animationSteps);

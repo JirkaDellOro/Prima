@@ -72,7 +72,7 @@ namespace L12_FudgeCraft_Score {
     let domTime: HTMLElement = document.querySelector("h1#Time");
     let countDown: ƒ.Time = new ƒ.Time();
     countDown.setTimer(1000, 0, showCountDown);
-    function showCountDown(_event: ƒ.TimerEventƒ): void {
+    function showCountDown(_event: ƒ.EventTimer): void {
       let remain: number = 3 * 60 * 1000 - countDown.get();
       let units: ƒ.TimeUnits = ƒ.Time.getUnits(remain);
       domTime.textContent = units.minutes.toString().padStart(2, "0") + ":" + units.seconds.toString().padStart(2, "0");
@@ -85,7 +85,7 @@ namespace L12_FudgeCraft_Score {
 
   //#region Interaction
 
-  function hndPointerMove(_event: ƒ.PointerEventƒ): void {
+  function hndPointerMove(_event: ƒ.EventPointer): void {
     // let segmentBefore: number = camera.getSegmentY();
     camera.rotateY(_event.movementX * speedCameraRotation);
     camera.rotateX(_event.movementY * speedCameraRotation);
@@ -223,7 +223,7 @@ namespace L12_FudgeCraft_Score {
     move.translation.scale(1 / animationSteps);
     move.rotation.scale(1 / animationSteps);
 
-    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.TimerEventƒ): void {
+    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.EventTimer): void {
       control.move(move);
       updateDisplay();
     });
@@ -238,7 +238,7 @@ namespace L12_FudgeCraft_Score {
     }
 
     let animationSteps: number = 5;
-    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.TimerEventƒ): void {
+    ƒ.Time.game.setTimer(20, animationSteps, function (_event: ƒ.EventTimer): void {
       for (let move of moves) {
         let translation: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(move.target, move.element.position);
         translation.normalize(1 / animationSteps);

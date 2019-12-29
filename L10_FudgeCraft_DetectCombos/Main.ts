@@ -64,7 +64,7 @@ namespace L10_FudgeCraft_DetectCombos {
         viewport.draw();
     }
 
-    function hndPointerMove(_event: ƒ.PointerEventƒ): void {
+    function hndPointerMove(_event: ƒ.EventPointer): void {
         // ƒ.Debug.log(_event.movementX, _event.movementY);
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
