@@ -25,10 +25,10 @@ var L13_Craftris;
         // enable unlimited mouse-movement (user needs to click on canvas first)
         canvas.addEventListener("click", canvas.requestPointerLock);
         // set lights
-        let cmpLight = new L13_Craftris.ƒ.ComponentLight(new L13_Craftris.ƒ.LightDirectional(L13_Craftris.ƒ.Color.WHITE));
+        let cmpLight = new L13_Craftris.ƒ.ComponentLight(new L13_Craftris.ƒ.LightDirectional(L13_Craftris.ƒ.Color.WHITE()));
         cmpLight.pivot.lookAt(new L13_Craftris.ƒ.Vector3(0.5, 1, 0.8));
         // game.addComponent(cmpLight);
-        let cmpLightAmbient = new L13_Craftris.ƒ.ComponentLight(new L13_Craftris.ƒ.LightAmbient(L13_Craftris.ƒ.Color.DARK_GREY));
+        let cmpLightAmbient = new L13_Craftris.ƒ.ComponentLight(new L13_Craftris.ƒ.LightAmbient(L13_Craftris.ƒ.Color.DARK_GREY()));
         L13_Craftris.game.addComponent(cmpLightAmbient);
         // setup orbiting camera
         L13_Craftris.camera = new L13_Craftris.CameraOrbit(75);

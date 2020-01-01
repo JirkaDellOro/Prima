@@ -18,8 +18,8 @@ namespace L13_Craftris {
       this.appendChild(rotatorX);
 
       let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-      cmpCamera.backgroundColor = new ƒ.Color(1, 1, 1, 1);
-      // cmpCamera.backgroundColor = ƒ.Color.WHITE;
+      // cmpCamera.backgroundColor = new ƒ.Color(1, 1, 1, 1);
+      cmpCamera.backgroundColor = ƒ.Color.WHITE();
       rotatorX.addComponent(cmpCamera);
       this.setDistance(20);
     }

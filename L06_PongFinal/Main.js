@@ -49,7 +49,7 @@ var L06_PongFinal;
         moveBall();
         ƒ.RenderManager.update();
         viewport.draw();
-        crc2.strokeStyle = "white";
+        crc2.strokeStyle = "WHITE()";
         crc2.lineWidth = 4;
         crc2.setLineDash([10, 10]);
         crc2.moveTo(crc2.canvas.width / 2, 0);
@@ -121,7 +121,7 @@ var L06_PongFinal;
     }
     function createPong() {
         let pong = new ƒ.Node("Pong");
-        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
+        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE()));
         let meshQuad = new ƒ.MeshQuad();
         pong.appendChild(createNode("WallLeft", meshQuad, mtrSolidWhite, new ƒ.Vector2(-22, 0), new ƒ.Vector2(1, 30)));
         pong.appendChild(createNode("WallRight", meshQuad, mtrSolidWhite, new ƒ.Vector2(22, 0), new ƒ.Vector2(1, 30)));

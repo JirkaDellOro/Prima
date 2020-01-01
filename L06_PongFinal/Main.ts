@@ -80,7 +80,7 @@ namespace L06_PongFinal {
         ƒ.RenderManager.update();
         viewport.draw();
 
-        crc2.strokeStyle = "white";
+        crc2.strokeStyle = "WHITE()";
         crc2.lineWidth = 4;
         crc2.setLineDash([10, 10]);
         crc2.moveTo(crc2.canvas.width / 2, 0);
@@ -161,7 +161,7 @@ namespace L06_PongFinal {
     function createPong(): ƒ.Node {
         let pong: ƒ.Node = new ƒ.Node("Pong");
 
-        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE));
+        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE()));
         let meshQuad: ƒ.MeshQuad = new ƒ.MeshQuad();
 
         pong.appendChild(createNode("WallLeft", meshQuad, mtrSolidWhite, new ƒ.Vector2(-22, 0), new ƒ.Vector2(1, 30)));

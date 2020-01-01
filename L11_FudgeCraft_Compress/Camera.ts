@@ -18,7 +18,7 @@ namespace L11_FudgeCraft_Compress {
       this.appendChild(rotatorX);
 
       let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-      cmpCamera.backgroundColor = ƒ.Color.WHITE;
+      cmpCamera.backgroundColor = ƒ.Color.WHITE();
       rotatorX.addComponent(cmpCamera);
       this.setDistance(20);
     }
