@@ -22,7 +22,7 @@ namespace L13_Craftris {
   function hndLoad(_event: Event): void {
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
     args = new URLSearchParams(location.search);
-    ƒ.RenderManager.initialize(true);
+    ƒ.RenderManager.initialize(true, true);
     ƒ.Debug.log("Canvas", canvas);
 
     // enable unlimited mouse-movement (user needs to click on canvas first)
@@ -33,7 +33,7 @@ namespace L13_Craftris {
     cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
     // game.addComponent(cmpLight);
     let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY));
-    game.addComponent(cmpLightAmbient);
+    game.addComponent(cmpLightAmbient); 
 
     // setup orbiting camera
     camera = new CameraOrbit(75);

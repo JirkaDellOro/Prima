@@ -20,7 +20,7 @@ var L13_Craftris;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         L13_Craftris.args = new URLSearchParams(location.search);
-        L13_Craftris.ƒ.RenderManager.initialize(true);
+        L13_Craftris.ƒ.RenderManager.initialize(true, true);
         L13_Craftris.ƒ.Debug.log("Canvas", canvas);
         // enable unlimited mouse-movement (user needs to click on canvas first)
         canvas.addEventListener("click", canvas.requestPointerLock);
