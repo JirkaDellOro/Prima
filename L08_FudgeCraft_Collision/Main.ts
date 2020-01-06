@@ -16,12 +16,12 @@ namespace L08_FudgeCraft_Collision {
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new ƒ.Vector3(4, 6, 20));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
-        cmpCamera.backgroundColor = ƒ.Color.WHITE();
+        cmpCamera.backgroundColor = ƒ.Color.CSS("WHITE");
 
-        let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE()));
+        let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.CSS("WHITE")));
         cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
         game.addComponent(cmpLight);
-        let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY()));
+        let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.CSS("DARK_GREY")));
         game.addComponent(cmpLightAmbient);
         
         viewport = new ƒ.Viewport();

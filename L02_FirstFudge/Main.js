@@ -11,7 +11,7 @@ var L02_FirstFudge;
         let mesh = new ƒ.MeshQuad();
         let cmpMesh = new ƒ.ComponentMesh(mesh);
         node.addComponent(cmpMesh);
-        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE()));
+        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
         let cmpMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
         node.addComponent(cmpMaterial);
         let cmpCamera = new ƒ.ComponentCamera();

@@ -78,7 +78,7 @@ namespace L04_PongAnimated {
     function createPong(): ƒ.Node {
         let pong: ƒ.Node = new ƒ.Node("Pong");
 
-        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE()));
+        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
         let meshQuad: ƒ.MeshQuad = new ƒ.MeshQuad();
 
         ball.addComponent(new ƒ.ComponentMesh(meshQuad));

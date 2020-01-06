@@ -17,10 +17,10 @@ var L09_FudgeCraft_CameraControl;
         // enable unlimited mouse-movement (user needs to click on canvas first)
         canvas.addEventListener("click", canvas.requestPointerLock);
         // set lights
-        let cmpLight = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightDirectional(L09_FudgeCraft_CameraControl.ƒ.Color.WHITE()));
+        let cmpLight = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightDirectional(L09_FudgeCraft_CameraControl.ƒ.Color.CSS("WHITE")));
         cmpLight.pivot.lookAt(new L09_FudgeCraft_CameraControl.ƒ.Vector3(0.5, 1, 0.8));
         L09_FudgeCraft_CameraControl.game.addComponent(cmpLight);
-        let cmpLightAmbient = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightAmbient(L09_FudgeCraft_CameraControl.ƒ.Color.DARK_GREY()));
+        let cmpLightAmbient = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightAmbient(L09_FudgeCraft_CameraControl.ƒ.Color.CSS("DARK_GREY")));
         L09_FudgeCraft_CameraControl.game.addComponent(cmpLightAmbient);
         // setup orbiting camera
         camera = new L09_FudgeCraft_CameraControl.CameraOrbit(75);

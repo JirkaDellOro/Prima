@@ -22,10 +22,10 @@ namespace L11_FudgeCraft_Compress {
     canvas.addEventListener("click", canvas.requestPointerLock);
 
     // set lights
-    let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE()));
+    let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.CSS("WHITE")));
     cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
     // game.addComponent(cmpLight);
-    let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY()));
+    let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.CSS("DARK_GREY")));
     game.addComponent(cmpLightAmbient);
 
     // setup orbiting camera

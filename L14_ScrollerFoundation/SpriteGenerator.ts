@@ -1,7 +1,7 @@
 namespace L14_ScrollerFoundation {
   import ƒ = FudgeCore;
 
-  class SpriteFrame {
+  export class SpriteFrame {
     rectTexture: ƒ.Rectangle;
     pivot: ƒ.Matrix4x4;
     material: ƒ.Material;
@@ -16,6 +16,10 @@ namespace L14_ScrollerFoundation {
       this.name = _name;
     }
 
+    public static getMesh(): ƒ.MeshQuad {
+      return Sprite.mesh;
+    }
+    
     /**
      * Creates a series of frames for this [[Sprite]] resulting in pivot matrices and materials to use on a sprite node
      * @param _sizeTexture The size of a spritesheet to use for texturing
@@ -41,8 +45,9 @@ namespace L14_ScrollerFoundation {
       }
     }
 
-    public getMesh(): ƒ.MeshQuad {
-      return Sprite.mesh;
+
+    public getFrame(_index: number): SpriteFrame {
+      return this.frames[_index];
     }
 
     private createFrame(_name: string, _texture: ƒ.TextureImage, _framing: ƒ.FramingScaled, _rect: ƒ.Rectangle, _resolutionQuad: number, _origin: ƒ.ORIGIN2D): SpriteFrame {
@@ -54,7 +59,7 @@ namespace L14_ScrollerFoundation {
 
       let rectQuad: ƒ.Rectangle = new ƒ.Rectangle(0, 0, _rect.width / _resolutionQuad, _rect.height / _resolutionQuad, _origin);
       frame.pivot = ƒ.Matrix4x4.IDENTITY;
-      frame.pivot.translate(rectQuad.position.toVector3());
+      frame.pivot.translate(new ƒ.Vector3(rectQuad.position.x + 0.5, -rectQuad.position.y - 0.5, 0));
       frame.pivot.scaleX(rectQuad.size.x);
       frame.pivot.scaleY(rectQuad.size.y);
 
@@ -74,10 +79,9 @@ namespace L14_ScrollerFoundation {
 
   }
 
-  export class NodeSprite extends Node {
+  export class NodeSprite extends ƒ.Node {
     constructor(_name: string) {
       super(_name);
-      
     }
   }
 }

@@ -45,7 +45,7 @@ var L03_PongPaddle;
     }
     function createPong() {
         let pong = new ƒ.Node("Pong");
-        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE()));
+        let mtrSolidWhite = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
         let meshQuad = new ƒ.MeshQuad();
         ball.addComponent(new ƒ.ComponentMesh(meshQuad));
         paddleLeft.addComponent(new ƒ.ComponentMesh(meshQuad));

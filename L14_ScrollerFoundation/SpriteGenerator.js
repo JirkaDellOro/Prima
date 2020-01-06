@@ -4,10 +4,14 @@ var L14_ScrollerFoundation;
     var ƒ = FudgeCore;
     class SpriteFrame {
     }
+    L14_ScrollerFoundation.SpriteFrame = SpriteFrame;
     class Sprite {
         constructor(_name) {
             this.frames = [];
             this.name = _name;
+        }
+        static getMesh() {
+            return Sprite.mesh;
         }
         /**
          * Creates a series of frames for this [[Sprite]] resulting in pivot matrices and materials to use on a sprite node
@@ -30,8 +34,8 @@ var L14_ScrollerFoundation;
                 count++;
             }
         }
-        getMesh() {
-            return Sprite.mesh;
+        getFrame(_index) {
+            return this.frames[_index];
         }
         createFrame(_name, _texture, _framing, _rect, _resolutionQuad, _origin) {
             let rectTexture = new ƒ.Rectangle(0, 0, _texture.image.width, _texture.image.height);
@@ -40,7 +44,7 @@ var L14_ScrollerFoundation;
             frame.rectTexture.position = _framing.getPoint(_rect.position, rectTexture);
             let rectQuad = new ƒ.Rectangle(0, 0, _rect.width / _resolutionQuad, _rect.height / _resolutionQuad, _origin);
             frame.pivot = ƒ.Matrix4x4.IDENTITY;
-            frame.pivot.translate(rectQuad.position.toVector3());
+            frame.pivot.translate(new ƒ.Vector3(rectQuad.position.x + 0.5, -rectQuad.position.y - 0.5, 0));
             frame.pivot.scaleX(rectQuad.size.x);
             frame.pivot.scaleY(rectQuad.size.y);
             let coat = new ƒ.CoatTextured();
@@ -57,7 +61,7 @@ var L14_ScrollerFoundation;
     class ComponentSprite extends ƒ.Component {
     }
     L14_ScrollerFoundation.ComponentSprite = ComponentSprite;
-    class NodeSprite extends Node {
+    class NodeSprite extends ƒ.Node {
         constructor(_name) {
             super(_name);
         }

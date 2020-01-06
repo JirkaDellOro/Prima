@@ -161,7 +161,7 @@ namespace L06_PongFinal {
     function createPong(): ƒ.Node {
         let pong: ƒ.Node = new ƒ.Node("Pong");
 
-        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.WHITE()));
+        let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
         let meshQuad: ƒ.MeshQuad = new ƒ.MeshQuad();
 
         pong.appendChild(createNode("WallLeft", meshQuad, mtrSolidWhite, new ƒ.Vector2(-22, 0), new ƒ.Vector2(1, 30)));

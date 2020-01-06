@@ -19,7 +19,7 @@ namespace L09_FudgeCraft_CameraControl {
             this.appendChild(rotatorX);
 
             let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-            cmpCamera.backgroundColor = ƒ.Color.WHITE();
+            cmpCamera.backgroundColor = ƒ.Color.CSS("WHITE");
             rotatorX.addComponent(cmpCamera);
             this.setDistance(20);
         }

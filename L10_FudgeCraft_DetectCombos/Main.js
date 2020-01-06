@@ -17,10 +17,10 @@ var L10_FudgeCraft_DetectCombos;
         // enable unlimited mouse-movement (user needs to click on canvas first)
         canvas.addEventListener("click", canvas.requestPointerLock);
         // set lights
-        let cmpLight = new L10_FudgeCraft_DetectCombos.ƒ.ComponentLight(new L10_FudgeCraft_DetectCombos.ƒ.LightDirectional(L10_FudgeCraft_DetectCombos.ƒ.Color.WHITE()));
+        let cmpLight = new L10_FudgeCraft_DetectCombos.ƒ.ComponentLight(new L10_FudgeCraft_DetectCombos.ƒ.LightDirectional(L10_FudgeCraft_DetectCombos.ƒ.Color.CSS("WHITE")));
         cmpLight.pivot.lookAt(new L10_FudgeCraft_DetectCombos.ƒ.Vector3(0.5, 1, 0.8));
         // game.addComponent(cmpLight);
-        let cmpLightAmbient = new L10_FudgeCraft_DetectCombos.ƒ.ComponentLight(new L10_FudgeCraft_DetectCombos.ƒ.LightAmbient(L10_FudgeCraft_DetectCombos.ƒ.Color.DARK_GREY()));
+        let cmpLightAmbient = new L10_FudgeCraft_DetectCombos.ƒ.ComponentLight(new L10_FudgeCraft_DetectCombos.ƒ.LightAmbient(L10_FudgeCraft_DetectCombos.ƒ.Color.CSS("DARK_GREY")));
         L10_FudgeCraft_DetectCombos.game.addComponent(cmpLightAmbient);
         // setup orbiting camera
         camera = new L10_FudgeCraft_DetectCombos.CameraOrbit(75);

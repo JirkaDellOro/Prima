@@ -15,7 +15,7 @@ var L13_Craftris;
             this.appendChild(rotatorX);
             let cmpCamera = new ƒ.ComponentCamera();
             // cmpCamera.backgroundColor = new ƒ.Color(1, 1, 1, 1);
-            cmpCamera.backgroundColor = ƒ.Color.WHITE();
+            cmpCamera.backgroundColor = ƒ.Color.CSS("WHITE");
             rotatorX.addComponent(cmpCamera);
             this.setDistance(20);
         }

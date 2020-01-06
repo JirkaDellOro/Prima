@@ -19,7 +19,7 @@ namespace L10_FudgeCraft_DetectCombos {
             this.appendChild(rotatorX);
 
             let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-            cmpCamera.backgroundColor = ƒ.Color.WHITE();
+            cmpCamera.backgroundColor = ƒ.Color.CSS("WHITE");
             rotatorX.addComponent(cmpCamera);
             this.setDistance(20);
         }
