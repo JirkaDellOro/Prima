@@ -20,7 +20,7 @@ var L09_FudgeCraft_CameraControl;
         let cmpLight = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightDirectional(L09_FudgeCraft_CameraControl.ƒ.Color.CSS("WHITE")));
         cmpLight.pivot.lookAt(new L09_FudgeCraft_CameraControl.ƒ.Vector3(0.5, 1, 0.8));
         L09_FudgeCraft_CameraControl.game.addComponent(cmpLight);
-        let cmpLightAmbient = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightAmbient(L09_FudgeCraft_CameraControl.ƒ.Color.CSS("DARK_GREY")));
+        let cmpLightAmbient = new L09_FudgeCraft_CameraControl.ƒ.ComponentLight(new L09_FudgeCraft_CameraControl.ƒ.LightAmbient(new L09_FudgeCraft_CameraControl.ƒ.Color(0.25, 0.25, 0.25, 1)));
         L09_FudgeCraft_CameraControl.game.addComponent(cmpLightAmbient);
         // setup orbiting camera
         camera = new L09_FudgeCraft_CameraControl.CameraOrbit(75);
