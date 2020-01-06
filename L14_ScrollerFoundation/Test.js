@@ -3,12 +3,15 @@ var L14_ScrollerFoundation;
 (function (L14_ScrollerFoundation) {
     var ƒ = FudgeCore;
     window.addEventListener("load", test);
+    let sprite;
+    let root;
     function test() {
         let img = document.querySelector("img");
         let canvas = document.querySelector("canvas");
+        let crc2 = canvas.getContext("2d");
         let txtImage = new ƒ.TextureImage();
         txtImage.image = img;
-        let sprite = new L14_ScrollerFoundation.Sprite("Test");
+        sprite = new L14_ScrollerFoundation.Sprite("Test");
         let rects = [
             new ƒ.Rectangle(0, 0, 360, 416),
             new ƒ.Rectangle(0, 0, 180, 208),
@@ -18,12 +21,7 @@ var L14_ScrollerFoundation;
         ];
         sprite.generate(txtImage, rects, 300, ƒ.ORIGIN2D.BOTTOMCENTER);
         ƒ.RenderManager.initialize(true, false);
-        let root = new ƒ.Node("Root");
-        root.addComponent(new ƒ.ComponentMesh(L14_ScrollerFoundation.Sprite.getMesh()));
-        let spriteFrame = sprite.getFrame(1);
-        root.addComponent(new ƒ.ComponentMaterial(spriteFrame.material));
-        root.getComponent(ƒ.ComponentMesh).pivot = spriteFrame.pivot;
-        // root.addComponent(new ƒ.ComponentMaterial(red));
+        root = new L14_ScrollerFoundation.NodeSprite("Root", sprite);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(5);
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -31,6 +29,15 @@ var L14_ScrollerFoundation;
         let viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
         viewport.draw();
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 10);
+        function update(_event) {
+            // ƒ.Debug.log(frame);
+            root.showFrameNext();
+            viewport.draw();
+            crc2.strokeRect(-1, -1, canvas.width / 2, canvas.height + 2);
+            crc2.strokeRect(-1, canvas.height / 2, canvas.width + 2, canvas.height);
+        }
     }
 })(L14_ScrollerFoundation || (L14_ScrollerFoundation = {}));
 //# sourceMappingURL=Test.js.map
