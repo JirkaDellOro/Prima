@@ -11,7 +11,7 @@ namespace L14_ScrollerFoundation {
   export class Sprite {
     private static mesh: ƒ.MeshSprite = new ƒ.MeshSprite();
     public frames: SpriteFrame[] = [];
-    private name: string;
+    public name: string;
 
     constructor(_name: string) {
       this.name = _name;

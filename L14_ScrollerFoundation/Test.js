@@ -30,7 +30,7 @@ var L14_ScrollerFoundation;
         viewport.initialize("Viewport", root, cmpCamera, canvas);
         viewport.draw();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 1);
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 10);
         function update(_event) {
             // ƒ.Debug.log(frame);
             root.showFrameNext();

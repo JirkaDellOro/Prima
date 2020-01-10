@@ -42,6 +42,7 @@ namespace L14_ScrollerHare {
     mtxHare = ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.X(-1));
     hare.addComponent(new ƒ.ComponentTransform(mtxHare));
     root.appendChild(hare);
+    hare.activate(false);
 
     for (let child of root.getChildren())
       child.addEventListener(
@@ -70,10 +71,11 @@ namespace L14_ScrollerHare {
       mtxHare = root.getChildren()[2].cmpTransform.local;
       mtxHare.translateX(0.1);
       // ƒ.Debug.log(mtxHare.translation.toString());
-      if (mtxHare.translation.x > 2)
+      if (mtxHare.translation.x > 2) {
         mtxHare.translation = ƒ.Vector3.X(-2);
-
-
+        root.getChildren()[3].activate(!root.getChildren()[3].isActive);
+      }
+      
       viewport.draw();
 
       crc2.strokeRect(-1, -1, canvas.width / 2, canvas.height + 2);
