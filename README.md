@@ -26,3 +26,30 @@ Repository for the module "Prototyping interactive media-applications and games"
 |  9 | Subklassen            | Es existiert eine Klassenhierarchie, einige Objekte sind Instanzen von einer oder mehreren abgeleiteten Subklassen mit gegenüber den anderen Objekten speziellem Verhalten und besonderen Eigenschaften. Welche Klassen sind dies und welches Verhalten wird dort beschrieben? |
 | 10 | Maße & Positionen     | Maße, Skala und Positionen sind gut durchdacht. Wie groß sind Spielfiguren, wie ist die Welt angeordnet bezogen auf den Ursprung, wie sind Spielelemente bezogen auf ihre lokalen Koordinatensysteme definiert?                                                                |
 | 11 | Event-System          | Das Event-System wird verwendet. Wer sendet wem Informationen oder Methodenaufrufe und wofür?                                                                                                                                                                                  |
+
+## Abgabeformat
+* Fasse die Konzeption als ein wohlformatiertes Designdokument in PDF zusammen!
+* Platziere einen Link in der Readme-Datei deines PRIMA-Repositories auf Github auf die fertige und in Github-Pages lauffähige Anwendung.
+* Platziere ebenso Links zu den Stellen in deinem Repository, an denen der Quellcode und das Designdokument zu finden sind.
+* Stelle zudem auf diese Art dort auch ein gepacktes Archiv zur Verfügung, welches folgende Daten enthält
+  * Das Designdokument 
+  * Die Projektordner inklusive aller erforderlichen Dateien, also auch Bild- und Audiodaten
+  * Eine kurze Anleitung zur Installation der Anwendung unter Berücksichtigung erforderlicher Dienste (z.B. Heroku, MongoDB etc.) 
+  * Eine kurze Anleitung zur Interaktion mit der Anwendung
+
+## GameZone
+Wenn Du dein Spiel bei der Dauerausstellung "GameZone" am Tag der Medien sehen möchtest, ergänze folgendes  
+* Einen Ordner mit zwei Screenshots der laufenden Applikation in den Größen 250x100 und 1920x400 pixel sowie ein Textdokument mit den Informationen:
+* Titel
+* Autor
+* Jahr und Semester der Entwicklung (Sose, Wise)
+* Studiensemester
+* Lehrplansemester
+* Studiengang
+* Veranstaltung im Rahmen derer die Entwicklung durchgeführt wurde
+* betreuender Dozent
+* Genre des Spiels
+* ggf. passende Tags/ Schlagwörter zu dem Spiel
+* Untertitel (max 40 Zeichen), der Menschen zum Spielen animiert
+* Kurzbeschreibung (max 250 Zeichen), die kurz erklärt wie zu spielen ist
+* Erklärung, dass die Fakultät Digitale Medien die Anwendung bei Veranstaltungen, insbesondere am Tag der Medien, mit einem expliziten Verweis auf den Autor, vorführen darf.
