@@ -18,7 +18,7 @@ var L07_FudgeCraft_Fragments;
         game.appendChild(new L07_FudgeCraft_Fragments.Fragment(1, ƒ.Vector3.X(3)));
         game.appendChild(new L07_FudgeCraft_Fragments.Fragment(2, ƒ.Vector3.X(-3)));
         let cmpLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.CSS("WHITE")));
-        cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
+        cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, -1, -0.8));
         game.addComponent(cmpLight);
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", game, cmpCamera, canvas);

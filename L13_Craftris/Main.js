@@ -26,7 +26,7 @@ var L13_Craftris;
         canvas.addEventListener("click", canvas.requestPointerLock);
         // set lights
         let cmpLight = new L13_Craftris.ƒ.ComponentLight(new L13_Craftris.ƒ.LightDirectional(L13_Craftris.ƒ.Color.CSS("WHITE")));
-        cmpLight.pivot.lookAt(new L13_Craftris.ƒ.Vector3(0.5, 1, 0.8));
+        cmpLight.pivot.lookAt(new L13_Craftris.ƒ.Vector3(0.5, -1, -0.8));
         // game.addComponent(cmpLight);
         let cmpLightAmbient = new L13_Craftris.ƒ.ComponentLight(new L13_Craftris.ƒ.LightAmbient(new L13_Craftris.ƒ.Color(0.25, 0.25, 0.25, 1)));
         L13_Craftris.game.addComponent(cmpLightAmbient);

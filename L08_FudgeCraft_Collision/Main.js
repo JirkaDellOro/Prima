@@ -16,7 +16,7 @@ var L08_FudgeCraft_Collision;
         cmpCamera.pivot.lookAt(L08_FudgeCraft_Collision.ƒ.Vector3.ZERO());
         cmpCamera.backgroundColor = L08_FudgeCraft_Collision.ƒ.Color.CSS("WHITE");
         let cmpLight = new L08_FudgeCraft_Collision.ƒ.ComponentLight(new L08_FudgeCraft_Collision.ƒ.LightDirectional(L08_FudgeCraft_Collision.ƒ.Color.CSS("WHITE")));
-        cmpLight.pivot.lookAt(new L08_FudgeCraft_Collision.ƒ.Vector3(0.5, 1, 0.8));
+        cmpLight.pivot.lookAt(new L08_FudgeCraft_Collision.ƒ.Vector3(0.5, -1, -0.8));
         L08_FudgeCraft_Collision.game.addComponent(cmpLight);
         let cmpLightAmbient = new L08_FudgeCraft_Collision.ƒ.ComponentLight(new L08_FudgeCraft_Collision.ƒ.LightAmbient(new L08_FudgeCraft_Collision.ƒ.Color(0.25, 0.25, 0.25, 1)));
         L08_FudgeCraft_Collision.game.addComponent(cmpLightAmbient);

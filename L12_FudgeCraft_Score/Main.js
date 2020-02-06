@@ -18,7 +18,7 @@ var L12_FudgeCraft_Score;
         canvas.addEventListener("click", canvas.requestPointerLock);
         // set lights
         let cmpLight = new L12_FudgeCraft_Score.ƒ.ComponentLight(new L12_FudgeCraft_Score.ƒ.LightDirectional(L12_FudgeCraft_Score.ƒ.Color.CSS("WHITE")));
-        cmpLight.pivot.lookAt(new L12_FudgeCraft_Score.ƒ.Vector3(0.5, 1, 0.8));
+        cmpLight.pivot.lookAt(new L12_FudgeCraft_Score.ƒ.Vector3(0.5, -1, -0.8));
         // game.addComponent(cmpLight);
         let cmpLightAmbient = new L12_FudgeCraft_Score.ƒ.ComponentLight(new L12_FudgeCraft_Score.ƒ.LightAmbient(new L12_FudgeCraft_Score.ƒ.Color(0.25, 0.25, 0.25, 1)));
         L12_FudgeCraft_Score.game.addComponent(cmpLightAmbient);

@@ -18,7 +18,7 @@ var L10_FudgeCraft_DetectCombos;
         canvas.addEventListener("click", canvas.requestPointerLock);
         // set lights
         let cmpLight = new L10_FudgeCraft_DetectCombos.ƒ.ComponentLight(new L10_FudgeCraft_DetectCombos.ƒ.LightDirectional(L10_FudgeCraft_DetectCombos.ƒ.Color.CSS("WHITE")));
-        cmpLight.pivot.lookAt(new L10_FudgeCraft_DetectCombos.ƒ.Vector3(0.5, 1, 0.8));
+        cmpLight.pivot.lookAt(new L10_FudgeCraft_DetectCombos.ƒ.Vector3(0.5, -1, -0.8));
         // game.addComponent(cmpLight);
         let cmpLightAmbient = new L10_FudgeCraft_DetectCombos.ƒ.ComponentLight(new L10_FudgeCraft_DetectCombos.ƒ.LightAmbient(new L10_FudgeCraft_DetectCombos.ƒ.Color(0.25, 0.25, 0.25, 1)));
         L10_FudgeCraft_DetectCombos.game.addComponent(cmpLightAmbient);
