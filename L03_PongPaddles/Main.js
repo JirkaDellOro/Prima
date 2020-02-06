@@ -14,6 +14,7 @@ var L03_PongPaddle;
         let pong = createPong();
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(42);
+        cmpCamera.pivot.rotateY(180);
         paddleRight.cmpTransform.local.translateX(20);
         paddleLeft.cmpTransform.local.translateX(-20);
         paddleLeft.getComponent(ƒ.ComponentMesh).pivot.scaleY(4);

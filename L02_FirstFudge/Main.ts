@@ -21,6 +21,7 @@ namespace L02_FirstFudge {
 
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(2);
+        cmpCamera.pivot.rotateY(180);
 
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", node, cmpCamera, canvas);

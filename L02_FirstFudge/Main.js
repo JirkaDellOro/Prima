@@ -16,6 +16,7 @@ var L02_FirstFudge;
         node.addComponent(cmpMaterial);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(2);
+        cmpCamera.pivot.rotateY(180);
         L02_FirstFudge.viewport = new ƒ.Viewport();
         L02_FirstFudge.viewport.initialize("Viewport", node, cmpCamera, canvas);
         ƒ.Debug.log(L02_FirstFudge.viewport);

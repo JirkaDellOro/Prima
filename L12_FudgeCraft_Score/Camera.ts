@@ -20,6 +20,7 @@ namespace L12_FudgeCraft_Score {
       let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
       cmpCamera.backgroundColor = ƒ.Color.CSS("WHITE");
       rotatorX.addComponent(cmpCamera);
+      cmpCamera.pivot.rotateY(180);
       this.setDistance(20);
     }
 

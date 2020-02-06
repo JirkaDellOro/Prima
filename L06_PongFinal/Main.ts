@@ -45,7 +45,8 @@ namespace L06_PongFinal {
         mtxBall = ball.cmpTransform.local;
 
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-        cmpCamera.pivot.translateZ(50); //42);
+        cmpCamera.pivot.translateZ(50);
+        cmpCamera.pivot.rotateY(180); 
 
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", pong, cmpCamera, canvas);

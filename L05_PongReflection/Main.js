@@ -17,6 +17,7 @@ var L05_PongReflection;
         pong = createPong();
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(50); //42);
+        cmpCamera.pivot.rotateY(180);
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", pong, cmpCamera, canvas);
         ƒ.Debug.log(viewport);

@@ -17,6 +17,7 @@ namespace L03_PongPaddle {
 
         let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(42);
+        cmpCamera.pivot.rotateY(180);
 
 
         paddleRight.cmpTransform.local.translateX(20);

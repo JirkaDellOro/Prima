@@ -8,6 +8,14 @@
             "type": "shell",
             "command": "serve",
             "isBackground": true
+        },
+        {
+            "label": "auto-watch",
+            "type": "shell",
+            "command": "tsc -watch",
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
         }
     ]
 }
