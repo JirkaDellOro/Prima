@@ -13,9 +13,7 @@ namespace L03_SnakeMove {
     public move(): void {
       let child: ƒ.Node = this.getChildren()[0];
       let cmpPrev: ƒ.ComponentTransform = child.getComponent(ƒ.ComponentTransform);  // child.cmpTransform;
-      let mtxHead: ƒ.Matrix4x4 = ƒ.Matrix4x4.IDENTITY();
-      mtxHead.set(cmpPrev.local);
-      // Maybe problem using reference
+      let mtxHead: ƒ.Matrix4x4 = cmpPrev.local.copy;
       mtxHead.translate(this.direction);
       let cmpNew: ƒ.ComponentTransform = new ƒ.ComponentTransform(mtxHead);
 
