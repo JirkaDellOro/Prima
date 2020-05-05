@@ -1644,6 +1644,8 @@ declare namespace FudgeCore {
         getArrayBytesRGBA(): Uint8ClampedArray;
         add(_color: Color): void;
         getCSS(): string;
+        getHex(): string;
+        setHex(_hex: string): void;
         protected reduceMutator(_mutator: Mutator): void;
     }
 }
@@ -2373,6 +2375,10 @@ declare namespace FudgeCore {
          * Return the elements of this matrix as a Float32Array
          */
         get(): Float32Array;
+        /**
+         * Return a copy of this
+         */
+        get copy(): Matrix3x3;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
         getMutator(): Mutator;
