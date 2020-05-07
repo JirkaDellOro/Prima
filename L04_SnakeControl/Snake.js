@@ -5,15 +5,16 @@ var L04_SnakeControl;
     class Snake extends ƒ.Node {
         constructor() {
             super("Snake");
-            this.direction = ƒ.Vector3.X();
+            this.dirCurrent = ƒ.Vector3.X();
             console.log("Creating Snake");
             this.createSegement(4);
         }
         move() {
+            this.dirCurrent = this.dirNew || this.dirCurrent;
             let child = this.getChildren()[0];
             let cmpPrev = child.getComponent(ƒ.ComponentTransform); // child.cmpTransform;
             let mtxHead = cmpPrev.local.copy;
-            mtxHead.translate(this.direction);
+            mtxHead.translate(this.dirCurrent);
             let cmpNew = new ƒ.ComponentTransform(mtxHead);
             for (let segment of this.getChildren()) {
                 cmpPrev = segment.getComponent(ƒ.ComponentTransform);
@@ -21,6 +22,12 @@ var L04_SnakeControl;
                 segment.addComponent(cmpNew);
                 cmpNew = cmpPrev;
             }
+        }
+        set direction(_new) {
+            if (this.dirCurrent.equals(ƒ.Vector3.SCALE(_new, -1)))
+                return;
+            console.log(this.dirCurrent, _new);
+            this.dirNew = _new;
         }
         createSegement(_segments) {
             let mesh = new ƒ.MeshQuad();
