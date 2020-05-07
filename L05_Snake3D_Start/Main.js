@@ -36,10 +36,7 @@ var L05_Snake3DStart;
         if (!direction.equals(ƒ.Vector3.ZERO()))
             snake.direction = direction;
         let rotation = ƒ.Vector3.ZERO();
-        rotation = ƒ.Keyboard.mapToValue(ƒ.Vector3.Y(90), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
-        rotation.add(ƒ.Keyboard.mapToValue(ƒ.Vector3.Y(-90), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.ARROW_LEFT]));
-        rotation = ƒ.Keyboard.mapToValue(ƒ.Vector3.X(90), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-        rotation.add(ƒ.Keyboard.mapToValue(ƒ.Vector3.X(-90), ƒ.Vector3.ZERO(), [ƒ.KEYBOARD_CODE.ARROW_UP]));
+        rotation = new ƒ.Vector3(_event.code == ƒ.KEYBOARD_CODE.ARROW_DOWN ? 90 : (_event.code == ƒ.KEYBOARD_CODE.ARROW_UP ? -90 : 0), _event.code == ƒ.KEYBOARD_CODE.ARROW_RIGHT ? 90 : (_event.code == ƒ.KEYBOARD_CODE.ARROW_LEFT ? -90 : 0), 0);
         snake.rotate(rotation);
     }
 })(L05_Snake3DStart || (L05_Snake3DStart = {}));
