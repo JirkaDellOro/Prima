@@ -18,7 +18,7 @@ var L06_Snake3D_HeadControl;
             while (true) {
                 mtxHead = cmpPrev.local.copy;
                 mtxHead.translate(this.dirCurrent);
-                if (Math.abs(mtxHead.translation.x) < 4 && Math.abs(mtxHead.translation.y) < 4 && Math.abs(mtxHead.translation.z) < 4)
+                if (Math.abs(mtxHead.translation.x) < 6 && Math.abs(mtxHead.translation.y) < 6 && Math.abs(mtxHead.translation.z) < 6)
                     break;
                 this.rotate(ƒ.Vector3.Z(-90));
             }

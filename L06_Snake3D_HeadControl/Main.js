@@ -6,6 +6,7 @@ var L06_Snake3D_HeadControl;
     window.addEventListener("load", hndLoad);
     let snake;
     let cosys = new ƒAid.NodeCoordinateSystem("ControlSystem");
+    ƒ.RenderManager.initialize(true);
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         ƒ.Debug.log(canvas);
@@ -13,8 +14,9 @@ var L06_Snake3D_HeadControl;
         snake = new L06_Snake3D_HeadControl.Snake();
         graph.addChild(snake);
         cosys.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(10))));
-        graph.addChild(cosys);
-        console.log(graph);
+        // graph.addChild(cosys);
+        let cube = new ƒAid.Node("Cube", ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(9)), new ƒ.Material("Cube", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("aqua"))), new ƒ.MeshCube());
+        graph.addChild(cube);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new ƒ.Vector3(5, 10, 40));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -28,7 +30,14 @@ var L06_Snake3D_HeadControl;
     }
     function update(_event) {
         snake.move();
+        moveCamera();
         L06_Snake3D_HeadControl.viewport.draw();
+    }
+    function moveCamera() {
+        let posCamera = snake.head.mtxLocal.translation;
+        posCamera.normalize(30);
+        L06_Snake3D_HeadControl.viewport.camera.pivot.translation = posCamera;
+        L06_Snake3D_HeadControl.viewport.camera.pivot.lookAt(ƒ.Vector3.ZERO());
     }
     function control(_event) {
         // let direction: ƒ.Vector3;

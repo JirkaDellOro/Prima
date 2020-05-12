@@ -3,9 +3,9 @@ namespace L06_Snake3D_HeadControl {
   import ƒAid = FudgeAid;
 
   export class Snake extends ƒ.Node {
+    public head: ƒ.Node;
     private dirCurrent: ƒ.Vector3 = ƒ.Vector3.X();
     private dirNew: ƒ.Vector3;
-    private head: ƒ.Node;
 
     constructor() {
       super("Snake");
@@ -21,7 +21,7 @@ namespace L06_Snake3D_HeadControl {
       while (true) {
         mtxHead = cmpPrev.local.copy;
         mtxHead.translate(this.dirCurrent);
-        if (Math.abs(mtxHead.translation.x) < 4 && Math.abs(mtxHead.translation.y) < 4 && Math.abs(mtxHead.translation.z) < 4)
+        if (Math.abs(mtxHead.translation.x) < 6 && Math.abs(mtxHead.translation.y) < 6 && Math.abs(mtxHead.translation.z) < 6)
           break;
         this.rotate(ƒ.Vector3.Z(-90));
       }
