@@ -8,10 +8,10 @@ namespace L07_Snake3D_Food {
   export let size: number = 7;
   export let viewport: ƒ.Viewport;
   export let mtrStandard: ƒ.Material = new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("white")));
+  export let items: ƒ.Node;
 
   let snake: Snake;
-  let items: ƒ.Node;
-  let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
+  // let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
 
 
 
@@ -56,6 +56,7 @@ namespace L07_Snake3D_Food {
 
   function update(_event: ƒ.Eventƒ): void {
     snake.move();
+    snake.eat();
     moveCamera();
     viewport.draw();
   }

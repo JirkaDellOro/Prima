@@ -8,7 +8,13 @@ var L07_Snake3D_Food;
             super("Snake");
             this.dirCurrent = ƒ.Vector3.X();
             console.log("Creating Snake");
-            this.createSegement(4);
+            this.mesh = new ƒ.MeshCube();
+            // start with a number of segments including head
+            this.grow(4);
+            this.head = this.getChild(0);
+            let cosys = new ƒAid.NodeCoordinateSystem("ControlSystem");
+            cosys.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(2))));
+            this.head.addChild(cosys);
         }
         move() {
             this.dirCurrent = this.dirNew || this.dirCurrent;
@@ -19,7 +25,7 @@ var L07_Snake3D_Food;
                 mtxHead = cmpPrev.local.copy;
                 mtxHead.translate(this.dirCurrent);
                 let cubeCorner = ƒ.Vector3.ONE(L07_Snake3D_Food.size);
-                if (mtxHead.translation.isInside(cubeCorner, ƒ.Vector3.SCALE(cubeCorner, -1)))
+                if (mtxHead.translation.isInsideCube(cubeCorner, ƒ.Vector3.SCALE(cubeCorner, -1)))
                     // if (Math.abs(mtxHead.translation.x) < 6 && Math.abs(mtxHead.translation.y) < 6 && Math.abs(mtxHead.translation.z) < 6)
                     break;
                 this.rotate(ƒ.Vector3.Z(-90));
@@ -41,25 +47,37 @@ var L07_Snake3D_Food;
         rotate(_rotation) {
             this.head.mtxLocal.rotate(_rotation);
         }
-        createSegement(_segments) {
-            let mesh = new ƒ.MeshCube();
-            // let mtrSolidWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
-            for (let i = 0; i < _segments; i++) {
-                let segment = new ƒ.Node("Segment");
-                let cmpMesh = new ƒ.ComponentMesh(mesh);
-                segment.addComponent(cmpMesh);
-                cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.8));
-                // let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
-                let cmpMaterial = new ƒ.ComponentMaterial(L07_Snake3D_Food.mtrStandard);
-                segment.addComponent(cmpMaterial);
-                cmpMaterial.clrPrimary = ƒ.Color.CSS("yellow");
-                segment.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(-1 * i, 0, 0))));
+        eat() {
+            let posHead = this.head.mtxLocal.translation;
+            for (let item of L07_Snake3D_Food.items.getChildren()) {
+                if (posHead.isInsideSphere(item.mtxLocal.translation, 0.5)) {
+                    L07_Snake3D_Food.items.removeChild(item);
+                    this.grow(1);
+                }
+            }
+        }
+        grow(_nSegments) {
+            // TODO: implement shrinking
+            if (_nSegments < 0)
+                return;
+            for (let i = 0; i < _nSegments; i++) {
+                let segment = this.createSegment();
                 this.appendChild(segment);
             }
-            this.head = this.getChildren()[0];
-            let cosys = new ƒAid.NodeCoordinateSystem("ControlSystem");
-            cosys.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(2))));
-            this.head.addChild(cosys);
+        }
+        createSegment() {
+            let segment = new ƒ.Node("Segment");
+            let cmpMesh = new ƒ.ComponentMesh(this.mesh);
+            segment.addComponent(cmpMesh);
+            cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.8));
+            let cmpMaterial = new ƒ.ComponentMaterial(L07_Snake3D_Food.mtrStandard);
+            segment.addComponent(cmpMaterial);
+            cmpMaterial.clrPrimary = ƒ.Color.CSS("yellow");
+            let mtxSegment = new ƒ.Matrix4x4();
+            if (this.nChildren)
+                mtxSegment = this.getChild(this.nChildren - 1).mtxLocal.copy;
+            segment.addComponent(new ƒ.ComponentTransform(mtxSegment));
+            return segment;
         }
     }
     L07_Snake3D_Food.Snake = Snake;

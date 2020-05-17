@@ -8,16 +8,15 @@ var L07_Snake3D_Food;
     L07_Snake3D_Food.size = 7;
     L07_Snake3D_Food.mtrStandard = new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("white")));
     let snake;
-    let items;
-    let cosys = new ƒAid.NodeCoordinateSystem("ControlSystem");
+    // let cosys: ƒAid.NodeCoordinateSystem = new ƒAid.NodeCoordinateSystem("ControlSystem");
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         ƒ.Debug.log(canvas);
         let graph = new ƒ.Node("Game");
         snake = new L07_Snake3D_Food.Snake();
         graph.addChild(snake);
-        items = new ƒ.Node("Items");
-        graph.addChild(items);
+        L07_Snake3D_Food.items = new ƒ.Node("Items");
+        graph.addChild(L07_Snake3D_Food.items);
         for (let i = 0; i < 20; i++)
             placeFood();
         let cube = new ƒAid.Node("Cube", ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(2 * L07_Snake3D_Food.size - 1)), L07_Snake3D_Food.mtrStandard, new ƒ.MeshCube());
@@ -38,6 +37,7 @@ var L07_Snake3D_Food;
     }
     function update(_event) {
         snake.move();
+        snake.eat();
         moveCamera();
         L07_Snake3D_Food.viewport.draw();
     }
@@ -73,7 +73,7 @@ var L07_Snake3D_Food;
         position.shuffle();
         let food = new ƒAid.Node("Food", ƒ.Matrix4x4.TRANSLATION(position), L07_Snake3D_Food.mtrStandard, new ƒ.MeshCube());
         food.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("red");
-        items.addChild(food);
+        L07_Snake3D_Food.items.addChild(food);
     }
 })(L07_Snake3D_Food || (L07_Snake3D_Food = {}));
 //# sourceMappingURL=Main.js.map
