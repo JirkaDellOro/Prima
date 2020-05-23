@@ -6,7 +6,7 @@ namespace L08_Snake3D_Enemy {
     private static mesh: ƒ.MeshCube = new ƒ.MeshCube();
     public head: ƒ.Node;
     protected color: ƒ.Color;
-    private readonly dirCurrent: ƒ.Vector3 = ƒ.Vector3.X();  // remains constant when using relative control
+    protected readonly dirCurrent: ƒ.Vector3 = ƒ.Vector3.X();  // remains constant when using relative control
     // private dirNew: ƒ.Vector3;  // preparation for absolute control
     private turn: boolean = false;
 
@@ -25,20 +25,23 @@ namespace L08_Snake3D_Enemy {
 
     public move(): void {
       // this.dirCurrent = this.dirNew || this.dirCurrent;
+      // snake will accept new input change direction
+      this.turn = false;
+
       let child: ƒ.Node = this.head;
       let cmpPrev: ƒ.ComponentTransform = child.getComponent(ƒ.ComponentTransform);
       let mtxHead: ƒ.Matrix4x4;
       while (true) {
         mtxHead = cmpPrev.local.copy;
         mtxHead.translate(this.dirCurrent);
-        let cubeCorner: ƒ.Vector3 = ƒ.Vector3.ONE(size);
+        let cubeCorner: ƒ.Vector3 = ƒ.Vector3.ONE(size + 0.5);
         // test if snake is still on/in cube
         if (mtxHead.translation.isInsideCube(cubeCorner, ƒ.Vector3.SCALE(cubeCorner, -1)))
-        break;
+          break;
         // wrap by turning around Z-axis, if snake is about to leave cube, and retry movement
         this.rotate(ƒ.Vector3.Z(-90));
       }
-      
+
       // hand down transform components through snakes segments
       let cmpNew: ƒ.ComponentTransform = new ƒ.ComponentTransform(mtxHead);
       for (let segment of this.getChildren()) {
@@ -47,9 +50,6 @@ namespace L08_Snake3D_Enemy {
         segment.addComponent(cmpNew);
         cmpNew = cmpPrev;
       }
-
-      // snake will accept new input change direction
-      this.turn = false;
     }
 
     // used for absolute control

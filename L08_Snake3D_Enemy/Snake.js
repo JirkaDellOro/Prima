@@ -20,13 +20,15 @@ var L08_Snake3D_Enemy;
             }
             move() {
                 // this.dirCurrent = this.dirNew || this.dirCurrent;
+                // snake will accept new input change direction
+                this.turn = false;
                 let child = this.head;
                 let cmpPrev = child.getComponent(ƒ.ComponentTransform);
                 let mtxHead;
                 while (true) {
                     mtxHead = cmpPrev.local.copy;
                     mtxHead.translate(this.dirCurrent);
-                    let cubeCorner = ƒ.Vector3.ONE(L08_Snake3D_Enemy.size);
+                    let cubeCorner = ƒ.Vector3.ONE(L08_Snake3D_Enemy.size + 0.5);
                     // test if snake is still on/in cube
                     if (mtxHead.translation.isInsideCube(cubeCorner, ƒ.Vector3.SCALE(cubeCorner, -1)))
                         break;
@@ -41,8 +43,6 @@ var L08_Snake3D_Enemy;
                     segment.addComponent(cmpNew);
                     cmpNew = cmpPrev;
                 }
-                // snake will accept new input change direction
-                this.turn = false;
             }
             // used for absolute control
             // public set direction(_new: ƒ.Vector3) {
