@@ -40,10 +40,9 @@ namespace L08_Snake3D_Enemy {
     ƒAid.addStandardLightComponents(graph, new ƒ.Color(0.5, 0.5, 0.5));
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    cmpCamera.pivot.translate(new ƒ.Vector3(5, 10, 40));
-    cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
+    cmpCamera.pivot.translate(new ƒ.Vector3(10, 10, 10));
+    cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO(), ƒ.Vector3.Y(-1));
     cmpCamera.backgroundColor = ƒ.Color.CSS("white");
-    // cmpCamera.pivot.rotateY(180);
 
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", graph, cmpCamera, canvas);
@@ -69,8 +68,8 @@ namespace L08_Snake3D_Enemy {
     let posCamera: ƒ.Vector3 = mtxHead.translation;
     posCamera.normalize(30);
     viewport.camera.pivot.translation = posCamera;
-    let up: ƒ.Vector3 = ƒ.Vector3.X();
-    up.transform(mtxHead, false);
+    // let up: ƒ.Vector3 = ƒ.Vector3.X();
+    // up.transform(mtxHead, false);
     viewport.camera.pivot.lookAt(ƒ.Vector3.ZERO());
     // viewport.camera.pivot.lookAt(ƒ.Vector3.ZERO(), up);
   }
@@ -89,6 +88,12 @@ namespace L08_Snake3D_Enemy {
       case ƒ.KEYBOARD_CODE.SPACE:
         rotation = ƒ.Vector3.Z(-90);
         break;
+      // case ƒ.KEYBOARD_CODE.A:
+      //   viewport.camera.pivot.translateX(-0.5);
+      //   break;
+      // case ƒ.KEYBOARD_CODE.D:
+      //   viewport.camera.pivot.translateX(0.5);
+      //   break;
       default:
         return;
     }
