@@ -22,12 +22,14 @@ var L08_Snake3D_Enemy;
             for (let angle of [0, -90, 0, 90]) {
                 let minSquareDistance = Number.POSITIVE_INFINITY;
                 let test = this.head.mtxLocal.copy;
-                if (distances) {
+                if (!distances)
+                    // first iteration on the current position of head
+                    distances = [];
+                else {
+                    // following iterations at possible positions for next step
                     test.rotate(ƒ.Vector3.Y(angle));
                     test.translate(this.dirCurrent);
                 }
-                else
-                    distances = [];
                 for (let food of foodInRange) {
                     let translation = test.getTranslationTo(food.mtxLocal);
                     let squareDistance = translation.magnitudeSquared;

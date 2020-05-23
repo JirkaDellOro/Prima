@@ -31,11 +31,14 @@ namespace L08_Snake3D_Enemy {
         let minSquareDistance: number = Number.POSITIVE_INFINITY;
 
         let test: ƒ.Matrix4x4 = this.head.mtxLocal.copy;
-        if (distances) {
-          test.rotate(ƒ.Vector3.Y(angle));
-          test.translate(this.dirCurrent)
-        } else
+        if (!distances)
+          // first iteration on the current position of head
           distances = [];
+        else {
+          // following iterations at possible positions for next step
+          test.rotate(ƒ.Vector3.Y(angle));
+          test.translate(this.dirCurrent);
+        }
 
         for (let food of foodInRange) {
           let translation: ƒ.Vector3 = test.getTranslationTo(food.mtxLocal);
