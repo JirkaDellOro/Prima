@@ -1,7 +1,7 @@
 namespace L08_Snake3D_Enemy {
   import ƒ = FudgeCore;
   import ƒAid = FudgeAid;
-  ƒ.RenderManager.initialize(true, true);
+  // ƒ.RenderManager.initialize(true, true);
   window.addEventListener("load", hndLoad);
 
 

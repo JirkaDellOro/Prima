@@ -3,7 +3,7 @@ var L08_Snake3D_Enemy;
 (function (L08_Snake3D_Enemy) {
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
-    ƒ.RenderManager.initialize(true, true);
+    // ƒ.RenderManager.initialize(true, true);
     window.addEventListener("load", hndLoad);
     L08_Snake3D_Enemy.size = 7;
     L08_Snake3D_Enemy.mtrStandard = new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("white")));

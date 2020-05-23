@@ -4,10 +4,10 @@ var L08_Snake3D_Enemy;
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
     class Snake extends ƒ.Node {
-        constructor(_name = "Snake") {
+        constructor(_name = "Snake", _color = ƒ.Color.CSS("yellow")) {
             super(_name);
             this.dirCurrent = ƒ.Vector3.X();
-            this.mesh = new ƒ.MeshCube();
+            this.color = _color;
             // start with a number of segments including head
             this.grow(4);
             this.head = this.getChild(0);
@@ -55,23 +55,23 @@ var L08_Snake3D_Enemy;
                 }
             }
         }
-        grow(_nSegments) {
+        grow(_nSegments, _color = this.color) {
             // TODO: implement shrinking
             if (_nSegments < 0)
                 return;
             for (let i = 0; i < _nSegments; i++) {
-                let segment = this.createSegment();
+                let segment = this.createSegment(_color);
                 this.appendChild(segment);
             }
         }
-        createSegment() {
+        createSegment(_color = this.color) {
             let segment = new ƒ.Node("Segment");
-            let cmpMesh = new ƒ.ComponentMesh(this.mesh);
+            let cmpMesh = new ƒ.ComponentMesh(Snake.mesh);
             segment.addComponent(cmpMesh);
             cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.8));
             let cmpMaterial = new ƒ.ComponentMaterial(L08_Snake3D_Enemy.mtrStandard);
             segment.addComponent(cmpMaterial);
-            cmpMaterial.clrPrimary = ƒ.Color.CSS("yellow");
+            cmpMaterial.clrPrimary = _color;
             let mtxSegment = new ƒ.Matrix4x4();
             if (this.nChildren)
                 mtxSegment = this.getChild(this.nChildren - 1).mtxLocal.copy;
@@ -79,6 +79,7 @@ var L08_Snake3D_Enemy;
             return segment;
         }
     }
+    Snake.mesh = new ƒ.MeshCube();
     L08_Snake3D_Enemy.Snake = Snake;
 })(L08_Snake3D_Enemy || (L08_Snake3D_Enemy = {}));
 //# sourceMappingURL=Snake.js.map

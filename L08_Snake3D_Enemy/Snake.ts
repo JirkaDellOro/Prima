@@ -3,14 +3,15 @@ namespace L08_Snake3D_Enemy {
   import ƒAid = FudgeAid;
 
   export class Snake extends ƒ.Node {
+    private static mesh: ƒ.MeshCube = new ƒ.MeshCube();
     public head: ƒ.Node;
+    protected color: ƒ.Color;
     private dirCurrent: ƒ.Vector3 = ƒ.Vector3.X();
     private dirNew: ƒ.Vector3;
-    private mesh: ƒ.MeshCube;
 
-    constructor(_name: string = "Snake") {
+    constructor(_name: string = "Snake", _color: ƒ.Color = ƒ.Color.CSS("yellow")) {
       super(_name);
-      this.mesh = new ƒ.MeshCube();
+      this.color = _color;
 
       // start with a number of segments including head
       this.grow(4);
@@ -68,27 +69,27 @@ namespace L08_Snake3D_Enemy {
       }
     }
 
-    private grow(_nSegments: number): void {
+    private grow(_nSegments: number, _color: ƒ.Color = this.color): void {
       // TODO: implement shrinking
       if (_nSegments < 0)
         return;
 
       for (let i: number = 0; i < _nSegments; i++) {
-        let segment: ƒ.Node = this.createSegment();
+        let segment: ƒ.Node = this.createSegment(_color);
         this.appendChild(segment);
       }
     }
 
-    private createSegment(): ƒ.Node {
+    private createSegment(_color: ƒ.Color = this.color): ƒ.Node {
       let segment: ƒ.Node = new ƒ.Node("Segment");
 
-      let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(this.mesh);
+      let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(Snake.mesh);
       segment.addComponent(cmpMesh);
       cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.8));
 
       let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrStandard);
       segment.addComponent(cmpMaterial);
-      cmpMaterial.clrPrimary = ƒ.Color.CSS("yellow");
+      cmpMaterial.clrPrimary = _color;
 
       let mtxSegment: ƒ.Matrix4x4 = new ƒ.Matrix4x4();
       if (this.nChildren)

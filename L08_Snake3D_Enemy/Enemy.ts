@@ -4,8 +4,8 @@ namespace L08_Snake3D_Enemy {
 
   export class Enemy extends Snake {
 
-    constructor(_name: string = "Enemy") {
-      super(_name);
+    constructor(_name: string = "Enemy", _color: ƒ.Color = ƒ.Color.CSS("blue")) {
+      super(_name, _color);
     }
 
     // public move(): void {
