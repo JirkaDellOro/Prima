@@ -6,8 +6,9 @@ namespace L08_Snake3D_Enemy {
     private static mesh: ƒ.MeshCube = new ƒ.MeshCube();
     public head: ƒ.Node;
     protected color: ƒ.Color;
-    private dirCurrent: ƒ.Vector3 = ƒ.Vector3.X();
-    private dirNew: ƒ.Vector3;
+    private readonly dirCurrent: ƒ.Vector3 = ƒ.Vector3.X();  // remains constant when using relative control
+    // private dirNew: ƒ.Vector3;  // preparation for absolute control
+    private turn: boolean = false;
 
     constructor(_name: string = "Snake", _color: ƒ.Color = ƒ.Color.CSS("yellow")) {
       super(_name);
@@ -23,7 +24,7 @@ namespace L08_Snake3D_Enemy {
     }
 
     public move(): void {
-      this.dirCurrent = this.dirNew || this.dirCurrent;
+      // this.dirCurrent = this.dirNew || this.dirCurrent;
       let child: ƒ.Node = this.head;
       let cmpPrev: ƒ.ComponentTransform = child.getComponent(ƒ.ComponentTransform);
       let mtxHead: ƒ.Matrix4x4;
@@ -31,30 +32,38 @@ namespace L08_Snake3D_Enemy {
         mtxHead = cmpPrev.local.copy;
         mtxHead.translate(this.dirCurrent);
         let cubeCorner: ƒ.Vector3 = ƒ.Vector3.ONE(size);
+        // test if snake is still on/in cube
         if (mtxHead.translation.isInsideCube(cubeCorner, ƒ.Vector3.SCALE(cubeCorner, -1)))
-          // if (Math.abs(mtxHead.translation.x) < 6 && Math.abs(mtxHead.translation.y) < 6 && Math.abs(mtxHead.translation.z) < 6)
-          break;
+        break;
+        // wrap by turning around Z-axis, if snake is about to leave cube, and retry movement
         this.rotate(ƒ.Vector3.Z(-90));
       }
-
+      
+      // hand down transform components through snakes segments
       let cmpNew: ƒ.ComponentTransform = new ƒ.ComponentTransform(mtxHead);
-
       for (let segment of this.getChildren()) {
         cmpPrev = segment.getComponent(ƒ.ComponentTransform);
         segment.removeComponent(cmpPrev);
         segment.addComponent(cmpNew);
         cmpNew = cmpPrev;
       }
+
+      // snake will accept new input change direction
+      this.turn = false;
     }
 
-    public set direction(_new: ƒ.Vector3) {
-      if (this.dirCurrent.equals(ƒ.Vector3.SCALE(_new, -1)))
-        return;
-      console.log(this.dirCurrent, _new);
-      this.dirNew = _new;
-    }
+    // used for absolute control
+    // public set direction(_new: ƒ.Vector3) {
+    //   if (this.dirCurrent.equals(ƒ.Vector3.SCALE(_new, -1)))
+    //     return;
+    //   console.log(this.dirCurrent, _new);
+    //   this.dirNew = _new;
+    // }
 
     public rotate(_rotation: ƒ.Vector3): void {
+      if (this.turn) // turn has already been requested for next move
+        return;
+      this.turn = true;
       this.head.mtxLocal.rotate(_rotation);
     }
 
