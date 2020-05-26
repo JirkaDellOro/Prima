@@ -66,7 +66,7 @@ namespace L08_Snake3D_Enemy {
   function moveCamera(): void {
     let mtxHead: ƒ.Matrix4x4 = snake.head.mtxLocal;
     let posCamera: ƒ.Vector3 = mtxHead.translation;
-    posCamera.normalize(30);
+    posCamera.normalize(35);
     viewport.camera.pivot.translation = posCamera;
     // let up: ƒ.Vector3 = ƒ.Vector3.X();
     // up.transform(mtxHead, false);

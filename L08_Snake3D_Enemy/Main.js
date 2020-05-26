@@ -47,7 +47,7 @@ var L08_Snake3D_Enemy;
     function moveCamera() {
         let mtxHead = snake.head.mtxLocal;
         let posCamera = mtxHead.translation;
-        posCamera.normalize(30);
+        posCamera.normalize(35);
         L08_Snake3D_Enemy.viewport.camera.pivot.translation = posCamera;
         // let up: ƒ.Vector3 = ƒ.Vector3.X();
         // up.transform(mtxHead, false);
