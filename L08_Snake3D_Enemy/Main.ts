@@ -34,7 +34,7 @@ namespace L08_Snake3D_Enemy {
       mtrStandard,
       new ƒ.MeshCube()
     );
-    cube.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0.4, 0.6, 0.3, 0.3);
+    cube.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0.4, 0.6, 0.3, 0.9);
     graph.addChild(cube);
 
     ƒAid.addStandardLightComponents(graph, new ƒ.Color(0.5, 0.5, 0.5));

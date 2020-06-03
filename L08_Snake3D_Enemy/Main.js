@@ -22,7 +22,7 @@ var L08_Snake3D_Enemy;
         for (let i = 0; i < 20; i++)
             placeFood();
         let cube = new ƒAid.Node("Cube", ƒ.Matrix4x4.SCALING(ƒ.Vector3.ONE(2 * L08_Snake3D_Enemy.size - 1)), L08_Snake3D_Enemy.mtrStandard, new ƒ.MeshCube());
-        cube.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0.4, 0.6, 0.3, 0.3);
+        cube.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0.4, 0.6, 0.3, 0.9);
         graph.addChild(cube);
         ƒAid.addStandardLightComponents(graph, new ƒ.Color(0.5, 0.5, 0.5));
         let cmpCamera = new ƒ.ComponentCamera();
