@@ -27,7 +27,7 @@ namespace L09_TowerDefenseStart {
     let meshCube: ƒ.MeshCube = new ƒ.MeshCube();
 
     for (let i: number = 0; i < 10; i++) {
-      let range: number = 8;
+      let range: number = 4;
       let pos: ƒ.Vector3 = new ƒ.Vector3(ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range));
       let cube: NodePickable = new NodePickable("Cube" + i, ƒ.Matrix4x4.TRANSLATION(pos), mtrWhite, meshCube);
       cube.mtxLocal.scale(ƒ.Vector3.ONE(1));
@@ -60,7 +60,8 @@ namespace L09_TowerDefenseStart {
         picked.push({ z: pickData.clip.z, cube: cube.name });
       }
     }
-    picked.sort((_a, _b) => _a.z < _b.z ? 1 : -1);
+    picked.sort((_a, _b) => _a.z > _b.z ? 1 : -1);
+    console.clear();
     console.table(picked);
     viewport.draw();
   }
