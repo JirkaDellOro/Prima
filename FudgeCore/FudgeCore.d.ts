@@ -1949,7 +1949,8 @@ declare namespace FudgeCore {
      */
     const enum EVENT_KEYBOARD {
         UP = "\u0192keyup",
-        DOWN = "\u0192keydown"
+        DOWN = "\u0192keydown",
+        PRESS = "\u0192keypress"
     }
     /**
      * The codes sent from a standard english keyboard layout
@@ -2497,7 +2498,7 @@ declare namespace FudgeCore {
         static PROJECTION_ORTHOGRAPHIC(_left: number, _right: number, _bottom: number, _top: number, _near?: number, _far?: number): Matrix4x4;
         /**
          * Rotate this matrix by given vector in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
-         * @param _by
+         * The rotation is appended to already applied transforms, thus multiplied from the right. Set _fromLeft to true to switch and put it in front.
          */
         rotate(_by: Vector3, _fromLeft?: boolean): void;
         /**
@@ -2525,7 +2526,9 @@ declare namespace FudgeCore {
          */
         showTo(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
         /**
-         * Add a translation by the given vector to this matrix
+         * Add a translation by the given vector to this matrix.
+         * If _local is true, translation occurs according to the current rotation and scaling of this matrix,
+         * according to the parent otherwise.
          */
         translate(_by: Vector3, _local?: boolean): void;
         /**
@@ -3431,6 +3434,7 @@ declare namespace FudgeCore {
          * Stops the loop
          */
         static stop(): void;
+        static continue(): void;
         static getFpsGameAverage(): number;
         static getFpsRealAverage(): number;
         private static loop;
