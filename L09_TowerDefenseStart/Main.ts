@@ -13,7 +13,7 @@ namespace L09_TowerDefenseStart {
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
     cmpCamera.pivot.translate(new ƒ.Vector3(10, 10, 10));
     cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
-    cmpCamera.backgroundColor = ƒ.Color.CSS("white");
+    cmpCamera.backgroundColor = ƒ.Color.CSS("green");
 
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", graph, cmpCamera, canvas);
@@ -29,15 +29,16 @@ namespace L09_TowerDefenseStart {
     for (let i: number = 0; i < 10; i++) {
       let range: number = 4;
       let pos: ƒ.Vector3 = new ƒ.Vector3(ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range));
-      let cube: NodePickable = new NodePickable("Cube" + i, ƒ.Matrix4x4.TRANSLATION(pos), mtrWhite, meshCube);
+      let cube: ƒAid.Node = new ƒAid.Node("Cube" + i, ƒ.Matrix4x4.TRANSLATION(pos), mtrWhite, meshCube);
       cube.mtxLocal.scale(ƒ.Vector3.ONE(1));
+      cube.addComponent(new ComponentPicker());
       graph.getChild(1).addChild(cube);
     }
 
     viewport.draw();
 
-    for (let cube of <NodePickable[]>graph.getChild(1).getChildren()) {
-      cube.drawPickRadius();
+    for (let cube of graph.getChild(1).getChildren()) {
+      cube.getComponent(ComponentPicker).drawPickRadius(viewport);
     }
 
     viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, pointerMove);
@@ -49,20 +50,24 @@ namespace L09_TowerDefenseStart {
 
   function pointerMove(_event: ƒ.EventPointer): void {
     let posMouse: ƒ.Vector2 = new ƒ.Vector2(_event.canvasX, _event.canvasY);
-    let cubes: NodePickable[] = <NodePickable[]>viewport.getGraph().getChild(1).getChildren();
-    let picked: { z: number; cube: string }[] = [];
+    let cubes: ƒ.Node[] = viewport.getGraph().getChild(1).getChildren();
+    let picked: { z: number; picker: ComponentPicker, name: string }[] = [];
     for (let cube of cubes) {
-      let pickData: PickData = cube.pick(posMouse);
+      let cmpPicker: ComponentPicker = cube.getComponent(ComponentPicker);
+      let pickData: PickData = cmpPicker.pick(posMouse);
       let cmpMaterial: ƒ.ComponentMaterial = cube.getComponent(ƒ.ComponentMaterial);
       cmpMaterial.clrPrimary = ƒ.Color.CSS("white");
       if (pickData) {
         cmpMaterial.clrPrimary = ƒ.Color.CSS("red");
-        picked.push({ z: pickData.clip.z, cube: cube.name });
+        picked.push({ z: pickData.clip.z, picker: cmpPicker, name: cube.name });
       }
     }
     picked.sort((_a, _b) => _a.z > _b.z ? 1 : -1);
     console.clear();
     console.table(picked);
     viewport.draw();
+
+    for (let pick of picked) 
+      pick.picker.drawPickRadius(viewport);
   }
 }
