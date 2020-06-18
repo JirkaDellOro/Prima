@@ -1,4 +1,4 @@
-namespace L10_TowerDefensePath {
+namespace L10_TowerDefenseEnemyProjectiles {
   export class Enemy extends ƒ.Node {
     private static material: ƒ.Material = new ƒ.Material("Enemy", ƒ.ShaderFlat, new ƒ.CoatColored());
     private static mesh: ƒ.MeshSphere = new ƒ.MeshSphere(4, 2);
@@ -24,7 +24,7 @@ namespace L10_TowerDefensePath {
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update.bind(this));
     }
 
-    public update(): void {
+    public update(_event: ƒ.Eventƒ): void {
       // via mutator for demonstration
       let distanceToTravel: number = this.speed * ƒ.Loop.timeFrameGame;
       let move: ƒ.Vector3;

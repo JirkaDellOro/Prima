@@ -1,4 +1,4 @@
-namespace L10_TowerDefensePath {
+namespace L10_TowerDefenseEnemyProjectiles {
   import ƒAid = FudgeAid;
   export class Tower extends ƒ.Node {
     private static material: ƒ.Material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());
@@ -11,7 +11,7 @@ namespace L10_TowerDefensePath {
     public range: number = 4;
     public rate: number = 0.5;
 
-    private top: ƒ.Node;
+    public top: ƒ.Node;
     private gun: ƒ.Node;
 
     constructor(_name: string, _pos: ƒ.Vector3) {

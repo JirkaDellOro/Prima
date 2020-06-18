@@ -1,4 +1,4 @@
-namespace L10_TowerDefensePath {
+namespace L10_TowerDefenseEnemyProjectiles {
   // import ƒ = FudgeCore;
   // import ƒAid = FudgeAid;
 

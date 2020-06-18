@@ -1,4 +1,4 @@
-namespace L10_TowerDefensePath {
+namespace L10_TowerDefenseEnemyProjectiles {
   export class Path extends Array<ƒ.Vector3> {
     // public waypoints: ƒ.Vector3[] = [];
 

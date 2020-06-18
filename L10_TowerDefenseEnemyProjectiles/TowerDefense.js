@@ -60,7 +60,7 @@ var L10_TowerDefensePath;
                 cmpMesh.pivot.translateY(0.5);
                 ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update.bind(this));
             }
-            update() {
+            update(_event) {
                 // via mutator for demonstration
                 let distanceToTravel = this.speed * ƒ.Loop.timeFrameGame;
                 let move;
@@ -109,6 +109,14 @@ var L10_TowerDefensePath;
         // viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 30);
+        document.body.addEventListener("click", shoot);
+    }
+    function shoot(_event) {
+        let tower = L10_TowerDefensePath.viewport.getGraph().getChildrenByName("Tower1")[0];
+        let enemy = L10_TowerDefensePath.viewport.getGraph().getChildrenByName("Enemy1")[0];
+        let projectile = new L10_TowerDefensePath.Projectile(tower.top.mtxWorld.translation, enemy);
+        L10_TowerDefensePath.viewport.getGraph().addChild(projectile);
+        console.log("Projectile started", projectile);
     }
     function update(_event) {
         let tower = L10_TowerDefensePath.viewport.getGraph().getChildrenByName("Tower1")[0];
@@ -193,6 +201,38 @@ var L10_TowerDefensePath;
         }
     }
     L10_TowerDefensePath.Path = Path;
+})(L10_TowerDefensePath || (L10_TowerDefensePath = {}));
+var L10_TowerDefensePath;
+(function (L10_TowerDefensePath) {
+    let Projectile = /** @class */ (() => {
+        class Projectile extends ƒ.Node {
+            constructor(_start, _target) {
+                super("Projectile");
+                this.speed = 10 / 1000;
+                this.target = _target;
+                this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_start)));
+                let cmpMaterial = new ƒ.ComponentMaterial(Projectile.material);
+                cmpMaterial.clrPrimary = ƒ.Color.CSS("red");
+                this.addComponent(cmpMaterial);
+                let cmpMesh = new ƒ.ComponentMesh(Projectile.mesh);
+                this.addComponent(cmpMesh);
+                cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.2));
+                ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update.bind(this));
+            }
+            update(_event) {
+                console.log("Projectile flying");
+                let position = this.mtxLocal.translation;
+                let distance = ƒ.Vector3.DIFFERENCE(this.target.mtxLocal.translation, position);
+                let distanceToTravel = this.speed * ƒ.Loop.timeFrameGame;
+                let travel = ƒ.Vector3.NORMALIZATION(distance, distanceToTravel);
+                this.mtxLocal.translate(travel);
+            }
+        }
+        Projectile.material = new ƒ.Material("Projectile", ƒ.ShaderFlat, new ƒ.CoatColored());
+        Projectile.mesh = new ƒ.MeshCube();
+        return Projectile;
+    })();
+    L10_TowerDefensePath.Projectile = Projectile;
 })(L10_TowerDefensePath || (L10_TowerDefensePath = {}));
 var L10_TowerDefensePath;
 (function (L10_TowerDefensePath) {
