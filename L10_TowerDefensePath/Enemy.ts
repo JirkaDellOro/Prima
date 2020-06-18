@@ -5,7 +5,7 @@ namespace L10_TowerDefensePath {
 
     public health: number = 1;
     public stamina: number = 1;
-    public speed: number = 0.3 / 1000;
+    public speed: number = 1 / 1000;
     public nextWaypoint: number = 0;
 
     constructor(_name: string, _pos: ƒ.Vector3) {
@@ -26,16 +26,19 @@ namespace L10_TowerDefensePath {
 
     public update(): void {
       // via mutator for demonstration
-      let distanceTravel = this.speed * ƒ.Loop.timeFrameGame;
-      let mutator: ƒ.Mutator = this.mtxLocal.getMutator();
-      mutator.translation.x += distanceTravel;
-      if (mutator.translation.x > 5)
-        mutator.translation.x = -5;
-      this.mtxLocal.mutate(mutator);
+      let distanceToTravel: number = this.speed * ƒ.Loop.timeFrameGame;
+      let move: ƒ.Vector3;
+      while (true) {
+        move = ƒ.Vector3.DIFFERENCE(path[this.nextWaypoint], this.mtxLocal.translation);
+        if (move.magnitudeSquared > distanceToTravel * distanceToTravel)
+          break;
 
-      let distanceToWaypoint: number = ƒ.Vector3.DIFFERENCE(this.mtxLocal.translation, path[this.nextWaypoint]).magnitudeSquared;
-      if (distanceToWaypoint < distanceTravel *distanceTravel)
-        this.nextWaypoint = this.nextWaypoint++ % sizeTerrain;
+        this.nextWaypoint = ++this.nextWaypoint % (sizeTerrain + 1);
+        if (this.nextWaypoint == 0) 
+          this.mtxLocal.translation = path[0];
+      }
+
+      this.mtxLocal.translate(ƒ.Vector3.NORMALIZATION(move, distanceToTravel));
     }
   }
 }
