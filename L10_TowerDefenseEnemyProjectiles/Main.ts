@@ -27,7 +27,7 @@ namespace L10_TowerDefenseEnemyProjectiles {
     graph.addChild(createTerrain());
     path = createPath();
     // addTowers(graph);
-    graph.addChild(new Tower("Tower1", ƒ.Vector3.Z(4)));
+    graph.addChild(new Tower("Tower1", ƒ.Vector3.Z(-1)));
     graph.addChild(new Enemy("Enemy1", path[0]));
 
     viewport.draw();

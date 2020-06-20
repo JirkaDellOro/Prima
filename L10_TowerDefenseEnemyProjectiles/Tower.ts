@@ -34,18 +34,26 @@ namespace L10_TowerDefenseEnemyProjectiles {
       if (distanceSquared > (this.range * this.range))
         return;
 
-      // this.top.mtxLocal.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
-      this.top.mtxWorld.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
-      let local: ƒ.Matrix4x4 = this.calculateRelativeMatrix(this.top.mtxWorld, this.top.getParent().mtxWorld);
-      this.top.cmpTransform.local = local;
-      // this.gun.mtxLocal.lookAt(_enemy.mtxWorld.translation);
+      {
+        let local: ƒ.Matrix4x4 = this.top.mtxLocal;
+        let translation: ƒ.Vector3 = local.translation;
+        local.translation = this.top.mtxWorld.translation;
+        local.showTo(_enemy.mtxWorld.translation, ƒ.Vector3.Y(), true);
+        local.translation = translation;
+      }
+      // {
+      //   this.gun.mtxWorld.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
+      //   let local: ƒ.Matrix4x4 = ƒ.Matrix4x4.RELATIVE(this.gun.mtxWorld, this.gun.getParent().mtxWorld, this.gun.getParent().mtxWorldInverse);
+      //   this.gun.cmpTransform.local = local;
+      // }
+      this.gun.cmpTransform.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
     }
 
-    private calculateRelativeMatrix(_matrix: ƒ.Matrix4x4, _relativeTo: ƒ.Matrix4x4): ƒ.Matrix4x4 {
-      let result: ƒ.Matrix4x4;
-      result = ƒ.Matrix4x4.INVERSION(_relativeTo);
-      result = ƒ.Matrix4x4.MULTIPLICATION(result, _matrix);
-      return result;
-    }
+    // private calculateRelativeMatrix(_matrix: ƒ.Matrix4x4, _relativeTo: ƒ.Matrix4x4): ƒ.Matrix4x4 {
+    //   let result: ƒ.Matrix4x4;
+    //   result = ƒ.Matrix4x4.INVERSION(_relativeTo);
+    //   result = ƒ.Matrix4x4.MULTIPLICATION(result, _matrix);
+    //   return result;
+    // }
   }
 }
