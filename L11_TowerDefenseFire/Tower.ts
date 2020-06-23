@@ -1,4 +1,4 @@
-namespace L10_TowerDefenseEnemyProjectiles {
+namespace L11_TowerDefenseFire {
   import ƒAid = FudgeAid;
   export class Tower extends ƒ.Node {
     private static material: ƒ.Material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());

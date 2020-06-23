@@ -1,6 +1,6 @@
 "use strict";
-var L10_TowerDefenseEnemyProjectiles;
-(function (L10_TowerDefenseEnemyProjectiles) {
+var L11_TowerDefenseFire;
+(function (L11_TowerDefenseFire) {
     // import ƒ = FudgeCore;
     // import ƒAid = FudgeAid;
     class ComponentPicker extends ƒ.Component {
@@ -29,19 +29,19 @@ var L10_TowerDefenseEnemyProjectiles;
         }
         getPickData() {
             let node = this.getContainer();
-            let projection = L10_TowerDefenseEnemyProjectiles.viewport.camera.project(node.mtxWorld.translation);
-            let posClient = L10_TowerDefenseEnemyProjectiles.viewport.pointClipToClient(projection.toVector2());
+            let projection = L11_TowerDefenseFire.viewport.camera.project(node.mtxWorld.translation);
+            let posClient = L11_TowerDefenseFire.viewport.pointClipToClient(projection.toVector2());
             let projectionRadius = ƒ.Vector3.X(this.radius * node.mtxWorld.scaling.magnitude); // / 1.414);
-            projectionRadius.transform(L10_TowerDefenseEnemyProjectiles.viewport.camera.pivot, false);
-            projectionRadius = L10_TowerDefenseEnemyProjectiles.viewport.camera.project(ƒ.Vector3.SUM(node.mtxWorld.translation, projectionRadius));
-            let posRadius = L10_TowerDefenseEnemyProjectiles.viewport.pointClipToClient(projectionRadius.toVector2());
+            projectionRadius.transform(L11_TowerDefenseFire.viewport.camera.pivot, false);
+            projectionRadius = L11_TowerDefenseFire.viewport.camera.project(ƒ.Vector3.SUM(node.mtxWorld.translation, projectionRadius));
+            let posRadius = L11_TowerDefenseFire.viewport.pointClipToClient(projectionRadius.toVector2());
             return { clip: projection, canvas: posClient, radius: ƒ.Vector2.DIFFERENCE(posRadius, posClient) };
         }
     }
-    L10_TowerDefenseEnemyProjectiles.ComponentPicker = ComponentPicker;
-})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
-var L10_TowerDefenseEnemyProjectiles;
-(function (L10_TowerDefenseEnemyProjectiles) {
+    L11_TowerDefenseFire.ComponentPicker = ComponentPicker;
+})(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
+var L11_TowerDefenseFire;
+(function (L11_TowerDefenseFire) {
     let Enemy = /** @class */ (() => {
         class Enemy extends ƒ.Node {
             constructor(_name, _pos) {
@@ -65,12 +65,12 @@ var L10_TowerDefenseEnemyProjectiles;
                 let distanceToTravel = this.speed * ƒ.Loop.timeFrameGame;
                 let move;
                 while (true) {
-                    move = ƒ.Vector3.DIFFERENCE(L10_TowerDefenseEnemyProjectiles.path[this.nextWaypoint], this.mtxLocal.translation);
+                    move = ƒ.Vector3.DIFFERENCE(L11_TowerDefenseFire.path[this.nextWaypoint], this.mtxLocal.translation);
                     if (move.magnitudeSquared > distanceToTravel * distanceToTravel)
                         break;
-                    this.nextWaypoint = ++this.nextWaypoint % (L10_TowerDefenseEnemyProjectiles.sizeTerrain + 1);
+                    this.nextWaypoint = ++this.nextWaypoint % (L11_TowerDefenseFire.sizeTerrain + 1);
                     if (this.nextWaypoint == 0)
-                        this.mtxLocal.translation = L10_TowerDefenseEnemyProjectiles.path[0];
+                        this.mtxLocal.translation = L11_TowerDefenseFire.path[0];
                 }
                 this.mtxLocal.translate(ƒ.Vector3.NORMALIZATION(move, distanceToTravel));
             }
@@ -79,14 +79,14 @@ var L10_TowerDefenseEnemyProjectiles;
         Enemy.mesh = new ƒ.MeshSphere(4, 2);
         return Enemy;
     })();
-    L10_TowerDefenseEnemyProjectiles.Enemy = Enemy;
-})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
-var L10_TowerDefenseEnemyProjectiles;
-(function (L10_TowerDefenseEnemyProjectiles) {
+    L11_TowerDefenseFire.Enemy = Enemy;
+})(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
+var L11_TowerDefenseFire;
+(function (L11_TowerDefenseFire) {
     // import ƒ = FudgeCore;
     var ƒAid = FudgeAid;
     window.addEventListener("load", hndLoad);
-    L10_TowerDefenseEnemyProjectiles.sizeTerrain = 10;
+    L11_TowerDefenseFire.sizeTerrain = 10;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         let graph = new ƒ.Node("Graph");
@@ -94,17 +94,17 @@ var L10_TowerDefenseEnemyProjectiles;
         cmpCamera.pivot.translate(new ƒ.Vector3(10, 5, 10));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
         cmpCamera.backgroundColor = ƒ.Color.CSS("lightblue");
-        L10_TowerDefenseEnemyProjectiles.viewport = new ƒ.Viewport();
-        L10_TowerDefenseEnemyProjectiles.viewport.initialize("Viewport", graph, cmpCamera, canvas);
-        ƒ.Debug.log(L10_TowerDefenseEnemyProjectiles.viewport);
+        L11_TowerDefenseFire.viewport = new ƒ.Viewport();
+        L11_TowerDefenseFire.viewport.initialize("Viewport", graph, cmpCamera, canvas);
+        ƒ.Debug.log(L11_TowerDefenseFire.viewport);
         ƒAid.addStandardLightComponents(graph, new ƒ.Color(0.5, 0.5, 0.5));
         graph.addChild(new ƒAid.NodeCoordinateSystem());
         graph.addChild(createTerrain());
-        L10_TowerDefenseEnemyProjectiles.path = createPath();
+        L11_TowerDefenseFire.path = createPath();
         // addTowers(graph);
-        graph.addChild(new L10_TowerDefenseEnemyProjectiles.Tower("Tower1", ƒ.Vector3.Z(-1)));
-        graph.addChild(new L10_TowerDefenseEnemyProjectiles.Enemy("Enemy1", L10_TowerDefenseEnemyProjectiles.path[0]));
-        L10_TowerDefenseEnemyProjectiles.viewport.draw();
+        graph.addChild(new L11_TowerDefenseFire.Tower("Tower1", ƒ.Vector3.Z(-1)));
+        graph.addChild(new L11_TowerDefenseFire.Enemy("Enemy1", L11_TowerDefenseFire.path[0]));
+        L11_TowerDefenseFire.viewport.draw();
         // viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, pointerMove);
         // viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -112,31 +112,31 @@ var L10_TowerDefenseEnemyProjectiles;
         document.body.addEventListener("click", shoot);
     }
     function shoot(_event) {
-        let tower = L10_TowerDefenseEnemyProjectiles.viewport.getGraph().getChildrenByName("Tower1")[0];
-        let enemy = L10_TowerDefenseEnemyProjectiles.viewport.getGraph().getChildrenByName("Enemy1")[0];
-        let projectile = new L10_TowerDefenseEnemyProjectiles.Projectile(tower.top.mtxWorld.translation, enemy);
-        L10_TowerDefenseEnemyProjectiles.viewport.getGraph().addChild(projectile);
+        let tower = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Tower1")[0];
+        let enemy = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Enemy1")[0];
+        let projectile = new L11_TowerDefenseFire.Projectile(tower.top.mtxWorld.translation, enemy);
+        L11_TowerDefenseFire.viewport.getGraph().addChild(projectile);
         console.log("Projectile started", projectile);
     }
     function update(_event) {
-        let tower = L10_TowerDefenseEnemyProjectiles.viewport.getGraph().getChildrenByName("Tower1")[0];
-        let enemy = L10_TowerDefenseEnemyProjectiles.viewport.getGraph().getChildrenByName("Enemy1")[0];
+        let tower = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Tower1")[0];
+        let enemy = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Enemy1")[0];
         tower.follow(enemy);
-        L10_TowerDefenseEnemyProjectiles.viewport.draw();
-        L10_TowerDefenseEnemyProjectiles.path.render(L10_TowerDefenseEnemyProjectiles.viewport);
+        L11_TowerDefenseFire.viewport.draw();
+        L11_TowerDefenseFire.path.render(L11_TowerDefenseFire.viewport);
     }
     function createTerrain() {
         let mtrPlane = new ƒ.Material("Plane", ƒ.ShaderFlat, new ƒ.CoatColored(ƒ.Color.CSS("green")));
         let meshPlane = new ƒ.MeshQuad();
         let mtxPlane = ƒ.Matrix4x4.ROTATION_X(-90);
-        mtxPlane.scale(ƒ.Vector3.ONE(L10_TowerDefenseEnemyProjectiles.sizeTerrain));
+        mtxPlane.scale(ƒ.Vector3.ONE(L11_TowerDefenseFire.sizeTerrain));
         let plane = new ƒAid.Node("Plane", mtxPlane, mtrPlane, meshPlane);
         return plane;
     }
     function createPath() {
-        let path = new L10_TowerDefenseEnemyProjectiles.Path();
-        for (let i = 0; i <= L10_TowerDefenseEnemyProjectiles.sizeTerrain; i++) {
-            path.push(new ƒ.Vector3(i - L10_TowerDefenseEnemyProjectiles.sizeTerrain / 2, 0, ƒ.Random.default.getRange(-L10_TowerDefenseEnemyProjectiles.sizeTerrain, L10_TowerDefenseEnemyProjectiles.sizeTerrain) / 4));
+        let path = new L11_TowerDefenseFire.Path();
+        for (let i = 0; i <= L11_TowerDefenseFire.sizeTerrain; i++) {
+            path.push(new ƒ.Vector3(i - L11_TowerDefenseFire.sizeTerrain / 2, 0, ƒ.Random.default.getRange(-L11_TowerDefenseFire.sizeTerrain, L11_TowerDefenseFire.sizeTerrain) / 4));
         }
         return path;
     }
@@ -180,17 +180,17 @@ var L10_TowerDefenseEnemyProjectiles;
         pick.picker.drawPickRadius(viewport);
     }
     */
-})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
-var L10_TowerDefenseEnemyProjectiles;
-(function (L10_TowerDefenseEnemyProjectiles) {
+})(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
+var L11_TowerDefenseFire;
+(function (L11_TowerDefenseFire) {
     class Path extends Array {
         // public waypoints: ƒ.Vector3[] = [];
         render(_viewport) {
             let crc2 = _viewport.getContext();
             let first = true;
             for (let waypoint of this) {
-                let projection = L10_TowerDefenseEnemyProjectiles.viewport.camera.project(waypoint);
-                let posClient = L10_TowerDefenseEnemyProjectiles.viewport.pointClipToClient(projection.toVector2());
+                let projection = L11_TowerDefenseFire.viewport.camera.project(waypoint);
+                let posClient = L11_TowerDefenseFire.viewport.pointClipToClient(projection.toVector2());
                 if (first)
                     crc2.moveTo(posClient.x, posClient.y);
                 else
@@ -200,10 +200,10 @@ var L10_TowerDefenseEnemyProjectiles;
             crc2.stroke();
         }
     }
-    L10_TowerDefenseEnemyProjectiles.Path = Path;
-})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
-var L10_TowerDefenseEnemyProjectiles;
-(function (L10_TowerDefenseEnemyProjectiles) {
+    L11_TowerDefenseFire.Path = Path;
+})(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
+var L11_TowerDefenseFire;
+(function (L11_TowerDefenseFire) {
     let Projectile = /** @class */ (() => {
         class Projectile extends ƒ.Node {
             constructor(_start, _target) {
@@ -232,10 +232,10 @@ var L10_TowerDefenseEnemyProjectiles;
         Projectile.mesh = new ƒ.MeshCube();
         return Projectile;
     })();
-    L10_TowerDefenseEnemyProjectiles.Projectile = Projectile;
-})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
-var L10_TowerDefenseEnemyProjectiles;
-(function (L10_TowerDefenseEnemyProjectiles) {
+    L11_TowerDefenseFire.Projectile = Projectile;
+})(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
+var L11_TowerDefenseFire;
+(function (L11_TowerDefenseFire) {
     var ƒAid = FudgeAid;
     let Tower = /** @class */ (() => {
         class Tower extends ƒ.Node {
@@ -263,7 +263,6 @@ var L10_TowerDefenseEnemyProjectiles;
                 if (distanceSquared > (this.range * this.range))
                     return;
                 this.top.cmpTransform.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
-                // this.gun.cmpTransform.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
             }
         }
         Tower.material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());
@@ -272,6 +271,6 @@ var L10_TowerDefenseEnemyProjectiles;
         Tower.meshGun = new ƒ.MeshCube();
         return Tower;
     })();
-    L10_TowerDefenseEnemyProjectiles.Tower = Tower;
-})(L10_TowerDefenseEnemyProjectiles || (L10_TowerDefenseEnemyProjectiles = {}));
+    L11_TowerDefenseFire.Tower = Tower;
+})(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
 //# sourceMappingURL=TowerDefense.js.map
