@@ -38,17 +38,17 @@ namespace L11_TowerDefenseFire {
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 30);
 
-    document.body.addEventListener("click", shoot);
+    // document.body.addEventListener("click", shoot);
   }
 
-  function shoot(_event: MouseEvent): void {
-    let tower: Tower = <Tower>viewport.getGraph().getChildrenByName("Tower1")[0];
-    let enemy: Enemy = <Enemy>viewport.getGraph().getChildrenByName("Enemy1")[0];
+  // function shoot(_event: MouseEvent): void {
+  //   let tower: Tower = <Tower>viewport.getGraph().getChildrenByName("Tower1")[0];
+  //   let enemy: Enemy = <Enemy>viewport.getGraph().getChildrenByName("Enemy1")[0];
 
-    let projectile: Projectile = new Projectile(tower.top.mtxWorld.translation, enemy);
-    viewport.getGraph().addChild(projectile);
-    console.log("Projectile started", projectile);
-  }
+  //   let projectile: Projectile = new Projectile(tower.top.mtxWorld.translation, enemy);
+  //   viewport.getGraph().addChild(projectile);
+  //   console.log("Projectile started", projectile);
+  // }
 
   function update(_event: ƒ.Eventƒ): void {
     let tower: Tower = <Tower>viewport.getGraph().getChildrenByName("Tower1")[0];

@@ -13,6 +13,9 @@ namespace L11_TowerDefenseFire {
 
     public top: ƒ.Node;
     private gun: ƒ.Node;
+    private timer: ƒ.Timer = new ƒ.Timer(ƒ.Time.game, 500, 0, this.fire.bind(this));
+    private target: ƒ.Node;
+    
 
     constructor(_name: string, _pos: ƒ.Vector3) {
       super(_name);
@@ -32,11 +35,21 @@ namespace L11_TowerDefenseFire {
     }
 
     public follow(_enemy: ƒ.Node): void {
+      this.target = null;
       let distanceSquared: number = ƒ.Vector3.DIFFERENCE(this.mtxWorld.translation, _enemy.mtxWorld.translation).magnitudeSquared;
       if (distanceSquared > (this.range * this.range))
         return;
 
       this.top.cmpTransform.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
+      this.target = _enemy;
+    }
+
+    public fire(): void {
+      // console.log("Fire", this);
+      if (!this.target)
+        return;
+
+      let projectile: Projectile = new Projectile(this.top.mtxWorld.translation, this.target);
     }
   }
 }

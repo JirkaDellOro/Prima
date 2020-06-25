@@ -109,15 +109,15 @@ var L11_TowerDefenseFire;
         // viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 30);
-        document.body.addEventListener("click", shoot);
+        // document.body.addEventListener("click", shoot);
     }
-    function shoot(_event) {
-        let tower = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Tower1")[0];
-        let enemy = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Enemy1")[0];
-        let projectile = new L11_TowerDefenseFire.Projectile(tower.top.mtxWorld.translation, enemy);
-        L11_TowerDefenseFire.viewport.getGraph().addChild(projectile);
-        console.log("Projectile started", projectile);
-    }
+    // function shoot(_event: MouseEvent): void {
+    //   let tower: Tower = <Tower>viewport.getGraph().getChildrenByName("Tower1")[0];
+    //   let enemy: Enemy = <Enemy>viewport.getGraph().getChildrenByName("Enemy1")[0];
+    //   let projectile: Projectile = new Projectile(tower.top.mtxWorld.translation, enemy);
+    //   viewport.getGraph().addChild(projectile);
+    //   console.log("Projectile started", projectile);
+    // }
     function update(_event) {
         let tower = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Tower1")[0];
         let enemy = L11_TowerDefenseFire.viewport.getGraph().getChildrenByName("Enemy1")[0];
@@ -209,6 +209,19 @@ var L11_TowerDefenseFire;
             constructor(_start, _target) {
                 super("Projectile");
                 this.speed = 10 / 1000;
+                this.update = (_event) => {
+                    console.log("Projectile flying");
+                    let position = this.mtxLocal.translation;
+                    let distance = ƒ.Vector3.DIFFERENCE(this.target.mtxLocal.translation, position);
+                    let distanceToTravel = this.speed * ƒ.Loop.timeFrameGame;
+                    if (distance.magnitudeSquared < distanceToTravel * distanceToTravel) {
+                        L11_TowerDefenseFire.viewport.getGraph().removeChild(this);
+                        ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                        return;
+                    }
+                    let travel = ƒ.Vector3.NORMALIZATION(distance, distanceToTravel);
+                    this.mtxLocal.translate(travel);
+                };
                 this.target = _target;
                 this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_start)));
                 let cmpMaterial = new ƒ.ComponentMaterial(Projectile.material);
@@ -217,15 +230,8 @@ var L11_TowerDefenseFire;
                 let cmpMesh = new ƒ.ComponentMesh(Projectile.mesh);
                 this.addComponent(cmpMesh);
                 cmpMesh.pivot.scale(ƒ.Vector3.ONE(0.2));
-                ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update.bind(this));
-            }
-            update(_event) {
-                console.log("Projectile flying");
-                let position = this.mtxLocal.translation;
-                let distance = ƒ.Vector3.DIFFERENCE(this.target.mtxLocal.translation, position);
-                let distanceToTravel = this.speed * ƒ.Loop.timeFrameGame;
-                let travel = ƒ.Vector3.NORMALIZATION(distance, distanceToTravel);
-                this.mtxLocal.translate(travel);
+                L11_TowerDefenseFire.viewport.getGraph().addChild(this);
+                ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
             }
         }
         Projectile.material = new ƒ.Material("Projectile", ƒ.ShaderFlat, new ƒ.CoatColored());
@@ -245,6 +251,7 @@ var L11_TowerDefenseFire;
                 this.strength = 0.1;
                 this.range = 4;
                 this.rate = 0.5;
+                this.timer = new ƒ.Timer(ƒ.Time.game, 500, 0, this.fire.bind(this));
                 let base = new ƒAid.Node("Base", null, Tower.material, Tower.meshBase);
                 this.top = new ƒAid.Node("Top", ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1)), Tower.material, Tower.meshTop);
                 let mtxTop = this.top.getComponent(ƒ.ComponentMesh).pivot;
@@ -259,10 +266,18 @@ var L11_TowerDefenseFire;
                 this.top.addChild(this.gun);
             }
             follow(_enemy) {
+                this.target = null;
                 let distanceSquared = ƒ.Vector3.DIFFERENCE(this.mtxWorld.translation, _enemy.mtxWorld.translation).magnitudeSquared;
                 if (distanceSquared > (this.range * this.range))
                     return;
                 this.top.cmpTransform.lookAt(_enemy.mtxWorld.translation, ƒ.Vector3.Y());
+                this.target = _enemy;
+            }
+            fire() {
+                // console.log("Fire", this);
+                if (!this.target)
+                    return;
+                let projectile = new L11_TowerDefenseFire.Projectile(this.top.mtxWorld.translation, this.target);
             }
         }
         Tower.material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());
