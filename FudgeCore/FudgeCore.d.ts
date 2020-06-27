@@ -1070,7 +1070,6 @@ declare namespace FudgeCore {
     class CoatTextured extends Coat {
         color: Color;
         texture: TextureImage;
-        pivot: Matrix3x3;
         tilingX: number;
         tilingY: number;
         repetition: boolean;
@@ -1413,6 +1412,7 @@ declare namespace FudgeCore {
         material: Material;
         clrPrimary: Color;
         clrSecondary: Color;
+        pivot: Matrix3x3;
         constructor(_material?: Material);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
@@ -1849,6 +1849,7 @@ declare namespace FudgeCore {
          * Returns a [[Ray]] in world coordinates from this camera through the point given in client space
          */
         getRayFromClient(_point: Vector2): Ray;
+        pointWorldToClient(_position: Vector3): Vector2;
         /**
          * Returns a point on the source-rectangle matching the given point on the client rectangle
          */
@@ -3233,6 +3234,7 @@ declare namespace FudgeCore {
          * must be relative to the same coordinate system, preferably the world
          */
         intersectPlane(_origin: Vector3, _normal: Vector3): Vector3;
+        getDistance(_target: Vector3): Vector3;
     }
 }
 declare namespace FudgeCore {

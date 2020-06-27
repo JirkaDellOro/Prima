@@ -12,7 +12,7 @@ namespace L12_Plattformer2D {
   }
 
   export class Hare extends ƒ.Node {
-    private static sprites: ƒAid.Sprite[];
+    private static sprites: ƒAid.SpriteSheetAnimation[];
     private static speedMax: ƒ.Vector2 = new ƒ.Vector2(1.5, 5); // units per second
     private static gravity: ƒ.Vector2 = ƒ.Vector2.Y(-3);
     // private action: ACTION;
@@ -40,14 +40,14 @@ namespace L12_Plattformer2D {
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
     }
 
-    public static generateSprites(_txtImage: ƒ.TextureImage): void {
+    public static generateSprites(_spritesheet: ƒAid.SpriteSheet): void {
       Hare.sprites = [];
-      let sprite: ƒAid.Sprite = new ƒAid.Sprite(ACTION.WALK);
-      sprite.generateByGrid(_txtImage, ƒ.Rectangle.GET(2, 104, 68, 64), 6, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
+      let sprite: ƒAid.SpriteSheetAnimation = new ƒAid.SpriteSheetAnimation(ACTION.WALK, _spritesheet);
+      sprite.generateByGrid(ƒ.Rectangle.GET(2, 104, 68, 64), 6, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
       Hare.sprites.push(sprite);
 
-      sprite = new ƒAid.Sprite(ACTION.IDLE);
-      sprite.generateByGrid(_txtImage, ƒ.Rectangle.GET(8, 20, 45, 72), 4, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
+      sprite = new ƒAid.SpriteSheetAnimation(ACTION.IDLE, _spritesheet);
+      sprite.generateByGrid(ƒ.Rectangle.GET(8, 20, 45, 72), 4, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
       Hare.sprites.push(sprite);
     }
 

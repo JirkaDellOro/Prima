@@ -53,42 +53,42 @@ namespace L09_TowerDefenseStart {
     return plane;
   }
 
-  function createPickerTestCubes(): ƒ.Node {
-    let cubes: ƒ.Node = new ƒ.Node("Cubes");
+  // function createPickerTestCubes(): ƒ.Node {
+  //   let cubes: ƒ.Node = new ƒ.Node("Cubes");
 
-    let mtrWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderFlat, new ƒ.CoatColored());
-    let meshCube: ƒ.MeshCube = new ƒ.MeshCube();
+  //   let mtrWhite: ƒ.Material = new ƒ.Material("White", ƒ.ShaderFlat, new ƒ.CoatColored());
+  //   let meshCube: ƒ.MeshCube = new ƒ.MeshCube();
 
-    for (let i: number = 0; i < 0; i++) {
-      let range: number = 4;
-      let pos: ƒ.Vector3 = new ƒ.Vector3(ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range));
-      let cube: ƒAid.Node = new ƒAid.Node("Cube" + i, ƒ.Matrix4x4.TRANSLATION(pos), mtrWhite, meshCube);
-      cube.mtxLocal.scale(ƒ.Vector3.ONE(1));
-      cube.addComponent(new ComponentPicker());
-      cubes.addChild(cube);
-    }
-    return cubes;
-  }
-  function pointerMove(_event: ƒ.EventPointer): void {
-    let posMouse: ƒ.Vector2 = new ƒ.Vector2(_event.canvasX, _event.canvasY);
-    let cubes: ƒ.Node[] = viewport.getGraph().getChild(1).getChildren();
-    let picked: { z: number; picker: ComponentPicker, name: string }[] = [];
-    for (let cube of cubes) {
-      let cmpPicker: ComponentPicker = cube.getComponent(ComponentPicker);
-      let pickData: PickData = cmpPicker.pick(posMouse);
-      let cmpMaterial: ƒ.ComponentMaterial = cube.getComponent(ƒ.ComponentMaterial);
-      cmpMaterial.clrPrimary = ƒ.Color.CSS("white");
-      if (pickData) {
-        cmpMaterial.clrPrimary = ƒ.Color.CSS("red");
-        picked.push({ z: pickData.clip.z, picker: cmpPicker, name: cube.name });
-      }
-    }
-    picked.sort((_a, _b) => _a.z > _b.z ? 1 : -1);
-    console.clear();
-    console.table(picked);
-    viewport.draw();
+  //   for (let i: number = 0; i < 0; i++) {
+  //     let range: number = 4;
+  //     let pos: ƒ.Vector3 = new ƒ.Vector3(ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range), ƒ.Random.default.getRange(-range, range));
+  //     let cube: ƒAid.Node = new ƒAid.Node("Cube" + i, ƒ.Matrix4x4.TRANSLATION(pos), mtrWhite, meshCube);
+  //     cube.mtxLocal.scale(ƒ.Vector3.ONE(1));
+  //     cube.addComponent(new ComponentPicker());
+  //     cubes.addChild(cube);
+  //   }
+  //   return cubes;
+  // }
+  // function pointerMove(_event: ƒ.EventPointer): void {
+  //   let posMouse: ƒ.Vector2 = new ƒ.Vector2(_event.canvasX, _event.canvasY);
+  //   let cubes: ƒ.Node[] = viewport.getGraph().getChild(1).getChildren();
+  //   let picked: { z: number; picker: ComponentPicker, name: string }[] = [];
+  //   for (let cube of cubes) {
+  //     let cmpPicker: ComponentPicker = cube.getComponent(ComponentPicker);
+  //     let pickData: PickData = cmpPicker.pick(posMouse);
+  //     let cmpMaterial: ƒ.ComponentMaterial = cube.getComponent(ƒ.ComponentMaterial);
+  //     cmpMaterial.clrPrimary = ƒ.Color.CSS("white");
+  //     if (pickData) {
+  //       cmpMaterial.clrPrimary = ƒ.Color.CSS("red");
+  //       picked.push({ z: pickData.clip.z, picker: cmpPicker, name: cube.name });
+  //     }
+  //   }
+  //   picked.sort((_a, _b) => _a.z > _b.z ? 1 : -1);
+  //   console.clear();
+  //   console.table(picked);
+  //   viewport.draw();
 
-    for (let pick of picked)
-      pick.picker.drawPickRadius(viewport);
-  }
+  //   for (let pick of picked)
+  //     pick.picker.drawPickRadius(viewport);
+  // }
 }

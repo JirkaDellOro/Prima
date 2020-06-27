@@ -19,6 +19,7 @@ namespace L11_TowerDefenseFire {
 
     constructor(_name: string, _pos: ƒ.Vector3) {
       super(_name);
+      console.log(this.timer);
       let base: ƒAid.Node = new ƒAid.Node("Base", null, Tower.material, Tower.meshBase);
       this.top = new ƒAid.Node("Top", ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1)), Tower.material, Tower.meshTop);
       let mtxTop: ƒ.Matrix4x4 = this.top.getComponent(ƒ.ComponentMesh).pivot;
@@ -50,6 +51,7 @@ namespace L11_TowerDefenseFire {
         return;
 
       let projectile: Projectile = new Projectile(this.top.mtxWorld.translation, this.target);
+      console.log("Fire", projectile);
     }
   }
 }

@@ -39,13 +39,13 @@ var L12_Plattformer2D;
                 this.show(ACTION.IDLE);
                 ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
             }
-            static generateSprites(_txtImage) {
+            static generateSprites(_spritesheet) {
                 Hare.sprites = [];
-                let sprite = new ƒAid.Sprite(ACTION.WALK);
-                sprite.generateByGrid(_txtImage, ƒ.Rectangle.GET(2, 104, 68, 64), 6, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
+                let sprite = new ƒAid.SpriteSheetAnimation(ACTION.WALK, _spritesheet);
+                sprite.generateByGrid(ƒ.Rectangle.GET(2, 104, 68, 64), 6, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
                 Hare.sprites.push(sprite);
-                sprite = new ƒAid.Sprite(ACTION.IDLE);
-                sprite.generateByGrid(_txtImage, ƒ.Rectangle.GET(8, 20, 45, 72), 4, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
+                sprite = new ƒAid.SpriteSheetAnimation(ACTION.IDLE, _spritesheet);
+                sprite.generateByGrid(ƒ.Rectangle.GET(8, 20, 45, 72), 4, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
                 Hare.sprites.push(sprite);
             }
             show(_action) {

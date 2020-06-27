@@ -11,6 +11,7 @@ var L11_TowerDefenseFire;
                 this.range = 4;
                 this.rate = 0.5;
                 this.timer = new ƒ.Timer(ƒ.Time.game, 500, 0, this.fire.bind(this));
+                console.log(this.timer);
                 let base = new ƒAid.Node("Base", null, Tower.material, Tower.meshBase);
                 this.top = new ƒAid.Node("Top", ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1)), Tower.material, Tower.meshTop);
                 let mtxTop = this.top.getComponent(ƒ.ComponentMesh).pivot;
@@ -37,6 +38,7 @@ var L11_TowerDefenseFire;
                 if (!this.target)
                     return;
                 let projectile = new L11_TowerDefenseFire.Projectile(this.top.mtxWorld.translation, this.target);
+                console.log("Fire", projectile);
             }
         }
         Tower.material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());
