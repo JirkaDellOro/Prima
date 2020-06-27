@@ -10,7 +10,7 @@ var L12_Plattformer2D;
         let canvas = document.querySelector("canvas");
         let crc2 = canvas.getContext("2d");
         let img = document.querySelector("img");
-        let spritesheet = new L12_Plattformer2D.ƒAid.SpriteSheet("Hare", img);
+        let spritesheet = L12_Plattformer2D.ƒAid.createSpriteSheet("Hare", img);
         L12_Plattformer2D.Hare.generateSprites(spritesheet);
         L12_Plattformer2D.game = new L12_Plattformer2D.ƒ.Node("Game");
         hare = new L12_Plattformer2D.Hare("Hare");

@@ -30,8 +30,9 @@ var L12_Plattformer2D;
                     this.checkCollision();
                 };
                 this.addComponent(new ƒ.ComponentTransform());
-                for (let sprite of Hare.sprites) {
-                    let nodeSprite = new ƒAid.NodeSprite(sprite.name, sprite);
+                for (let animation in Hare.animations) {
+                    let nodeSprite = new ƒAid.NodeSprite(animation);
+                    nodeSprite.setAnimation(Hare.animations[animation]);
                     nodeSprite.activate(false);
                     nodeSprite.addEventListener("showNext", (_event) => { _event.currentTarget.showFrameNext(); }, true);
                     this.appendChild(nodeSprite);
@@ -40,13 +41,13 @@ var L12_Plattformer2D;
                 ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
             }
             static generateSprites(_spritesheet) {
-                Hare.sprites = [];
+                Hare.animations = {};
                 let sprite = new ƒAid.SpriteSheetAnimation(ACTION.WALK, _spritesheet);
                 sprite.generateByGrid(ƒ.Rectangle.GET(2, 104, 68, 64), 6, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
-                Hare.sprites.push(sprite);
+                Hare.animations[ACTION.WALK] = sprite;
                 sprite = new ƒAid.SpriteSheetAnimation(ACTION.IDLE, _spritesheet);
                 sprite.generateByGrid(ƒ.Rectangle.GET(8, 20, 45, 72), 4, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
-                Hare.sprites.push(sprite);
+                Hare.animations[ACTION.IDLE] = sprite;
             }
             show(_action) {
                 if (_action == ACTION.JUMP)

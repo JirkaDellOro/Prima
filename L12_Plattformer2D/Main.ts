@@ -19,7 +19,7 @@ namespace L12_Plattformer2D {
     let canvas: HTMLCanvasElement = document.querySelector("canvas");
     let crc2: CanvasRenderingContext2D = canvas.getContext("2d");
     let img: HTMLImageElement = document.querySelector("img");
-    let spritesheet: ƒAid.SpriteSheet = new ƒAid.SpriteSheet("Hare", img);
+    let spritesheet: ƒ.CoatTextured = ƒAid.createSpriteSheet("Hare", img);
     Hare.generateSprites(spritesheet);
 
     game = new ƒ.Node("Game");

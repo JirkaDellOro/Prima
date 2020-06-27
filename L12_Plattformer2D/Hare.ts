@@ -12,7 +12,7 @@ namespace L12_Plattformer2D {
   }
 
   export class Hare extends ƒ.Node {
-    private static sprites: ƒAid.SpriteSheetAnimation[];
+    private static animations: ƒAid.SpriteSheetAnimations;
     private static speedMax: ƒ.Vector2 = new ƒ.Vector2(1.5, 5); // units per second
     private static gravity: ƒ.Vector2 = ƒ.Vector2.Y(-3);
     // private action: ACTION;
@@ -23,8 +23,9 @@ namespace L12_Plattformer2D {
       super(_name);
       this.addComponent(new ƒ.ComponentTransform());
 
-      for (let sprite of Hare.sprites) {
-        let nodeSprite: ƒAid.NodeSprite = new ƒAid.NodeSprite(sprite.name, sprite);
+      for (let animation in Hare.animations) {
+        let nodeSprite: ƒAid.NodeSprite = new ƒAid.NodeSprite(animation);
+        nodeSprite.setAnimation(<ƒAid.SpriteSheetAnimation>Hare.animations[animation]);
         nodeSprite.activate(false);
 
         nodeSprite.addEventListener(
@@ -40,15 +41,15 @@ namespace L12_Plattformer2D {
       ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
     }
 
-    public static generateSprites(_spritesheet: ƒAid.SpriteSheet): void {
-      Hare.sprites = [];
+    public static generateSprites(_spritesheet: ƒ.CoatTextured): void {
+      Hare.animations = {};
       let sprite: ƒAid.SpriteSheetAnimation = new ƒAid.SpriteSheetAnimation(ACTION.WALK, _spritesheet);
       sprite.generateByGrid(ƒ.Rectangle.GET(2, 104, 68, 64), 6, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
-      Hare.sprites.push(sprite);
-
+      Hare.animations[ACTION.WALK] = sprite;
+      
       sprite = new ƒAid.SpriteSheetAnimation(ACTION.IDLE, _spritesheet);
       sprite.generateByGrid(ƒ.Rectangle.GET(8, 20, 45, 72), 4, ƒ.Vector2.ZERO(), 64, ƒ.ORIGIN2D.BOTTOMCENTER);
-      Hare.sprites.push(sprite);
+      Hare.animations[ACTION.IDLE] = sprite;
     }
 
     public show(_action: ACTION): void {
