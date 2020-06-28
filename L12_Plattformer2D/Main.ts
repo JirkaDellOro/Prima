@@ -28,6 +28,12 @@ namespace L12_Plattformer2D {
     game.appendChild(level);
     game.appendChild(hare);
 
+    for (let i: number = 0; i < 5; i++) {
+      let hare: Hare = new Hare();
+      hare.mtxLocal.translation = new ƒ.Vector3(ƒ.Random.default.getRange(-1, 1), ƒ.Random.default.getRange(-1, 1));
+      game.appendChild(hare);
+    }
+
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
     cmpCamera.pivot.translateZ(5);
     cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -83,6 +89,13 @@ namespace L12_Plattformer2D {
     floor.cmpTransform.local.translateY(0.17);
     floor.cmpTransform.local.scaleY(0.2);
     floor.cmpTransform.local.scaleX(2);
+    level.appendChild(floor);
+
+
+    floor = new Floor();
+    floor.cmpTransform.local.translateY(-1.6);
+    floor.cmpTransform.local.scaleY(0.2);
+    floor.cmpTransform.local.scaleX(5);
     level.appendChild(floor);
 
     return level;

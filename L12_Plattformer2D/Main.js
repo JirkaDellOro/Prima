@@ -17,6 +17,11 @@ var L12_Plattformer2D;
         L12_Plattformer2D.level = createLevel();
         L12_Plattformer2D.game.appendChild(L12_Plattformer2D.level);
         L12_Plattformer2D.game.appendChild(hare);
+        for (let i = 0; i < 5; i++) {
+            let hare = new L12_Plattformer2D.Hare();
+            hare.mtxLocal.translation = new L12_Plattformer2D.ƒ.Vector3(L12_Plattformer2D.ƒ.Random.default.getRange(-1, 1), L12_Plattformer2D.ƒ.Random.default.getRange(-1, 1));
+            L12_Plattformer2D.game.appendChild(hare);
+        }
         let cmpCamera = new L12_Plattformer2D.ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(5);
         cmpCamera.pivot.lookAt(L12_Plattformer2D.ƒ.Vector3.ZERO());
@@ -61,6 +66,11 @@ var L12_Plattformer2D;
         floor.cmpTransform.local.translateY(0.17);
         floor.cmpTransform.local.scaleY(0.2);
         floor.cmpTransform.local.scaleX(2);
+        level.appendChild(floor);
+        floor = new L12_Plattformer2D.Floor();
+        floor.cmpTransform.local.translateY(-1.6);
+        floor.cmpTransform.local.scaleY(0.2);
+        floor.cmpTransform.local.scaleX(5);
         level.appendChild(floor);
         return level;
     }
