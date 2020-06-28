@@ -27,7 +27,7 @@ var L12_Plattformer2D;
         document.addEventListener("keydown", handleKeyboard);
         document.addEventListener("keyup", handleKeyboard);
         L12_Plattformer2D.ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        L12_Plattformer2D.ƒ.Loop.start(L12_Plattformer2D.ƒ.LOOP_MODE.TIME_GAME, 10);
+        L12_Plattformer2D.ƒ.Loop.start(L12_Plattformer2D.ƒ.LOOP_MODE.TIME_GAME, 60);
         function update(_event) {
             processInput();
             viewport.draw();

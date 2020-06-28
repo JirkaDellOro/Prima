@@ -41,7 +41,7 @@ namespace L12_Plattformer2D {
     document.addEventListener("keyup", handleKeyboard);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 10);
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 60);
 
     function update(_event: ƒ.Eventƒ): void {
       processInput();
