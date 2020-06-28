@@ -4,7 +4,6 @@ var L12_Plattformer2D;
     L12_Plattformer2D.ƒ = FudgeCore;
     L12_Plattformer2D.ƒAid = FudgeAid;
     window.addEventListener("load", test);
-    let keysPressed = {};
     let hare;
     function test() {
         let canvas = document.querySelector("canvas");
@@ -29,8 +28,9 @@ var L12_Plattformer2D;
         let viewport = new L12_Plattformer2D.ƒ.Viewport();
         viewport.initialize("Viewport", L12_Plattformer2D.game, cmpCamera, canvas);
         viewport.draw();
-        document.addEventListener("keydown", handleKeyboard);
-        document.addEventListener("keyup", handleKeyboard);
+        viewport.addEventListener("\u0192keydown" /* DOWN */, handleKeyboard);
+        viewport.activateKeyboardEvent("\u0192keydown" /* DOWN */, true);
+        viewport.setFocus(true);
         L12_Plattformer2D.ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         L12_Plattformer2D.ƒ.Loop.start(L12_Plattformer2D.ƒ.LOOP_MODE.TIME_GAME, 60);
         function update(_event) {
@@ -41,20 +41,16 @@ var L12_Plattformer2D;
         }
     }
     function handleKeyboard(_event) {
-        keysPressed[_event.code] = (_event.type == "keydown");
-        if (_event.code == L12_Plattformer2D.ƒ.KEYBOARD_CODE.SPACE && _event.type == "keydown")
+        if (_event.code == L12_Plattformer2D.ƒ.KEYBOARD_CODE.SPACE)
             hare.act(L12_Plattformer2D.ACTION.JUMP);
     }
     function processInput() {
-        if (keysPressed[L12_Plattformer2D.ƒ.KEYBOARD_CODE.A]) {
+        if (L12_Plattformer2D.ƒ.Keyboard.isPressedOne([L12_Plattformer2D.ƒ.KEYBOARD_CODE.A, L12_Plattformer2D.ƒ.KEYBOARD_CODE.ARROW_LEFT]))
             hare.act(L12_Plattformer2D.ACTION.WALK, L12_Plattformer2D.DIRECTION.LEFT);
-            return;
-        }
-        if (keysPressed[L12_Plattformer2D.ƒ.KEYBOARD_CODE.D]) {
+        else if (L12_Plattformer2D.ƒ.Keyboard.isPressedOne([L12_Plattformer2D.ƒ.KEYBOARD_CODE.D, L12_Plattformer2D.ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
             hare.act(L12_Plattformer2D.ACTION.WALK, L12_Plattformer2D.DIRECTION.RIGHT);
-            return;
-        }
-        hare.act(L12_Plattformer2D.ACTION.IDLE);
+        else
+            hare.act(L12_Plattformer2D.ACTION.IDLE);
     }
     function createLevel() {
         let level = new L12_Plattformer2D.ƒ.Node("Level");

@@ -5,11 +5,6 @@ namespace L12_Plattformer2D {
 
   window.addEventListener("load", test);
 
-  interface KeyPressed {
-    [code: string]: boolean;
-  }
-  let keysPressed: KeyPressed = {};
-
   export let game: ƒ.Node;
   export let level: ƒ.Node;
   let hare: Hare;
@@ -43,8 +38,9 @@ namespace L12_Plattformer2D {
     viewport.initialize("Viewport", game, cmpCamera, canvas);
     viewport.draw();
 
-    document.addEventListener("keydown", handleKeyboard);
-    document.addEventListener("keyup", handleKeyboard);
+    viewport.addEventListener(ƒ.EVENT_KEYBOARD.DOWN, handleKeyboard);
+    viewport.activateKeyboardEvent(ƒ.EVENT_KEYBOARD.DOWN, true);
+    viewport.setFocus(true);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 60);
@@ -59,23 +55,18 @@ namespace L12_Plattformer2D {
     }
   }
 
-  function handleKeyboard(_event: KeyboardEvent): void {
-    keysPressed[_event.code] = (_event.type == "keydown");
-    if (_event.code == ƒ.KEYBOARD_CODE.SPACE && _event.type == "keydown")
+  function handleKeyboard(_event: ƒ.EventKeyboard): void {
+    if (_event.code == ƒ.KEYBOARD_CODE.SPACE)
       hare.act(ACTION.JUMP);
   }
 
   function processInput(): void {
-    if (keysPressed[ƒ.KEYBOARD_CODE.A]) {
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
       hare.act(ACTION.WALK, DIRECTION.LEFT);
-      return;
-    }
-    if (keysPressed[ƒ.KEYBOARD_CODE.D]) {
+    else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
       hare.act(ACTION.WALK, DIRECTION.RIGHT);
-      return;
-    }
-
-    hare.act(ACTION.IDLE);
+    else
+      hare.act(ACTION.IDLE);
   }
 
   function createLevel(): ƒ.Node {
