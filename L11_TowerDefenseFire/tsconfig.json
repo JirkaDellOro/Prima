@@ -5,6 +5,7 @@
     "types": [
       "../FudgeCore/FudgeCore",
       "../FudgeAid/FudgeAid",
+      "../FudgeUserInterface/FudgeUserInterface"
     ]
   }
 }

@@ -1,6 +1,9 @@
+// /<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 namespace L11_TowerDefenseFire {
   // import ƒ = FudgeCore;
   import ƒAid = FudgeAid;
+  import ƒUi = FudgeUserInterface;
+  
   window.addEventListener("load", hndLoad);
 
   export let viewport: ƒ.Viewport;
@@ -11,6 +14,7 @@ namespace L11_TowerDefenseFire {
   function hndLoad(_event: Event): void {
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
     let graph: ƒ.Node = new ƒ.Node("Graph");
+
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
     cmpCamera.pivot.translate(new ƒ.Vector3(10, 5, 10));
@@ -28,7 +32,13 @@ namespace L11_TowerDefenseFire {
     path = createPath();
     // addTowers(graph);
     graph.addChild(new Tower("Tower1", ƒ.Vector3.Z(-1)));
-    graph.addChild(new Enemy("Enemy1", path[0]));
+    let enemy: Enemy = new Enemy("Enemy1", path[0]);
+    graph.addChild(enemy);
+    
+    // let ui: HTMLElement = document.createElement("custom-enemy");
+    // document.querySelector("fieldset").appendChild(ui);
+    let uiController: ƒUi.Controller = new ƒUi.Controller(enemy, document.querySelector("custom-enemy"));
+    console.log(uiController);
 
     viewport.draw();
 

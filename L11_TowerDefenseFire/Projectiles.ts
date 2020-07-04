@@ -33,6 +33,7 @@ namespace L11_TowerDefenseFire {
       if (distance.magnitudeSquared < distanceToTravel * distanceToTravel) {
         viewport.getGraph().removeChild(this);
         ƒ.Loop.removeEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+        (<Enemy>this.target).hitCount++;
         return;
       }
 

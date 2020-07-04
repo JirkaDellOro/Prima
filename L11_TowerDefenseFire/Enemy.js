@@ -9,6 +9,7 @@ var L11_TowerDefenseFire;
                 this.stamina = 1;
                 this.speed = 1 / 1000;
                 this.nextWaypoint = 0;
+                this.hitCount = 0; // just for ui
                 this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_pos)));
                 let cmpMaterial = new ƒ.ComponentMaterial(Enemy.material);
                 cmpMaterial.clrPrimary = ƒ.Color.CSS("lightblue");
@@ -32,6 +33,15 @@ var L11_TowerDefenseFire;
                         this.mtxLocal.translation = L11_TowerDefenseFire.path[0];
                 }
                 this.mtxLocal.translate(ƒ.Vector3.NORMALIZATION(move, distanceToTravel));
+            }
+            getMutator() {
+                return { hitCount: this.hitCount };
+            }
+            updateMutator() {
+                //return {hitCount: this.hitCount};
+            }
+            getMutatorAttributeTypes() {
+                return { enemy: Enemy };
             }
         }
         Enemy.material = new ƒ.Material("Enemy", ƒ.ShaderFlat, new ƒ.CoatColored());

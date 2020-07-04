@@ -1,13 +1,18 @@
 "use strict";
+///<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 var L11_TowerDefenseFire;
+///<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 (function (L11_TowerDefenseFire) {
     // import ƒ = FudgeCore;
     var ƒAid = FudgeAid;
+    var ƒUi = FudgeUserInterface;
     window.addEventListener("load", hndLoad);
     L11_TowerDefenseFire.sizeTerrain = 10;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         let graph = new ƒ.Node("Graph");
+        let ui = document.createElement("custom-enemy");
+        document.querySelector("fieldset").appendChild(ui);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new ƒ.Vector3(10, 5, 10));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -21,7 +26,10 @@ var L11_TowerDefenseFire;
         L11_TowerDefenseFire.path = createPath();
         // addTowers(graph);
         graph.addChild(new L11_TowerDefenseFire.Tower("Tower1", ƒ.Vector3.Z(-1)));
-        graph.addChild(new L11_TowerDefenseFire.Enemy("Enemy1", L11_TowerDefenseFire.path[0]));
+        let enemy = new L11_TowerDefenseFire.Enemy("Enemy1", L11_TowerDefenseFire.path[0]);
+        graph.addChild(enemy);
+        let uiController = new ƒUi.Controller(enemy, ui);
+        uiController.updateUserInterface();
         L11_TowerDefenseFire.viewport.draw();
         // viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, pointerMove);
         // viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);

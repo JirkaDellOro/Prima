@@ -42,6 +42,7 @@ var L11_TowerDefenseFire;
 })(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
 var L11_TowerDefenseFire;
 (function (L11_TowerDefenseFire) {
+    // @ƒ.Mutable.decorate 
     let Enemy = /** @class */ (() => {
         class Enemy extends ƒ.Node {
             constructor(_name, _pos) {
@@ -50,6 +51,7 @@ var L11_TowerDefenseFire;
                 this.stamina = 1;
                 this.speed = 1 / 1000;
                 this.nextWaypoint = 0;
+                this.hitCount = 0; // just for ui
                 this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_pos)));
                 let cmpMaterial = new ƒ.ComponentMaterial(Enemy.material);
                 cmpMaterial.clrPrimary = ƒ.Color.CSS("lightblue");
@@ -74,6 +76,14 @@ var L11_TowerDefenseFire;
                 }
                 this.mtxLocal.translate(ƒ.Vector3.NORMALIZATION(move, distanceToTravel));
             }
+            getMutator() {
+                let mutator = {};
+                this.updateMutator(mutator);
+                return mutator;
+            }
+            updateMutator(_mutator) {
+                _mutator.hitCount = this.hitCount;
+            }
         }
         Enemy.material = new ƒ.Material("Enemy", ƒ.ShaderFlat, new ƒ.CoatColored());
         Enemy.mesh = new ƒ.MeshSphere(4, 2);
@@ -81,10 +91,13 @@ var L11_TowerDefenseFire;
     })();
     L11_TowerDefenseFire.Enemy = Enemy;
 })(L11_TowerDefenseFire || (L11_TowerDefenseFire = {}));
+// /<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 var L11_TowerDefenseFire;
+// /<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 (function (L11_TowerDefenseFire) {
     // import ƒ = FudgeCore;
     var ƒAid = FudgeAid;
+    var ƒUi = FudgeUserInterface;
     window.addEventListener("load", hndLoad);
     L11_TowerDefenseFire.sizeTerrain = 10;
     function hndLoad(_event) {
@@ -103,7 +116,12 @@ var L11_TowerDefenseFire;
         L11_TowerDefenseFire.path = createPath();
         // addTowers(graph);
         graph.addChild(new L11_TowerDefenseFire.Tower("Tower1", ƒ.Vector3.Z(-1)));
-        graph.addChild(new L11_TowerDefenseFire.Enemy("Enemy1", L11_TowerDefenseFire.path[0]));
+        let enemy = new L11_TowerDefenseFire.Enemy("Enemy1", L11_TowerDefenseFire.path[0]);
+        graph.addChild(enemy);
+        // let ui: HTMLElement = document.createElement("custom-enemy");
+        // document.querySelector("fieldset").appendChild(ui);
+        let uiController = new ƒUi.Controller(enemy, document.querySelector("custom-enemy"));
+        console.log(uiController);
         L11_TowerDefenseFire.viewport.draw();
         // viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, pointerMove);
         // viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
@@ -217,6 +235,7 @@ var L11_TowerDefenseFire;
                     if (distance.magnitudeSquared < distanceToTravel * distanceToTravel) {
                         L11_TowerDefenseFire.viewport.getGraph().removeChild(this);
                         ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                        this.target.hitCount++;
                         return;
                     }
                     let travel = ƒ.Vector3.NORMALIZATION(distance, distanceToTravel);
@@ -252,6 +271,7 @@ var L11_TowerDefenseFire;
                 this.range = 4;
                 this.rate = 0.5;
                 this.timer = new ƒ.Timer(ƒ.Time.game, 500, 0, this.fire.bind(this));
+                console.log(this.timer);
                 let base = new ƒAid.Node("Base", null, Tower.material, Tower.meshBase);
                 this.top = new ƒAid.Node("Top", ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1)), Tower.material, Tower.meshTop);
                 let mtxTop = this.top.getComponent(ƒ.ComponentMesh).pivot;
@@ -278,6 +298,7 @@ var L11_TowerDefenseFire;
                 if (!this.target)
                     return;
                 let projectile = new L11_TowerDefenseFire.Projectile(this.top.mtxWorld.translation, this.target);
+                console.log("Fire", projectile);
             }
         }
         Tower.material = new ƒ.Material("Tower", ƒ.ShaderFlat, new ƒ.CoatColored());

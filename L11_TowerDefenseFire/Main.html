@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L11 Tower Fire</title>
   <script src="../FudgeCore/FudgeCore.js"></script>
   <script src="../FudgeAid/FudgeAid.js"></script>
+  <script src="../FudgeUserInterface/FudgeUserInterface.js"></script>
   <script src="TowerDefense.js"></script>
 
   <style>
@@ -20,6 +22,11 @@
       flex-direction: column;
     }
 
+    h1,
+    fieldset {
+      display: inline-block;
+    }
+
     canvas {
       flex-grow: 1;
       background-color: magenta;
@@ -28,8 +35,25 @@
 </head>
 
 <body>
-  <h1>L11  Tower Defense Fire</h1>
+  <div>
+    <h1>L11 Tower Defense Fire</h1>
+    <fieldset>
+      <legend>Enemy</legend> 
+      <custom-enemy></custom-enemy>
+    </fieldset>
+  </div>
   <canvas></canvas>
+
+  
+  <template>
+    <custom-enemy>
+      <input key="hitCount" label="hit" value="0" disabled></input>
+    </custom-enemy>
+  </template>
+  <script>
+    FudgeUserInterface.CustomElementTemplate.register("custom-enemy");
+    FudgeUserInterface.CustomElement.register("custom-enemy", FudgeUserInterface.CustomElementTemplate);
+  </script>
 </body>
 
 </html>

@@ -14,6 +14,7 @@ var L11_TowerDefenseFire;
                     if (distance.magnitudeSquared < distanceToTravel * distanceToTravel) {
                         L11_TowerDefenseFire.viewport.getGraph().removeChild(this);
                         ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                        this.target.hitCount++;
                         return;
                     }
                     let travel = ƒ.Vector3.NORMALIZATION(distance, distanceToTravel);

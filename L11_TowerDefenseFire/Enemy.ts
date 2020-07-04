@@ -1,5 +1,7 @@
 namespace L11_TowerDefenseFire {
-  export class Enemy extends ƒ.Node {
+
+  // @ƒ.Mutable.decorate 
+  export class Enemy extends ƒ.Node implements ƒ.MutableForUserInterface {
     private static material: ƒ.Material = new ƒ.Material("Enemy", ƒ.ShaderFlat, new ƒ.CoatColored());
     private static mesh: ƒ.MeshSphere = new ƒ.MeshSphere(4, 2);
 
@@ -7,6 +9,7 @@ namespace L11_TowerDefenseFire {
     public stamina: number = 1;
     public speed: number = 1 / 1000;
     public nextWaypoint: number = 0;
+    public hitCount: number = 0; // just for ui
 
     constructor(_name: string, _pos: ƒ.Vector3) {
       super(_name);
@@ -39,6 +42,16 @@ namespace L11_TowerDefenseFire {
       }
 
       this.mtxLocal.translate(ƒ.Vector3.NORMALIZATION(move, distanceToTravel));
+    }
+
+    public getMutator(): ƒ.Mutator {
+      let mutator: ƒ.Mutator = {};
+      this.updateMutator(mutator);
+      return mutator;
+    }
+
+    public updateMutator(_mutator: ƒ.Mutator): void {
+      _mutator.hitCount = this.hitCount;
     }
   }
 }
