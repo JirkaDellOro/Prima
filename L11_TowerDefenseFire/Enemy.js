@@ -35,13 +35,12 @@ var L11_TowerDefenseFire;
                 this.mtxLocal.translate(ƒ.Vector3.NORMALIZATION(move, distanceToTravel));
             }
             getMutator() {
-                return { hitCount: this.hitCount };
+                let mutator = {};
+                this.updateMutator(mutator);
+                return mutator;
             }
-            updateMutator() {
-                //return {hitCount: this.hitCount};
-            }
-            getMutatorAttributeTypes() {
-                return { enemy: Enemy };
+            updateMutator(_mutator) {
+                _mutator.hitCount = this.hitCount;
             }
         }
         Enemy.material = new ƒ.Material("Enemy", ƒ.ShaderFlat, new ƒ.CoatColored());

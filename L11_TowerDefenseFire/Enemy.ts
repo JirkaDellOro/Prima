@@ -1,6 +1,5 @@
 namespace L11_TowerDefenseFire {
 
-  // @ƒ.Mutable.decorate 
   export class Enemy extends ƒ.Node implements ƒ.MutableForUserInterface {
     private static material: ƒ.Material = new ƒ.Material("Enemy", ƒ.ShaderFlat, new ƒ.CoatColored());
     private static mesh: ƒ.MeshSphere = new ƒ.MeshSphere(4, 2);

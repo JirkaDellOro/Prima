@@ -1,7 +1,7 @@
 "use strict";
-///<reference types="../FudgeUserInterface/FudgeUserInterface"/>
+// /<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 var L11_TowerDefenseFire;
-///<reference types="../FudgeUserInterface/FudgeUserInterface"/>
+// /<reference types="../FudgeUserInterface/FudgeUserInterface"/>
 (function (L11_TowerDefenseFire) {
     // import ƒ = FudgeCore;
     var ƒAid = FudgeAid;
@@ -11,8 +11,6 @@ var L11_TowerDefenseFire;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         let graph = new ƒ.Node("Graph");
-        let ui = document.createElement("custom-enemy");
-        document.querySelector("fieldset").appendChild(ui);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translate(new ƒ.Vector3(10, 5, 10));
         cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
@@ -28,8 +26,10 @@ var L11_TowerDefenseFire;
         graph.addChild(new L11_TowerDefenseFire.Tower("Tower1", ƒ.Vector3.Z(-1)));
         let enemy = new L11_TowerDefenseFire.Enemy("Enemy1", L11_TowerDefenseFire.path[0]);
         graph.addChild(enemy);
-        let uiController = new ƒUi.Controller(enemy, ui);
-        uiController.updateUserInterface();
+        // let ui: HTMLElement = document.createElement("custom-enemy");
+        // document.querySelector("fieldset").appendChild(ui);
+        let uiController = new ƒUi.Controller(enemy, document.querySelector("custom-enemy"));
+        console.log(uiController);
         L11_TowerDefenseFire.viewport.draw();
         // viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, pointerMove);
         // viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
