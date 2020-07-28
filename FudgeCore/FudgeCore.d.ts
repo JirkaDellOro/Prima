@@ -64,23 +64,23 @@ declare namespace FudgeCore {
         /**
          * Info(...) displays additional information with low priority
          */
-        static info(_message: Object, ..._args: Object[]): void;
+        static info(_message: unknown, ..._args: unknown[]): void;
         /**
          * Displays information with medium priority
          */
-        static log(_message: Object, ..._args: Object[]): void;
+        static log(_message: unknown, ..._args: unknown[]): void;
         /**
          * Displays information about non-conformities in usage, which is emphasized e.g. by color
          */
-        static warn(_message: Object, ..._args: Object[]): void;
+        static warn(_message: unknown, ..._args: unknown[]): void;
         /**
          * Displays critical information about failures, which is emphasized e.g. by color
          */
-        static error(_message: Object, ..._args: Object[]): void;
+        static error(_message: unknown, ..._args: unknown[]): void;
         /**
          * Displays messages from FUDGE
          */
-        static fudge(_message: Object, ..._args: Object[]): void;
+        static fudge(_message: unknown, ..._args: unknown[]): void;
         /**
          * Clears the output and removes previous messages if possible
          */
@@ -2909,6 +2909,8 @@ declare namespace FudgeCore {
         create(): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Serializable;
+        /**Flip the Normals of a Mesh to render opposite side of each polygon*/
+        flipNormals(): void;
         protected calculateFaceNormals(): Float32Array;
         protected abstract createVertices(): Float32Array;
         protected abstract createTextureUVs(): Float32Array;
