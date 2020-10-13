@@ -14,7 +14,8 @@ declare namespace FudgeUserInterface {
         protected mutator: ƒ.Mutator;
         /** [[FudgeCore.Mutator]] used to store the data types of the mutator attributes*/
         protected mutatorTypes: ƒ.Mutator;
-        constructor(_mutable: ƒ.Mutable | ƒ.MutableForUserInterface, _domElement: HTMLElement);
+        constructor(_mutable: ƒ.Mutable, _domElement: HTMLElement);
+        setMutable(_mutable: ƒ.Mutable): void;
         /**
          * Recursive method taking the [[ƒ.Mutator]] of a [[ƒ.Mutable]] or another existing [[ƒ.Mutator]]
          * as a template and updating its values with those found in the given UI-domElement.
@@ -24,7 +25,7 @@ declare namespace FudgeUserInterface {
          * Recursive method taking the [[ƒ.Mutator]] of a [[ƒ.Mutable]] and updating the UI-domElement accordingly
          */
         updateUserInterface(_mutable?: ƒ.Mutable, _domElement?: HTMLElement): void;
-        protected mutateOnInput: (_event: Event) => void;
+        protected mutateOnInput: (_event: Event) => Promise<void>;
         protected refresh: (_event: Event) => void;
     }
 }
@@ -41,7 +42,7 @@ declare namespace FudgeUserInterface {
         /**
          * Create a custom fieldset for the [[FudgeCore.Mutator]] or the [[FudgeCore.Mutable]]
          */
-        static createFieldSetFromMutable(_mutable: ƒ.Mutable, _name?: string, _mutator?: ƒ.Mutator): FoldableFieldSet;
+        static createFieldSetFromMutable(_mutable: ƒ.Mutable, _name?: string, _mutator?: ƒ.Mutator): ExpandableFieldSet;
         /**
          * Create a specific CustomElement for the given data, using _key as identification
          */
@@ -50,11 +51,7 @@ declare namespace FudgeUserInterface {
          * TODO: refactor for enums
          */
         static createDropdown(_name: string, _content: Object, _value: string, _parent: HTMLElement, _cssClass?: string): HTMLSelectElement;
-        static createFoldableFieldset(_key: string): FoldableFieldSet;
-        static createLabelElement(_name: string, _parent: HTMLElement, params?: {
-            value?: string;
-            cssClass?: string;
-        }): HTMLLabelElement;
+        static createFoldableFieldset(_key: string, _type: string): ExpandableFieldSet;
     }
 }
 declare namespace FudgeUserInterface {
@@ -79,10 +76,6 @@ declare namespace FudgeUserInterface {
         protected initialized: boolean;
         constructor(_attributes?: CustomElementAttributes);
         /**
-         * Return the key (name) of the attribute this element represents
-         */
-        get key(): string;
-        /**
          * Retrieve an id to use for children of this element, needed e.g. for standard interaction with the label
          */
         protected static get nextId(): string;
@@ -95,6 +88,10 @@ declare namespace FudgeUserInterface {
          */
         static get(_type: string): typeof CustomElement;
         private static map;
+        /**
+         * Return the key (name) of the attribute this element represents
+         */
+        get key(): string;
         /**
          * Add a label-element as child to this element
          */
@@ -151,6 +148,8 @@ declare namespace FudgeUserInterface {
          * Sets the values of color picker and slider
          */
         setMutatorValue(_value: ƒ.Mutator): void;
+        private hndKey;
+        private hndWheel;
     }
 }
 declare namespace FudgeUserInterface {
@@ -183,6 +182,14 @@ declare namespace FudgeUserInterface {
         /**
          * When connected the first time, the element gets constructed as a deep clone of the template.
          */
+        protected connectedCallback(): void;
+    }
+}
+declare namespace FudgeUserInterface {
+    import ƒ = FudgeCore;
+    class CustomElementMatrix3x3 extends CustomElementTemplate {
+        getMutatorValue(): Object;
+        setMutatorValue(_mutator: ƒ.Mutator): void;
         protected connectedCallback(): void;
     }
 }
@@ -289,29 +296,18 @@ declare namespace FudgeUserInterface {
     }
 }
 declare namespace FudgeUserInterface {
-    class FoldableFieldSet extends HTMLFieldSetElement {
+    class ExpandableFieldSet extends HTMLFieldSetElement {
         content: HTMLDivElement;
-        private checkbox;
+        private expander;
         constructor(_legend?: string);
-        private open;
-        private get isOpen();
+        get isExpanded(): boolean;
+        expand(_expand: boolean): void;
+        private hndToggle;
         private hndFocus;
         private hndKey;
     }
 }
 declare namespace FudgeUserInterface {
-    import ƒ = FudgeCore;
-    class DropMenu extends HTMLDivElement {
-        name: string;
-        private content;
-        private signature;
-        constructor(_name: string, _contentList: ƒ.Mutator, params: {
-            _parentSignature?: string;
-            _text?: string;
-        });
-        private toggleFoldContent;
-        private collapseMenu;
-    }
 }
 declare namespace FudgeUserInterface {
     /**
@@ -325,13 +321,121 @@ declare namespace FudgeUserInterface {
 declare namespace FudgeUserInterface {
 }
 declare namespace FudgeUserInterface {
+    interface TABLE {
+        label: string;
+        key: string;
+        editable: boolean;
+        sortable: boolean;
+    }
+    /**
+     * Manages a sortable table of data given as simple array of flat objects
+     * ```plaintext
+     * Key0  Key1 Key2
+     * ```
+     */
+    class Table<T extends Object> extends HTMLTableElement {
+        controller: TableController<T>;
+        data: T[];
+        constructor(_controller: TableController<T>, _data: T[]);
+        /**
+         * Create the table
+         */
+        create(): void;
+        /**
+         * Clear the current selection
+         */
+        clearSelection(): void;
+        /**
+         * Return the object in focus
+         */
+        getFocussed(): T;
+        selectInterval(_dataStart: T, _dataEnd: T): void;
+        displaySelection(_data: T[]): void;
+        private createHead;
+        private getSortButtons;
+        private hndSort;
+        private hndSelect;
+        private hndEscape;
+        private hndFocus;
+    }
+}
+declare namespace FudgeUserInterface {
+    /**
+     * Subclass this to create a broker between your data and a [[Tree]] to display and manipulate it.
+     * The [[Tree]] doesn't know how your data is structured and how to handle it, the controller implements the methods needed
+     */
+    abstract class TableController<T> {
+        /** Stores references to selected objects. Override with a reference in outer scope, if selection should also operate outside of tree */
+        selection: T[];
+        /** Stores references to objects being dragged, and objects to drop on. Override with a reference in outer scope, if drag&drop should operate outside of tree */
+        dragDrop: {
+            sources: T[];
+            target: T;
+        };
+        /** Stores references to objects being dragged, and objects to drop on. Override with a reference in outer scope, if drag&drop should operate outside of tree */
+        copyPaste: {
+            sources: T[];
+            target: T;
+        };
+        /** Retrieve a string to create a label for the tree item representing the object  */
+        abstract getLabel(_object: T): string;
+        /** Return false to disallow renaming the item/object, or processes the proposed new label */
+        abstract rename(_object: T, _new: string): boolean;
+        abstract delete(_focussed: T[]): T[];
+        /**
+         * Return a list of copies of the objects given for copy & paste
+         * @param _focussed The object currently having focus
+         */
+        abstract copy(_originals: T[]): Promise<T[]>;
+        /**
+         * Return a list of TABLE-objects describing the head-titles and according properties
+         */
+        abstract getHead(): TABLE[];
+        /**
+         * Sort data by given key and direction
+         */
+        abstract sort(_data: T[], _key: string, _direction: number): void;
+    }
+}
+declare namespace FudgeUserInterface {
+    /**
+     * Extension of tr-element that represents an object in a [[Table]]
+     */
+    class TableItem<T extends Object> extends HTMLTableRowElement {
+        data: T;
+        controller: TableController<T>;
+        constructor(_controller: TableController<T>, _data: T);
+        /**
+         * Returns attaches or detaches the [[CSS_CLASS.SELECTED]] to this item
+         */
+        set selected(_on: boolean);
+        /**
+         * Returns true if the [[TREE_CLASSES.SELECTED]] is attached to this item
+         */
+        get selected(): boolean;
+        /**
+         * Dispatches the [[EVENT.SELECT]] event
+         * @param _additive For multiple selection (+Ctrl)
+         * @param _interval For selection over interval (+Shift)
+         */
+        select(_additive: boolean, _interval?: boolean): void;
+        private create;
+        private hndInputEvent;
+        private hndChange;
+        private hndKey;
+        private hndDragStart;
+        private hndDragOver;
+        private hndPointerUp;
+    }
+}
+declare namespace FudgeUserInterface {
     /**
     * Extension of ul-element that keeps a list of [[TreeItem]]s to represent a branch in a tree
     */
     class TreeList<T> extends HTMLUListElement {
         constructor(_items?: TreeItem<T>[]);
         /**
-         * Opens the tree along the given path to show the objects the path includes
+         * Expands the tree along the given path to show the objects the path includes
          * @param _path An array of objects starting with one being contained in this treelist and following the correct hierarchy of successors
          * @param _focus If true (default) the last object found in the tree gets the focus
          */
@@ -357,36 +461,13 @@ declare namespace FudgeUserInterface {
         displaySelection(_data: T[]): void;
         selectInterval(_dataStart: T, _dataEnd: T): void;
         delete(_data: T[]): TreeItem<T>[];
-        findOpen(_data: T): TreeItem<T>;
+        findVisible(_data: T): TreeItem<T>;
     }
 }
 declare namespace FudgeUserInterface {
-    enum TREE_CLASS {
+    enum CSS_CLASS {
         SELECTED = "selected",
         INACTIVE = "inactive"
-    }
-    enum EVENT_TREE {
-        RENAME = "rename",
-        OPEN = "open",
-        FOCUS_NEXT = "focusNext",
-        FOCUS_PREVIOUS = "focusPrevious",
-        FOCUS_IN = "focusin",
-        FOCUS_OUT = "focusout",
-        DELETE = "delete",
-        CHANGE = "change",
-        DOUBLE_CLICK = "dblclick",
-        KEY_DOWN = "keydown",
-        DRAG_START = "dragstart",
-        DRAG_OVER = "dragover",
-        DROP = "drop",
-        POINTER_UP = "pointerup",
-        SELECT = "itemselect",
-        UPDATE = "update",
-        ESCAPE = "escape",
-        COPY = "copy",
-        CUT = "cut",
-        PASTE = "paste",
-        FOCUS_SET = "focusSet"
     }
     /**
      * Extension of [[TreeList]] that represents the root of a tree control
@@ -411,7 +492,7 @@ declare namespace FudgeUserInterface {
          * Return the object in focus
          */
         getFocussed(): T;
-        private hndOpen;
+        private hndExpand;
         private createBranch;
         private hndRename;
         private hndSelect;
@@ -466,7 +547,7 @@ declare namespace FudgeUserInterface {
          * Return a list of copies of the objects given for copy & paste
          * @param _focussed The object currently having focus
          */
-        abstract copy(_originals: T[]): T[];
+        abstract copy(_originals: T[]): Promise<T[]>;
     }
 }
 declare namespace FudgeUserInterface {
@@ -476,47 +557,20 @@ declare namespace FudgeUserInterface {
      */
     class TreeItem<T> extends HTMLLIElement {
         display: string;
-        classes: TREE_CLASS[];
+        classes: CSS_CLASS[];
         data: T;
         controller: TreeController<T>;
         private checkbox;
         private label;
         constructor(_controller: TreeController<T>, _data: T);
         /**
-         * Returns true, when this item has a visible checkbox in front to open the subsequent branch
+         * Returns true, when this item has a visible checkbox in front to expand the subsequent branch
          */
         get hasChildren(): boolean;
         /**
-         * Shows or hides the checkbox for opening the subsequent branch
+         * Shows or hides the checkbox for expanding the subsequent branch
          */
         set hasChildren(_has: boolean);
-        /**
-         * Set the label text to show
-         */
-        setLabel(_text: string): void;
-        /**
-         * Get the label text shown
-         */
-        getLabel(): string;
-        /**
-         * Tries to open the [[TreeList]] of children, by dispatching [[EVENT_TREE.OPEN]].
-         * The user of the tree needs to add an event listener to the tree
-         * in order to create that [[TreeList]] and add it as branch to this item
-         * @param _open If false, the item will be closed
-         */
-        open(_open: boolean): void;
-        /**
-         * Returns a list of all data referenced by the items succeeding this
-         */
-        getOpenData(): T[];
-        /**
-         * Sets the branch of children of this item. The branch must be a previously compiled [[TreeList]]
-         */
-        setBranch(_branch: TreeList<T>): void;
-        /**
-         * Returns the branch of children of this item.
-         */
-        getBranch(): TreeList<T>;
         /**
          * Returns attaches or detaches the [[TREE_CLASS.SELECTED]] to this item
          */
@@ -526,7 +580,33 @@ declare namespace FudgeUserInterface {
          */
         get selected(): boolean;
         /**
-         * Dispatches the [[EVENT_TREE.SELECT]] event
+         * Set the label text to show
+         */
+        setLabel(_text: string): void;
+        /**
+         * Get the label text shown
+         */
+        getLabel(): string;
+        /**
+         * Tries to expanding the [[TreeList]] of children, by dispatching [[EVENT.EXPAND]].
+         * The user of the tree needs to add an event listener to the tree
+         * in order to create that [[TreeList]] and add it as branch to this item
+         */
+        expand(_expand: boolean): void;
+        /**
+         * Returns a list of all data referenced by the items succeeding this
+         */
+        getVisibleData(): T[];
+        /**
+         * Sets the branch of children of this item. The branch must be a previously compiled [[TreeList]]
+         */
+        setBranch(_branch: TreeList<T>): void;
+        /**
+         * Returns the branch of children of this item.
+         */
+        getBranch(): TreeList<T>;
+        /**
+         * Dispatches the [[EVENT.SELECT]] event
          * @param _additive For multiple selection (+Ctrl)
          * @param _interval For selection over interval (+Shift)
          */
@@ -544,16 +624,36 @@ declare namespace FudgeUserInterface {
         private hndDragStart;
         private hndDragOver;
         private hndPointerUp;
-        private hndUpdate;
+        private hndRemove;
     }
 }
 declare namespace FudgeUserInterface {
-    const enum EVENT_USERINTERFACE {
-        SELECT = "select",
+    const enum EVENT {
+        CLICK = "click",
+        DOUBLE_CLICK = "dblclick",
+        KEY_DOWN = "keydown",
+        DRAG_START = "dragstart",
+        DRAG_OVER = "dragover",
+        DROP = "drop",
+        POINTER_UP = "pointerup",
+        FOCUS_NEXT = "focusNext",
+        FOCUS_PREVIOUS = "focusPrevious",
+        FOCUS_IN = "focusin",
+        FOCUS_OUT = "focusout",
+        FOCUS_SET = "focusSet",
+        CHANGE = "change",
+        DELETE = "delete",
+        RENAME = "rename",
+        SELECT = "itemselect",
+        ESCAPE = "escape",
+        COPY = "copy",
+        CUT = "cut",
+        PASTE = "paste",
+        SORT = "sort",
+        CONTEXTMENU = "contextmenu",
+        MUTATE = "mutate",
+        REMOVE_CHILD = "removeChild",
         COLLAPSE = "collapse",
-        UPDATE = "update",
-        DROPMENUCLICK = "dropMenuClick",
-        DROPMENUCOLLAPSE = "dropMenuCollapse",
-        CONTEXTMENU = "contextmenu"
+        EXPAND = "expand"
     }
 }
