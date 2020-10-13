@@ -1,6 +1,6 @@
 "use strict";
-var L01_FirstFudge;
-(function (L01_FirstFudge) {
+var L01_FirstFudgeXXX;
+(function (L01_FirstFudgeXXX) {
     var ƒ = FudgeCore;
     window.addEventListener("load", hndLoad);
     function hndLoad(_event) {
@@ -16,10 +16,10 @@ var L01_FirstFudge;
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(2);
         cmpCamera.pivot.rotateY(180);
-        L01_FirstFudge.viewport = new ƒ.Viewport();
-        L01_FirstFudge.viewport.initialize("Viewport", node, cmpCamera, canvas);
-        ƒ.Debug.log(L01_FirstFudge.viewport);
-        L01_FirstFudge.viewport.draw();
+        L01_FirstFudgeXXX.viewport = new ƒ.Viewport();
+        L01_FirstFudgeXXX.viewport.initialize("Viewport", node, cmpCamera, canvas);
+        ƒ.Debug.log(L01_FirstFudgeXXX.viewport);
+        L01_FirstFudgeXXX.viewport.draw();
     }
-})(L01_FirstFudge || (L01_FirstFudge = {}));
+})(L01_FirstFudgeXXX || (L01_FirstFudgeXXX = {}));
 //# sourceMappingURL=Main.js.map

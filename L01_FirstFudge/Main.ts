@@ -1,4 +1,4 @@
-namespace L01_FirstFudge {
+namespace L01_FirstFudgeXXX {
     import ƒ = FudgeCore;
 
     window.addEventListener("load", hndLoad);
