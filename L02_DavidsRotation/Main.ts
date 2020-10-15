@@ -1,74 +1,79 @@
 namespace L02_DavidsRotation {
   import ƒ = FudgeCore;
 
-  window.addEventListener("load", sceneLoad);
+  window.addEventListener("load", hndLoad);
   // window.addEventListener("click", sceneLoad);
 
   export let viewport: ƒ.Viewport;
+  let root: ƒ.Node;
 
-  let pos: number = 0;
-
-  function sceneLoad(_event: Event): void {
+  function hndLoad(_event: Event): void {
 
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
-    ƒ.Debug.log(canvas);
+    // ƒ.Debug.log(canvas);
 
-    let node: ƒ.Node = new ƒ.Node("Quad");
+    root = new ƒ.Node("Root");
+    root.addComponent(new ƒ.ComponentTransform());
 
-
-    let mesh: ƒ.MeshQuad = new ƒ.MeshQuad();
-    let cMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
-    node.addComponent(cMesh);
+    let quad: ƒ.Node = new ƒ.Node("Quad");
+    let meshQuad: ƒ.MeshQuad = new ƒ.MeshQuad();
+    let cmpQuad: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshQuad);
+    quad.addComponent(cmpQuad);
 
     let mtrSolidWhite: ƒ.Material = new ƒ.Material("SolidWhite", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("WHITE")));
     let cMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(mtrSolidWhite);
-    node.addComponent(cMaterial);
+    quad.addComponent(cMaterial);
 
-    let node2: ƒ.Node = new ƒ.Node("Torus");
+    root.addChild(quad);
 
-    let mesh2: ƒ.MeshTorus = new ƒ.MeshTorus("Torus", 1, 10, 1);
-    let cMesh2: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh2);
-    cMesh2.pivot.translateX(0);
-    cMesh2.pivot.rotateZ(90);
-    cMesh2.pivot.rotateX(90);
-    node2.addComponent(cMesh2);
+
+    let torus: ƒ.Node = new ƒ.Node("Torus");
+
+    let meshTorus: ƒ.MeshTorus = new ƒ.MeshTorus("Torus", 1, 10, 1);
+    let cmpTorus: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshTorus);
+    cmpTorus.pivot.translateX(0);
+    cmpTorus.pivot.rotateZ(90);
+    cmpTorus.pivot.rotateX(90);
+    torus.addComponent(cmpTorus);
 
     let orange: ƒ.Material = new ƒ.Material("Orange", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("ORANGE")));
     let corange: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(orange);
-    node2.addComponent(corange);
+    torus.addComponent(corange);
 
 
+    root.appendChild(torus);
 
-    node.appendChild(node2);
-
-    let node3: ƒ.Node = new ƒ.Node("Cube");
-    let mesh3: ƒ.MeshCube = new ƒ.MeshCube();
-    let cMesh3: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh3);
+    let cube: ƒ.Node = new ƒ.Node("Cube");
+    let meshCube: ƒ.MeshCube = new ƒ.MeshCube();
+    let cmpCube: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshCube);
     let red: ƒ.Material = new ƒ.Material("Red", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("RED")));
     let cred: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(red);
 
-    cMesh3.pivot.scaleX(0.5);
-    cMesh3.pivot.scaleY(0.5);
-    cMesh3.pivot.rotateZ(pos * -45);
+    cmpCube.pivot.scaleX(0.5);
+    cmpCube.pivot.scaleY(0.5);
 
-    node2.addComponent(corange);
-    node3.addComponent(cMesh3);
-    node3.addComponent(cred);
-    node.appendChild(node3);
+    torus.addComponent(corange);
+    cube.addComponent(cmpCube);
+    cube.addComponent(cred);
+    root.appendChild(cube);
 
 
-    let cCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    cCamera.pivot.translateZ(4);
-    cCamera.pivot.rotateY(180);
-    cCamera.pivot.rotateZ(pos * 30);
+    let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
+    cmpCamera.pivot.translateZ(4);
+    cmpCamera.pivot.rotateY(180);
 
 
     viewport = new ƒ.Viewport();
-    viewport.initialize("Viewport", node, cCamera, canvas);
-    ƒ.Debug.log(viewport);
+    viewport.initialize("Viewport", root, cmpCamera, canvas);
+    // ƒ.Debug.log(viewport);
 
+    ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, hndLoop);
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);
+  }
+
+  function hndLoop(_event: Event): void {
+    console.log("Tick");
+    root.mtxLocal.rotateZ(10);
     viewport.draw();
-
-    pos += 1;
   }
 }
