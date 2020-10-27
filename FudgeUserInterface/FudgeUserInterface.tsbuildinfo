@@ -14,6 +14,7 @@
       "../Source/CustomElement/CustomElementSelect.ts",
       "../Source/CustomElement/CustomElementStepper.ts",
       "../Source/CustomElement/CustomElementTextInput.ts",
+      "../Source/CustomElement/Dialog.ts",
       "../Source/CustomElement/Elements.ts",
       "../Source/CustomElement/ExpandableFieldSet.ts",
       "../Source/CustomElement/ListElements.ts",
@@ -39,7 +40,7 @@
         },
         {
           "pos": 15,
-          "end": 104731,
+          "end": 110003,
           "kind": "text"
         }
       ],
@@ -73,7 +74,7 @@
         },
         {
           "pos": 58,
-          "end": 25068,
+          "end": 26768,
           "kind": "text"
         }
       ]
