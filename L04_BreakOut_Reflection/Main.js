@@ -6,9 +6,6 @@ var L04_BreakOut_Reflection;
     // window.addEventListener("click", sceneLoad);
     let ball;
     let walls;
-    let velocity = new ƒ.Vector3(ƒ.Random.default.getRange(-1, 1), ƒ.Random.default.getRange(-1, 1), 0);
-    let speed = 15;
-    velocity.normalize(speed);
     let root;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
@@ -16,6 +13,9 @@ var L04_BreakOut_Reflection;
         root = new ƒ.Node("Root");
         ball = new L04_BreakOut_Reflection.GameObject("Ball", new ƒ.Vector2(0, 0), new ƒ.Vector2(1, 1));
         root.addChild(ball);
+        ball.velocity = new ƒ.Vector3(ƒ.Random.default.getRange(-1, 1), ƒ.Random.default.getRange(-1, 1), 0);
+        let speed = 15;
+        ball.velocity.normalize(speed);
         walls = new ƒ.Node("Walls");
         root.addChild(walls);
         walls.addChild(new L04_BreakOut_Reflection.GameObject("WallLeft", new ƒ.Vector2(-18, 0), new ƒ.Vector2(1, 30)));
@@ -33,9 +33,7 @@ var L04_BreakOut_Reflection;
     }
     function hndLoop(_event) {
         // console.log("Tick");
-        let frameTime = ƒ.Time.game.getElapsedSincePreviousCall() / 1000;
-        let move = ƒ.Vector3.SCALE(velocity, frameTime);
-        ball.mtxLocal.translate(move);
+        ball.move();
         L04_BreakOut_Reflection.viewport.draw();
         hndCollision();
     }
@@ -45,9 +43,9 @@ var L04_BreakOut_Reflection;
             if (intersection) {
                 console.log("Ball collides");
                 if (intersection.size.x > intersection.size.y)
-                    velocity.y *= -1;
+                    ball.velocity.y *= -1;
                 else
-                    velocity.x *= -1;
+                    ball.velocity.x *= -1;
             }
         }
     }

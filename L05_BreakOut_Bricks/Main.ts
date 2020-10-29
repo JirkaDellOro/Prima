@@ -1,9 +1,9 @@
-namespace L04_BreakOut_Reflection {
+namespace L05_BreakOut_Bricks {
   import ƒ = FudgeCore;
 
   window.addEventListener("load", hndLoad);
   // window.addEventListener("click", sceneLoad);
-  let ball: GameObject;
+  let ball: Moveable;
   let walls: ƒ.Node;
 
   export let viewport: ƒ.Viewport;
@@ -16,12 +16,8 @@ namespace L04_BreakOut_Reflection {
 
     root = new ƒ.Node("Root");
 
-    ball = new GameObject("Ball", new ƒ.Vector2(0, 0), new ƒ.Vector2(1, 1));
+    ball = new Moveable("Ball", new ƒ.Vector2(0, 0), new ƒ.Vector2(1, 1));
     root.addChild(ball);
-    
-    ball.velocity = new ƒ.Vector3(ƒ.Random.default.getRange(-1, 1), ƒ.Random.default.getRange(-1, 1), 0);
-    let speed: number = 15;
-    ball.velocity.normalize(speed);
 
     walls = new ƒ.Node("Walls");
     root.addChild(walls);
@@ -53,15 +49,7 @@ namespace L04_BreakOut_Reflection {
   }
 
   function hndCollision(): void {
-    for (let wall of walls.getChildren()) {
-      let intersection: ƒ.Rectangle = ball.rect.getIntersection((<GameObject>wall).rect);
-      if (intersection) {
-        console.log("Ball collides");
-        if (intersection.size.x > intersection.size.y)
-          ball.velocity.y *= -1;
-        else
-          ball.velocity.x *= -1;
-      }
-    }
+    for (let wall of walls.getChildren()) 
+      ball.checkCollision(<GameObject>wall);
   }
 }
