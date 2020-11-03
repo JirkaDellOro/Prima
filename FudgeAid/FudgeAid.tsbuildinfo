@@ -6,6 +6,7 @@
       "../Source/Arithmetic/Arith.ts",
       "../Source/Arithmetic/ArithBisection.ts",
       "../Source/Camera/CameraOrbit.ts",
+      "../Source/Camera/CameraOrbitMovingFocus.ts",
       "../Source/Canvas/Canvas.ts",
       "../Source/Geometry/Node.ts",
       "../Source/Geometry/NodeArrow.ts",
@@ -14,7 +15,8 @@
       "../Source/Sprite/NodeSprite.ts",
       "../Source/Sprite/SpriteSheetAnimation.ts",
       "../Source/StateMachine/ComponentStateMachine.ts",
-      "../Source/StateMachine/StateMachine.ts"
+      "../Source/StateMachine/StateMachine.ts",
+      "../Source/Viewport/Viewport.ts"
     ],
     "js": {
       "sections": [
@@ -26,7 +28,7 @@
         },
         {
           "pos": 15,
-          "end": 24025,
+          "end": 29982,
           "kind": "text"
         }
       ],
@@ -66,7 +68,7 @@
         },
         {
           "pos": 112,
-          "end": 11901,
+          "end": 12745,
           "kind": "text"
         }
       ]

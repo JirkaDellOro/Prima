@@ -1222,7 +1222,7 @@ declare namespace FudgeCore {
         /**
          * Set the [[ComponentAudioListener]] that serves the spatial location and orientation for this contexts listener
          */
-        listen: (_cmpListener: ComponentAudioListener | null) => void;
+        listenWith: (_cmpListener: ComponentAudioListener | null) => void;
         /**
          * Updates the spatial settings of the AudioNodes effected in the current FUDGE-graph
          */
@@ -1743,6 +1743,7 @@ declare namespace FudgeCore {
          * Feed an input value into this control and fire the events [[EVENT_CONTROL.INPUT]] and [[EVENT_CONTROL.OUTPUT]]
          */
         setInput(_input: number): void;
+        pulse(_input: number): void;
         /**
          * Set the time to take for the internal linear dampening until the final ouput value is reached
          */
@@ -2001,7 +2002,8 @@ declare namespace FudgeCore {
         static registerScriptNamespace(_namespace: Object): void;
         static getComponentScripts(): ComponentScripts;
         static loadScript(_url: RequestInfo): Promise<void>;
-        static loadResources(_url?: RequestInfo): Promise<Resources>;
+        static loadResources(_url: RequestInfo): Promise<Resources>;
+        static loadResourcesFromHTML(): Promise<void>;
         /**
          * Serialize all resources
          */
@@ -3343,6 +3345,10 @@ declare namespace FudgeCore {
          * must be relative to the same coordinate system, preferably the world
          */
         intersectPlane(_origin: Vector3, _normal: Vector3): Vector3;
+        /**
+         * Returns the shortest distance from the ray to the given target point.
+         * All values and calculations must be relative to the same coordinate system, preferably the world.
+         */
         getDistance(_target: Vector3): Vector3;
     }
 }
