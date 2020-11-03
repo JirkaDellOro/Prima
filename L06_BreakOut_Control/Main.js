@@ -7,6 +7,7 @@ var L06_BreakOut_Control;
     let ball;
     let walls;
     let paddle;
+    let bricks;
     let root;
     let control = new ƒ.Control("PaddleControl", 20, 0 /* PROPORTIONAL */);
     control.setDelay(100);
@@ -24,13 +25,29 @@ var L06_BreakOut_Control;
         walls.addChild(new L06_BreakOut_Control.GameObject("WallRight", new ƒ.Vector2(18, 0), new ƒ.Vector2(1, 30)));
         walls.addChild(new L06_BreakOut_Control.GameObject("WallTop", new ƒ.Vector2(0, 12), new ƒ.Vector2(40, 1)));
         walls.addChild(new L06_BreakOut_Control.GameObject("WallBottom", new ƒ.Vector2(0, -12), new ƒ.Vector2(40, 1)));
+        bricks = createBricks(24);
+        root.addChild(bricks);
         let cmpCamera = new ƒ.ComponentCamera();
         cmpCamera.pivot.translateZ(40);
         cmpCamera.pivot.rotateY(180);
         L06_BreakOut_Control.viewport = new ƒ.Viewport();
         L06_BreakOut_Control.viewport.initialize("Viewport", root, cmpCamera, canvas);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, hndLoop);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 60);
+    }
+    function createBricks(_amount) {
+        let bricks = new ƒ.Node("Bricks");
+        let x = -15;
+        let y = 10;
+        for (let i = 0; i < _amount; i++) {
+            if (x > 15) {
+                x = -15;
+                y -= 2;
+            }
+            bricks.addChild(new L06_BreakOut_Control.GameObject(`Brick-${i}`, new ƒ.Vector2(x, y), new ƒ.Vector2(3, 1)));
+            x += 4;
+        }
+        return bricks;
     }
     function hndLoop(_event) {
         ball.move();
@@ -44,6 +61,10 @@ var L06_BreakOut_Control;
     function hndCollision() {
         for (let wall of walls.getChildren())
             ball.checkCollision(wall);
+        for (let brick of bricks.getChildren()) {
+            if (ball.checkCollision(brick))
+                bricks.removeChild(brick);
+        }
         ball.checkCollision(paddle);
     }
 })(L06_BreakOut_Control || (L06_BreakOut_Control = {}));
