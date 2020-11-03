@@ -8,6 +8,8 @@ var L06_BreakOut_Control;
     let walls;
     let paddle;
     let root;
+    let control = new ƒ.Control("PaddleControl", 20, 0 /* PROPORTIONAL */);
+    control.setDelay(100);
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         // ƒ.Debug.log(canvas);
@@ -35,10 +37,15 @@ var L06_BreakOut_Control;
         // console.log("Tick");
         ball.move();
         L06_BreakOut_Control.viewport.draw();
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-            paddle.translate(ƒ.Vector3.X(-1));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-            paddle.translate(ƒ.Vector3.X(1));
+        control.setInput(ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
+            + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]));
+        // console.log(control.getOutput());
+        paddle.velocity = ƒ.Vector3.X(control.getOutput());
+        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+        //   paddle.velocity = ƒ.Vector3.X(-20);
+        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+        //   paddle.velocity = ƒ.Vector3.X(20);
+        paddle.move();
         hndCollision();
     }
     function hndCollision() {
