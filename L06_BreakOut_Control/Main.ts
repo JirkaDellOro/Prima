@@ -41,14 +41,12 @@ namespace L06_BreakOut_Control {
 
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", root, cmpCamera, canvas);
-    // ƒ.Debug.log(viewport);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, hndLoop);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);
   }
 
   function hndLoop(_event: Event): void {
-    // console.log("Tick");
     ball.move();
     viewport.draw();
 
@@ -57,14 +55,7 @@ namespace L06_BreakOut_Control {
       + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
     );
 
-    // console.log(control.getOutput());
     paddle.velocity = ƒ.Vector3.X(control.getOutput());
-
-    // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-    //   paddle.velocity = ƒ.Vector3.X(-20);
-    // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-    //   paddle.velocity = ƒ.Vector3.X(20);
-
     paddle.move();
 
     hndCollision();

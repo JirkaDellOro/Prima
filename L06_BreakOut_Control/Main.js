@@ -29,22 +29,15 @@ var L06_BreakOut_Control;
         cmpCamera.pivot.rotateY(180);
         L06_BreakOut_Control.viewport = new ƒ.Viewport();
         L06_BreakOut_Control.viewport.initialize("Viewport", root, cmpCamera, canvas);
-        // ƒ.Debug.log(viewport);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, hndLoop);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 30);
     }
     function hndLoop(_event) {
-        // console.log("Tick");
         ball.move();
         L06_BreakOut_Control.viewport.draw();
         control.setInput(ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
             + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]));
-        // console.log(control.getOutput());
         paddle.velocity = ƒ.Vector3.X(control.getOutput());
-        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-        //   paddle.velocity = ƒ.Vector3.X(-20);
-        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-        //   paddle.velocity = ƒ.Vector3.X(20);
         paddle.move();
         hndCollision();
     }
