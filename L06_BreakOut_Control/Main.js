@@ -2,12 +2,20 @@
 var L06_BreakOut_Control;
 (function (L06_BreakOut_Control) {
     var ƒ = FudgeCore;
+    let GAMESTATE;
+    (function (GAMESTATE) {
+        GAMESTATE[GAMESTATE["PLAY"] = 0] = "PLAY";
+        GAMESTATE[GAMESTATE["GAMEOVER"] = 1] = "GAMEOVER";
+    })(GAMESTATE || (GAMESTATE = {}));
     window.addEventListener("load", hndLoad);
     // window.addEventListener("click", sceneLoad);
     let ball;
     let walls;
     let paddle;
     let bricks;
+    let wallBottom;
+    let gameState = GAMESTATE.PLAY;
+    let score = 0;
     let root;
     let control = new ƒ.Control("PaddleControl", 20, 0 /* PROPORTIONAL */);
     control.setDelay(100);
@@ -24,7 +32,9 @@ var L06_BreakOut_Control;
         walls.addChild(new L06_BreakOut_Control.GameObject("WallLeft", new ƒ.Vector2(-18, 0), new ƒ.Vector2(1, 30)));
         walls.addChild(new L06_BreakOut_Control.GameObject("WallRight", new ƒ.Vector2(18, 0), new ƒ.Vector2(1, 30)));
         walls.addChild(new L06_BreakOut_Control.GameObject("WallTop", new ƒ.Vector2(0, 12), new ƒ.Vector2(40, 1)));
-        walls.addChild(new L06_BreakOut_Control.GameObject("WallBottom", new ƒ.Vector2(0, -12), new ƒ.Vector2(40, 1)));
+        wallBottom = new L06_BreakOut_Control.GameObject("WallBottom", new ƒ.Vector2(0, -15), new ƒ.Vector2(40, 1));
+        wallBottom.removeComponent(wallBottom.getComponent(ƒ.ComponentMaterial));
+        walls.appendChild(wallBottom);
         bricks = createBricks(24);
         root.addChild(bricks);
         let cmpCamera = new ƒ.ComponentCamera();
@@ -50,22 +60,43 @@ var L06_BreakOut_Control;
         return bricks;
     }
     function hndLoop(_event) {
+        if (gameState == GAMESTATE.GAMEOVER)
+            return;
         ball.move();
         L06_BreakOut_Control.viewport.draw();
         control.setInput(ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
             + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]));
+        // let posPaddle: ƒ.Vector3 = paddle.mtxLocal.translation;
+        let mutator = paddle.mtxLocal.getMutator();
         paddle.velocity = ƒ.Vector3.X(control.getOutput());
         paddle.move();
+        if (paddle.checkCollision(walls.getChildrenByName("WallLeft")[0]) ||
+            paddle.checkCollision(walls.getChildrenByName("WallRight")[0]))
+            paddle.mtxLocal.mutate(mutator); //paddle.mtxLocal.translation = posPaddle;
         hndCollision();
     }
     function hndCollision() {
-        for (let wall of walls.getChildren())
-            ball.checkCollision(wall);
+        for (let wall of walls.getChildren()) {
+            if (ball.checkCollision(wall))
+                if (wall == wallBottom) {
+                    gameState = GAMESTATE.GAMEOVER;
+                    displayScore(true);
+                }
+        }
         for (let brick of bricks.getChildren()) {
-            if (ball.checkCollision(brick))
+            if (ball.checkCollision(brick)) {
                 bricks.removeChild(brick);
+                score++;
+                displayScore();
+            }
         }
         ball.checkCollision(paddle);
+    }
+    function displayScore(_gameOver = false) {
+        let output = document.querySelector("h2#Score");
+        output.innerHTML = "Score: " + score;
+        if (_gameOver)
+            output.innerHTML += "<br/>GAME OVER";
     }
 })(L06_BreakOut_Control || (L06_BreakOut_Control = {}));
 //# sourceMappingURL=Main.js.map

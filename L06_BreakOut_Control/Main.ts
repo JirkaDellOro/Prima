@@ -1,12 +1,19 @@
 namespace L06_BreakOut_Control {
   import ƒ = FudgeCore;
 
+  enum GAMESTATE {
+    PLAY, GAMEOVER
+  }
+
   window.addEventListener("load", hndLoad);
   // window.addEventListener("click", sceneLoad);
   let ball: Moveable;
   let walls: ƒ.Node;
   let paddle: Moveable;
   let bricks: ƒ.Node;
+  let wallBottom: GameObject;
+  let gameState: GAMESTATE = GAMESTATE.PLAY;
+  let score: number = 0;
 
   export let viewport: ƒ.Viewport;
   let root: ƒ.Node;
@@ -33,7 +40,9 @@ namespace L06_BreakOut_Control {
     walls.addChild(new GameObject("WallLeft", new ƒ.Vector2(-18, 0), new ƒ.Vector2(1, 30)));
     walls.addChild(new GameObject("WallRight", new ƒ.Vector2(18, 0), new ƒ.Vector2(1, 30)));
     walls.addChild(new GameObject("WallTop", new ƒ.Vector2(0, 12), new ƒ.Vector2(40, 1)));
-    walls.addChild(new GameObject("WallBottom", new ƒ.Vector2(0, -12), new ƒ.Vector2(40, 1)));
+    wallBottom = new GameObject("WallBottom", new ƒ.Vector2(0, -15), new ƒ.Vector2(40, 1));
+    wallBottom.removeComponent(wallBottom.getComponent(ƒ.ComponentMaterial));
+    walls.appendChild(wallBottom);
 
     bricks = createBricks(24);
     root.addChild(bricks);
@@ -67,6 +76,9 @@ namespace L06_BreakOut_Control {
   }
 
   function hndLoop(_event: Event): void {
+    if (gameState == GAMESTATE.GAMEOVER)
+      return;
+
     ball.move();
     viewport.draw();
 
@@ -75,21 +87,44 @@ namespace L06_BreakOut_Control {
       + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
     );
 
+    // let posPaddle: ƒ.Vector3 = paddle.mtxLocal.translation;
+    let mutator: ƒ.Mutator = paddle.mtxLocal.getMutator();
     paddle.velocity = ƒ.Vector3.X(control.getOutput());
     paddle.move();
+    if (
+      paddle.checkCollision(<GameObject>walls.getChildrenByName("WallLeft")[0]) ||
+      paddle.checkCollision(<GameObject>walls.getChildrenByName("WallRight")[0])
+    ) paddle.mtxLocal.mutate(mutator);    //paddle.mtxLocal.translation = posPaddle;
+
 
     hndCollision();
   }
 
   function hndCollision(): void {
-    for (let wall of walls.getChildren())
-      ball.checkCollision(<GameObject>wall);
+    for (let wall of walls.getChildren()) {
+      if (ball.checkCollision(<GameObject>wall))
+        if (wall == wallBottom) {
+          gameState = GAMESTATE.GAMEOVER;
+          displayScore(true);
+        }
+    }
 
     for (let brick of bricks.getChildren() as GameObject[]) {
-      if (ball.checkCollision(brick))
+      if (ball.checkCollision(brick)) {
         bricks.removeChild(brick);
+        score++;
+        displayScore();
+      }
     }
 
     ball.checkCollision(paddle);
+  }
+
+  function displayScore(_gameOver: boolean = false): void {
+    let output: HTMLHeadingElement = document.querySelector("h2#Score");
+    output.innerHTML = "Score: " + score;
+
+    if (_gameOver)
+      output.innerHTML += "<br/>GAME OVER";
   }
 }
