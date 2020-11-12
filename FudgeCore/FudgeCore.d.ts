@@ -4604,7 +4604,6 @@ declare namespace FudgeCore {
         private physicsDebugMode;
         constructor(_defGroup: number, _defMask: number);
         get debugMode(): PHYSICS_DEBUGMODE;
-        ƒ: any;
         set debugMode(_value: PHYSICS_DEBUGMODE);
         /** Change if rigidbodies are able to sleep (don't be considered in physical calculations) when their movement is below a threshold. Deactivation is decreasing performance for minor advantage in precision. */
         get disableSleeping(): boolean;
