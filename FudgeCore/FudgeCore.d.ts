@@ -2492,6 +2492,7 @@ declare namespace FudgeCore {
         arguments: Object[];
         firstCall: boolean;
         lastCall: boolean;
+        count: number;
         constructor(_timer: Timer, ..._arguments: Object[]);
     }
 }

@@ -9,10 +9,12 @@ var L10_Doom_Mouse;
     let root = new ƒ.Node("Root");
     let avatar = new ƒ.Node("Avatar");
     let walls;
-    let ctrSpeed = new ƒ.Control("AvatarSpeed", 0.5, 0 /* PROPORTIONAL */);
+    let ctrSpeed = new ƒ.Control("AvatarSpeed", 0.3, 0 /* PROPORTIONAL */);
+    ctrSpeed.setDelay(100);
+    let ctrStrafe = new ƒ.Control("AvatarSpeed", 0.1, 0 /* PROPORTIONAL */);
     ctrSpeed.setDelay(100);
     let ctrRotation = new ƒ.Control("AvatarRotation", -0.1, 0 /* PROPORTIONAL */);
-    ctrRotation.setDelay(50);
+    ctrRotation.setDelay(100);
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         let meshQuad = new ƒ.MeshQuad("Quad");
@@ -44,21 +46,21 @@ var L10_Doom_Mouse;
     function hndLoop(_event) {
         ctrSpeed.setInput(ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
             + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]));
-        // ctrRotation.setInput(
-        //   ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
-        //   + ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
-        // );
-        moveAvatar(ctrSpeed.getOutput(), ctrRotation.getOutput());
+        ctrStrafe.setInput(ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
+            + ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]));
+        moveAvatar(ctrSpeed.getOutput(), ctrRotation.getOutput(), ctrStrafe.getOutput());
+        ctrRotation.setInput(0);
         L10_Doom_Mouse.viewport.draw();
     }
     function hndMouse(_event) {
         // console.log(_event.movementX, _event.movementY);
         ctrRotation.setInput(_event.movementX);
     }
-    function moveAvatar(_translation, _rotation) {
+    function moveAvatar(_speed, _rotation, _strafe) {
         avatar.mtxLocal.rotateY(_rotation);
         let posOld = avatar.mtxLocal.translation;
-        avatar.mtxLocal.translateZ(_translation);
+        avatar.mtxLocal.translateZ(_speed);
+        avatar.mtxLocal.translateX(_strafe);
         let bouncedOff = bounceOffWalls(walls.getChildren());
         if (bouncedOff.length < 2)
             return;

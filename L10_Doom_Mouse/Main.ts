@@ -12,10 +12,12 @@ namespace L10_Doom_Mouse {
   let avatar: ƒ.Node = new ƒ.Node("Avatar");
   let walls: ƒ.Node;
 
-  let ctrSpeed: ƒ.Control = new ƒ.Control("AvatarSpeed", 0.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrSpeed: ƒ.Control = new ƒ.Control("AvatarSpeed", 0.3, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  ctrSpeed.setDelay(100);
+  let ctrStrafe: ƒ.Control = new ƒ.Control("AvatarSpeed", 0.1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrSpeed.setDelay(100);
   let ctrRotation: ƒ.Control = new ƒ.Control("AvatarRotation", -0.1, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  ctrRotation.setDelay(50);
+  ctrRotation.setDelay(100);
 
   function hndLoad(_event: Event): void {
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
@@ -60,12 +62,13 @@ namespace L10_Doom_Mouse {
       ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
       + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])
     );
-    // ctrRotation.setInput(
-    //   ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
-    //   + ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
-    // );
+    ctrStrafe.setInput(
+      ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])
+      + ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
+    );
 
-    moveAvatar(ctrSpeed.getOutput(), ctrRotation.getOutput());
+    moveAvatar(ctrSpeed.getOutput(), ctrRotation.getOutput(), ctrStrafe.getOutput());
+    ctrRotation.setInput(0);
 
     viewport.draw();
   }
@@ -75,10 +78,11 @@ namespace L10_Doom_Mouse {
     ctrRotation.setInput(_event.movementX);
   }
 
-  function moveAvatar(_translation: number, _rotation: number): void {
+  function moveAvatar(_speed: number, _rotation: number, _strafe: number): void {
     avatar.mtxLocal.rotateY(_rotation);
     let posOld: ƒ.Vector3 = avatar.mtxLocal.translation;
-    avatar.mtxLocal.translateZ(_translation);
+    avatar.mtxLocal.translateZ(_speed);
+    avatar.mtxLocal.translateX(_strafe);
 
     let bouncedOff: Wall[] = bounceOffWalls(<Wall[]>walls.getChildren());
     if (bouncedOff.length < 2)
