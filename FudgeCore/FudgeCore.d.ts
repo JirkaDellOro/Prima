@@ -2636,7 +2636,7 @@ declare namespace FudgeCore {
          * Returns a matrix that scales coordinates along the x-, y- and z-axis according to the given vector
          */
         static SCALING(_scalar: Vector2): Matrix3x3;
-        static MULTIPLICATION(_a: Matrix3x3, _b: Matrix3x3): Matrix3x3;
+        static MULTIPLICATION(_left: Matrix3x3, _right: Matrix3x3): Matrix3x3;
         /**
          * - get: a copy of the calculated translation vector
          * - set: effect the matrix ignoring its rotation and scaling
@@ -2736,10 +2736,10 @@ declare namespace FudgeCore {
         static IDENTITY(): Matrix4x4;
         /**
          * Computes and returns the product of two passed matrices.
-         * @param _a The matrix to multiply.
-         * @param _b The matrix to multiply by.
+         * @param _left The matrix to multiply.
+         * @param _right The matrix to multiply by.
          */
-        static MULTIPLICATION(_a: Matrix4x4, _b: Matrix4x4): Matrix4x4;
+        static MULTIPLICATION(_left: Matrix4x4, _right: Matrix4x4): Matrix4x4;
         /**
          * Computes and returns the inverse of a passed matrix.
          * @param _matrix The matrix to compute the inverse of.
