@@ -39,7 +39,7 @@ var L11_Doom_Enemy;
             for (let angle = 0; angle < 5; angle++) {
                 let name = "Idle" + ANGLE[angle];
                 let sprite = new ƒaid.SpriteSheetAnimation(name, _spritesheet);
-                sprite.generateByGrid(ƒ.Rectangle.GET(44, 33, 63, 66), 3, 32, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.Y(100));
+                sprite.generateByGrid(ƒ.Rectangle.GET(44 + angle * 107, 33, 63, 66), 3, 32, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.Y(100));
                 Enemy.animations[name] = sprite;
             }
         }
