@@ -638,6 +638,10 @@ declare namespace FudgeCore {
          */
         getIntersection(_rect: Rectangle): Rectangle;
         /**
+     * Returns the rectangle created by the intersection of this and the given rectangle or null, if they don't collide
+     */
+        covers(_rect: Rectangle): boolean;
+        /**
          * Creates a string representation of this rectangle
          */
         toString(): string;
