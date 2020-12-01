@@ -94,9 +94,10 @@ var L11_Doom_Enemy;
         await txtCacodemon.load("../DoomAssets/Cacodemon.png");
         let coatSprite = new ƒ.CoatTextured(clrWhite, txtCacodemon);
         L11_Doom_Enemy.Enemy.generateSprites(coatSprite);
-        enemies.appendChild(new L11_Doom_Enemy.Enemy("Cacodemon0", ƒ.Vector3.Z(3)));
-        enemies.appendChild(new L11_Doom_Enemy.Enemy("Cacodemon1", ƒ.Vector3.X(3)));
-        enemies.appendChild(new L11_Doom_Enemy.Enemy("Cacodemon2", ƒ.Vector3.X(-3)));
+        for (let i = 0; i < 10; i++)
+            enemies.appendChild(new L11_Doom_Enemy.Enemy("Cacodemon" + i, ƒ.Vector3.Z(3)));
+        // enemies.appendChild(new Enemy("Cacodemon1", ƒ.Vector3.X(3)));
+        // enemies.appendChild(new Enemy("Cacodemon2", ƒ.Vector3.X(-3)));
         console.log("Enemies", enemies);
         return enemies;
     }

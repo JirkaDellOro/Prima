@@ -15,23 +15,32 @@ var L11_Doom_Enemy;
         ANGLE[ANGLE["_270"] = 6] = "_270";
         ANGLE[ANGLE["_315"] = 7] = "_315";
     })(ANGLE = L11_Doom_Enemy.ANGLE || (L11_Doom_Enemy.ANGLE = {}));
+    let JOB;
+    (function (JOB) {
+        JOB[JOB["IDLE"] = 0] = "IDLE";
+        JOB[JOB["PATROL"] = 1] = "PATROL";
+    })(JOB = L11_Doom_Enemy.JOB || (L11_Doom_Enemy.JOB = {}));
     class Enemy extends ƒ.Node {
         // private static speedMax: number = 1; // units per second
         // public direction: number = 0; 
         constructor(_name = "Enemy", _position) {
             super(_name);
-            this.speed = 1;
+            this.speed = 3;
+            this.angleView = 0;
+            this.job = JOB.PATROL;
             this.addComponent(new ƒ.ComponentTransform());
             this.mtxLocal.translation = _position;
             this.show = new ƒaid.Node("Show", ƒ.Matrix4x4.IDENTITY());
             this.appendChild(this.show);
             this.sprite = new ƒaid.NodeSprite("Sprite");
+            this.sprite.addComponent(new ƒ.ComponentTransform());
             this.show.appendChild(this.sprite);
             this.sprite.setAnimation(Enemy.animations["Idle_000"]);
             // this.sprite.showFrame(0);
             this.sprite.setFrameDirection(1);
             this.sprite.framerate = 2;
-            this.posTarget = _position;
+            // this.posTarget = _position;
+            this.chooseTargetPosition();
             // this.appendChild(new ƒaid.Node("Cube", ƒ.Matrix4x4.IDENTITY(), new ƒ.Material("Cube", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("red"))), new ƒ.MeshCube()));
         }
         static generateSprites(_spritesheet) {
@@ -44,19 +53,48 @@ var L11_Doom_Enemy;
             }
         }
         update() {
-            if (this.mtxLocal.translation.equals(this.posTarget, 0.1))
-                this.chooseTargetPosition();
-            this.move();
+            switch (this.job) {
+                case JOB.PATROL:
+                    if (this.mtxLocal.translation.equals(this.posTarget, 0.1))
+                        // this.chooseTargetPosition();
+                        this.job = JOB.IDLE;
+                    this.move();
+                    break;
+                case JOB.IDLE:
+                default:
+                    break;
+            }
+            this.displayAnimation();
         }
         move() {
             this.mtxLocal.showTo(this.posTarget);
             this.mtxLocal.translateZ(this.speed * ƒ.Loop.timeFrameGame / 1000);
+        }
+        displayAnimation() {
             this.show.mtxLocal.showTo(ƒ.Vector3.TRANSFORMATION(L11_Doom_Enemy.avatar.mtxLocal.translation, this.mtxWorldInverse, true));
+            let rotation = this.show.mtxLocal.rotation.y;
+            rotation = (rotation + 360 + 22.5) % 360;
+            rotation = Math.floor(rotation / 45);
+            if (this.angleView == rotation)
+                return;
+            this.angleView = rotation;
+            if (rotation > 4) {
+                rotation = 8 - rotation;
+                this.flip(true);
+            }
+            else
+                this.flip(false);
+            let section = ANGLE[rotation]; // .padStart(3, "0");
+            console.log(section);
+            this.sprite.setAnimation(Enemy.animations["Idle" + section]);
         }
         chooseTargetPosition() {
-            let range = 5; //sizeWall * numWalls / 2 - 2;
+            let range = L11_Doom_Enemy.sizeWall * L11_Doom_Enemy.numWalls / 2 - 2;
             this.posTarget = new ƒ.Vector3(ƒ.Random.default.getRange(-range, range), 0, ƒ.Random.default.getRange(-range, range));
             console.log("New target", this.posTarget.toString());
+        }
+        flip(_reverse) {
+            this.sprite.mtxLocal.rotation = ƒ.Vector3.Y(_reverse ? 180 : 0);
         }
     }
     L11_Doom_Enemy.Enemy = Enemy;

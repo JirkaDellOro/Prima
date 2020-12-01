@@ -589,11 +589,6 @@ declare namespace FudgeCore {
          * Returns a new rectangle created with the given parameters
          */
         static GET(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): Rectangle;
-        /**
-         * Sets the position and size of the rectangle according to the given parameters
-         */
-        setPositionAndSize(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): void;
-        pointToRect(_point: Vector2, _target: Rectangle): Vector2;
         get x(): number;
         get y(): number;
         get width(): number;
@@ -623,6 +618,11 @@ declare namespace FudgeCore {
         set right(_value: number);
         set bottom(_value: number);
         get copy(): Rectangle;
+        /**
+         * Sets the position and size of the rectangle according to the given parameters
+         */
+        setPositionAndSize(_x?: number, _y?: number, _width?: number, _height?: number, _origin?: ORIGIN2D): void;
+        pointToRect(_point: Vector2, _target: Rectangle): Vector2;
         /**
          * Returns true if the given point is inside of this rectangle or on the border
          * @param _point
