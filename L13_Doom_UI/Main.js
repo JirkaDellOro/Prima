@@ -44,8 +44,13 @@ var L13_Doom_UI;
         L13_Doom_UI.viewport.draw();
         canvas.addEventListener("mousemove", hndMouse);
         canvas.addEventListener("click", canvas.requestPointerLock);
+        canvas.addEventListener("click", shoot);
+        L13_Doom_UI.Hud.start();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, hndLoop);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 120);
+    }
+    function shoot() {
+        L13_Doom_UI.gameState.ammo--;
     }
     function hndLoop(_event) {
         ctrSpeed.setInput(ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
@@ -67,7 +72,6 @@ var L13_Doom_UI;
         let posOld = L13_Doom_UI.avatar.mtxLocal.translation;
         L13_Doom_UI.avatar.mtxLocal.translateZ(_speed);
         L13_Doom_UI.avatar.mtxLocal.translateX(_strafe);
-        L13_Doom_UI.Hud.displayPosition(posOld);
         let bouncedOff = bounceOffWalls(walls.getChildren());
         if (bouncedOff.length < 2)
             return;

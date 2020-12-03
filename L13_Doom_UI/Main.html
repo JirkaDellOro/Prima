@@ -8,6 +8,7 @@
   <title>L13_Doom_UI</title>
   <script src="../FudgeCore/FudgeCore.js"></script>
   <script src="../FudgeAid/FudgeAid.js"></script>
+  <script src="../FudgeUserInterface/FudgeUserInterface.js"></script>
   <script src="GameObject.js"></script>
   <script src="Wall.js"></script>
   <script src="Enemy.js"></script>
@@ -28,19 +29,35 @@
       height: 100vh;
     }
 
-    div {
+    div#hud {
       position: absolute;
       top: 0px;
       left: 0px;
       color: white;
       font-size: large;
     }
+
+    input[type="number"] {
+      appearance: textfield;
+
+      font-size: 5em;
+      border: none;
+      background-color: rgba(0, 255, 255, 0);
+      color: rgb(255, 0, 0);
+      text-shadow: black 5px 5px;
+      width:4em;
+    }
+
   </style>
 </head>
 
 <body>
   <canvas></canvas>
-  <div id="position"></div>
+  <div id="hud">
+    Health <input type="number" key="health" disabled />
+    Score <input type="number" key="score" disabled />
+    Ammo <input type="number" key="ammo" disabled />
+  </div>
 </body>
 
 </html>

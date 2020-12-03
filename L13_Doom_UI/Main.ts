@@ -57,9 +57,16 @@ namespace L13_Doom_UI {
 
     canvas.addEventListener("mousemove", hndMouse);
     canvas.addEventListener("click", canvas.requestPointerLock);
+    canvas.addEventListener("click", shoot);
+
+    Hud.start();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, hndLoop);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_GAME, 120);
+  }
+
+  function shoot(): void {
+    gameState.ammo--;
   }
 
   function hndLoop(_event: Event): void {
@@ -91,8 +98,6 @@ namespace L13_Doom_UI {
     let posOld: ƒ.Vector3 = avatar.mtxLocal.translation;
     avatar.mtxLocal.translateZ(_speed);
     avatar.mtxLocal.translateX(_strafe);
-
-    Hud.displayPosition(posOld);
 
     let bouncedOff: Wall[] = bounceOffWalls(<Wall[]>walls.getChildren());
     if (bouncedOff.length < 2)
