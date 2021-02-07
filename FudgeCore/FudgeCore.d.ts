@@ -263,13 +263,11 @@ declare namespace FudgeCore {
      * A [[Serialization]] object can be created from a [[Serializable]] object and a JSON-String may be created from that.
      * Vice versa, a JSON-String can be parsed to a [[Serialization]] which can be deserialized to a [[Serializable]] object.
      * ```plaintext
-     *  [Serializable] → (serialize) → [Serialization] → (stringify)
-     *                                                        ↓
-     *                                                    [String]
-     *                                                        ↓
-     *  [Serializable] ← (deserialize) ← [Serialization] ← (parse)
+     *  [Serializable] → (serialize) → [Serialization] → (stringify) → [String] → (save or send)
+     *                                        ↓                            ↓                  ↓
+     *                [Serializable] ← (deserialize) ← [Serialization] ← (parse) ← (load) ← [Medium]
      * ```
-     * While the internal serialize/deserialize methods of the objects care of the selection of information needed to recreate the object and its structure,
+     * While the internal serialize/deserialize method1s of the objects care of the selection of information needed to recreate the object and its structure,
      * the [[Serializer]] keeps track of the namespaces and classes in order to recreate [[Serializable]] objects. The general structure of a [[Serialization]] is as follows
      * ```plaintext
      * {
@@ -499,6 +497,10 @@ declare namespace FudgeCore {
          * @returns A Vector that is orthogonal to and has the same magnitude as the given Vector.
          */
         static ORTHOGONAL(_vector: Vector2, _clockwise?: boolean): Vector2;
+        /**
+         * Creates a cartesian vector from polar coordinates
+         */
+        static GEO(_angle?: number, _magnitude?: number): Vector2;
         get x(): number;
         get y(): number;
         set x(_x: number);
@@ -515,6 +517,14 @@ declare namespace FudgeCore {
          * @returns A deep copy of the vector.
          */
         get copy(): Vector2;
+        /**
+         * Returns a polar representation of this vector
+         */
+        get geo(): Geo2;
+        /**
+         * Adjust the cartesian values of this vector to represent the given as polar coordinates
+         */
+        set geo(_geo: Geo2);
         /**
          * Returns true if the coordinates of this and the given vector are to be considered identical within the given tolerance
          * TODO: examine, if tolerance as criterium for the difference is appropriate with very large coordinate values or if _tolerance should be multiplied by coordinate value
@@ -666,9 +676,9 @@ declare namespace FudgeCore {
      * Base class for RenderManager, handling the connection to the rendering system, in this case WebGL.
      * Methods and attributes of this class should not be called directly, only through [[RenderManager]]
      */
-    abstract class RenderOperator {
+    abstract class RenderWebGL {
         protected static crc3: WebGL2RenderingContext;
-        private static rectViewport;
+        private static rectRender;
         /**
          * Wrapper function to utilize the bufferSpecification interface when passing data to the shader via a buffer.
          * @param _attributeLocation  The location of the attribute on the shader, to which they data will be passed.
@@ -705,23 +715,31 @@ declare namespace FudgeCore {
          * Set the area on the offscreen-canvas to render the camera image to.
          * @param _rect
          */
-        static setViewportRectangle(_rect: Rectangle): void;
+        static setRenderRectangle(_rect: Rectangle): void;
+        /**
+         * Clear the offscreen renderbuffer with the given [[Color]]
+         */
+        static clear(_color?: Color): void;
+        /**
+         * Reset the offscreen framebuffer to the original RenderingContext
+         */
+        static resetFrameBuffer(_color?: Color): void;
         /**
          * Retrieve the area on the offscreen-canvas the camera image gets rendered to.
          */
-        static getViewportRectangle(): Rectangle;
+        static getRenderRectangle(): Rectangle;
         static setDepthTest(_test: boolean): void;
         static setBlendMode(_mode: BLEND): void;
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          */
-        protected static draw(_mesh: Mesh, cmpMaterial: ComponentMaterial, _final: Matrix4x4, _projection: Matrix4x4): void;
+        protected static draw(_mesh: Mesh, cmpMaterial: ComponentMaterial, _mtxMeshToWorld: Matrix4x4, _mtxWorldToView: Matrix4x4): void;
     }
 }
 declare namespace FudgeCore {
     class RenderInjectorTexture extends RenderInjector {
         static decorate(_constructor: Function): void;
-        protected static injectTextureImage(this: Texture): void;
+        protected static injectTexture(this: Texture): void;
     }
 }
 declare namespace FudgeCore {
@@ -1277,8 +1295,8 @@ declare namespace FudgeCore {
      * A [[Coat]] providing a texture and additional data for texturing
      */
     class CoatTextured extends CoatColored {
-        texture: TextureImage;
-        constructor(_color?: Color, _texture?: TextureImage);
+        texture: Texture;
+        constructor(_color?: Color, _texture?: Texture);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
     }
@@ -1556,7 +1574,7 @@ declare namespace FudgeCore {
         pivot: Matrix4x4;
         backgroundColor: Color;
         private projection;
-        private transform;
+        private mtxProjection;
         private fieldOfView;
         private aspectRatio;
         private direction;
@@ -1567,7 +1585,7 @@ declare namespace FudgeCore {
          * Returns the multiplikation of the worldtransformation of the camera container with the projection matrix
          * @returns the world-projection-matrix
          */
-        get ViewProjectionMatrix(): Matrix4x4;
+        get mtxWorldToView(): Matrix4x4;
         getProjection(): PROJECTION;
         getBackgroundEnabled(): boolean;
         getAspect(): number;
@@ -1591,10 +1609,10 @@ declare namespace FudgeCore {
          */
         projectOrthographic(_left?: number, _right?: number, _bottom?: number, _top?: number): void;
         /**
-         * Return the calculated normed dimension of the projection surface, that is in the hypothetical distance of 1 to the camera
+         * Return the calculated dimension of a projection surface in the hypothetical distance of 1 to the camera
          */
         getProjectionRectangle(): Rectangle;
-        project(_pointInWorldSpace: Vector3): Vector3;
+        pointWorldToClip(_pointInWorldSpace: Vector3): Vector3;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
@@ -1710,6 +1728,7 @@ declare namespace FudgeCore {
     class ComponentMesh extends Component {
         static readonly iSubclass: number;
         pivot: Matrix4x4;
+        mtxWorld: Matrix4x4;
         mesh: Mesh;
         constructor(_mesh?: Mesh);
         serialize(): Serialization;
@@ -2148,9 +2167,14 @@ declare namespace FudgeCore {
          */
         showSceneGraph(): void;
         /**
-         * Draw this viewport
+         * Calculate the cascade of transforms in this branch and store the results as mtxWorld in the [[Node]]s and [[ComponentMesh]]es
          */
-        draw(): void;
+        calculateTransforms(): void;
+        /**
+         * Draw this viewport displaying its branch. By default, the transforms in the branch are recalculated first.
+         * Pass `false` if calculation was already done for this frame
+         */
+        draw(_calculateTransforms?: boolean): void;
         /**
         * Draw this viewport for RayCast
         */
@@ -2182,8 +2206,8 @@ declare namespace FudgeCore {
          */
         pointClientToRender(_client: Vector2): Vector2;
         /**
-         * Returns a point in normed view-rectangle matching the given point on the client rectangle
-         * The view-rectangle matches the client size in the hypothetical distance of 1 to the camera, its origin in the center and y-axis pointing up
+         * Returns a point on a projection surface in the hypothetical distance of 1 to the camera
+         * matching the given point on the client rectangle
          * TODO: examine, if this should be a camera-method. Current implementation is for central-projection
          */
         pointClientToProjection(_client: Vector2): Vector2;
@@ -2621,6 +2645,52 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     /**
+     * Representation of a vector2 as polar coordinates
+     * ```plaintext
+     *  ↕- angle (Angle to the x-axis)
+     *  -→ Magnitude (Distance from the center)
+     * ```
+     */
+    class Geo2 {
+        magnitude: number;
+        angle: number;
+        constructor(_angle?: number, _magnitude?: number);
+        /**
+         * Set the properties of this instance at once
+         */
+        set(_angle?: number, _magnitude?: number): void;
+        /**
+         * Returns a pretty string representation
+         */
+        toString(): string;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Representation of a vector3 as geographic coordinates as seen on a globe
+     * ```plaintext
+     * ←|→ Longitude (Angle to the z-axis)
+     *  ↕- Latitude (Angle to the equator)
+     *  -→ Magnitude (Distance from the center)
+     * ```
+     */
+    class Geo3 {
+        magnitude: number;
+        latitude: number;
+        longitude: number;
+        constructor(_longitude?: number, _latitude?: number, _magnitude?: number);
+        /**
+         * Set the properties of this instance at once
+         */
+        set(_longitude?: number, _latitude?: number, _magnitude?: number): void;
+        /**
+         * Returns a pretty string representation
+         */
+        toString(): string;
+    }
+}
+declare namespace FudgeCore {
+    /**
      * Simple class for 3x3 matrix operations
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2020
      */
@@ -2992,6 +3062,10 @@ declare namespace FudgeCore {
          */
         getIndex<T>(_array: Array<T>): number;
         /**
+         * Returns a randomly selected element of the given array
+         */
+        getElement<T>(_array: Array<T>): T;
+        /**
          * Removes a randomly selected element from the given array and returns it
          */
         splice<T>(_array: Array<T>): T;
@@ -3007,6 +3081,14 @@ declare namespace FudgeCore {
          * Returns a randomly selected symbol from the given object, if symbols are used as keys
          */
         getPropertySymbol(_object: Object): symbol;
+        /**
+         * Returns a random three-dimensional vector in the limits of the box defined by the vectors given as [_corner0, _corner1[
+         */
+        getVector3(_corner0: Vector3, _corner1: Vector3): Vector3;
+        /**
+         * Returns a random two-dimensional vector in the limits of the rectangle defined by the vectors given as [_corner0, _corner1[
+         */
+        getVector2(_corner0: Vector2, _corner1: Vector2): Vector2;
     }
     /**
      * Standard [[Random]]-instance using Math.random().
@@ -3089,6 +3171,10 @@ declare namespace FudgeCore {
          * Divides the dividend by the divisor component by component and returns the result
          */
         static RATIO(_dividend: Vector3, _divisor: Vector3): Vector3;
+        /**
+         * Creates a cartesian vector from geographic coordinates
+         */
+        static GEO(_longitude?: number, _latitude?: number, _magnitude?: number): Vector3;
         get x(): number;
         get y(): number;
         get z(): number;
@@ -3107,6 +3193,14 @@ declare namespace FudgeCore {
          * Returns a copy of this vector
          */
         get copy(): Vector3;
+        /**
+         * Returns a geographic representation of this vector
+         */
+        get geo(): Geo3;
+        /**
+         * Adjust the cartesian values of this vector to represent the given as geographic coordinates
+         */
+        set geo(_geo: Geo3);
         /**
          * Returns true if the coordinates of this and the given vector are to be considered identical within the given tolerance
          * TODO: examine, if tolerance as criterium for the difference is appropriate with very large coordinate values or if _tolerance should be multiplied by coordinate value
@@ -4469,7 +4563,7 @@ declare namespace FudgeCore {
         compileShader(shader: WebGLShader, source: string): void;
     }
     /** Internal Class used to draw debugInformations about the physics simulation onto the renderContext. No user interaction needed. @author Marko Fehrenbach, HFU 2020 //Based on OimoPhysics Haxe DebugDrawDemo */
-    class PhysicsDebugDraw extends RenderOperator {
+    class PhysicsDebugDraw extends RenderWebGL {
         oimoDebugDraw: OIMO.DebugDraw;
         style: OIMO.DebugDrawStyle;
         gl: WebGL2RenderingContext;
@@ -4501,17 +4595,17 @@ declare namespace FudgeCore {
         /** Creating the render buffers for later use. Defining the attributes used in shaders.
          * Needs to create empty buffers to already have them ready to draw later on, linking is only possible with existing buffers. No performance loss because empty buffers are not drawn.*/
         initializeBuffers(): void;
-        /** Fill an array with empty values */
-        private initFloatArray;
-        /** Overriding the existing functions from OimoPhysics.DebugDraw without actually inherit from the class, to avoid compiler problems.
-         * Overriding them to receive debugInformations in the format the physic engine provides them but handling the rendering in the fudge context. */
-        private initializeOverride;
         /** Before OimoPhysics.world is filling the debug. Make sure the buffers are reset. Also receiving the debugMode from settings and updating the current projection for the vertexShader. */
         begin(): void;
         /** After OimoPhysics.world filled the debug. Rendering calls. Setting this program to be used by the Fudge rendering context. And draw each updated buffer and resetting them. */
         end(): void;
         /** Drawing the ray into the debugDraw Call. By using the overwritten line rendering functions and drawing a point (pointSize defined in the shader) at the end of the ray. */
         debugRay(_origin: Vector3, _end: Vector3, _color: Color): void;
+        /** Fill an array with empty values */
+        private initFloatArray;
+        /** Overriding the existing functions from OimoPhysics.DebugDraw without actually inherit from the class, to avoid compiler problems.
+         * Overriding them to receive debugInformations in the format the physic engine provides them but handling the rendering in the fudge context. */
+        private initializeOverride;
         /** The source code (string) of the in physicsDebug used very simple vertexShader.
          *  Handling the projection (which includes, view/world[is always identity in this case]/projection in Fudge). Increasing the size of single points drawn.
          *  And transfer position color to the fragmentShader. */
@@ -4806,6 +4900,7 @@ declare namespace FudgeCore {
          * All values and calculations must be relative to the same coordinate system, preferably the world.
          */
         getDistance(_target: Vector3): Vector3;
+        toString(): string;
     }
 }
 declare namespace FudgeCore {
@@ -4827,20 +4922,13 @@ declare namespace FudgeCore {
         frameBuffer: WebGLFramebuffer;
     }
     /**
-     * The main interface to the render engine, here WebGL, which is used mainly in the superclass [[RenderOperator]]
+     * The main interface to the render engine, here WebGL, which is used mainly in the superclass [[RenderWebGL]]
+     * TODO: move all WebGL-specifica to RenderWebGL
      */
-    abstract class RenderManager extends RenderOperator {
+    abstract class Render extends RenderWebGL {
         static rectClip: Rectangle;
         private static timestampUpdate;
         private static pickBuffers;
-        /**
-         * Clear the offscreen renderbuffer with the given [[Color]]
-         */
-        static clear(_color?: Color): void;
-        /**
-         * Reset the offscreen framebuffer to the original RenderingContext
-         */
-        static resetFrameBuffer(_color?: Color): void;
         /**
          * Draws the graph for RayCasting starting with the given [[Node]] using the camera given [[ComponentCamera]].
          */
@@ -4854,7 +4942,7 @@ declare namespace FudgeCore {
          * Recursively iterates over the graph starting with the node given, recalculates all world transforms,
          * collects all lights and feeds all shaders used in the graph with these lights
          */
-        static setupTransformAndLights(_node: Node, _world?: Matrix4x4, _lights?: MapLightTypeToLightList, _shadersUsed?: (typeof Shader)[]): void;
+        static setupTransformAndLights(_node: Node, _mtxWorld?: Matrix4x4, _lights?: MapLightTypeToLightList, _shadersUsed?: (typeof Shader)[]): void;
         /**
          * The main rendering function to be called from [[Viewport]].
          * Draws the graph starting with the given [[Node]] using the camera given [[ComponentCamera]].
@@ -4873,7 +4961,7 @@ declare namespace FudgeCore {
          */
         private static drawNodeForRayCast;
         /**
-         * Creates a texture buffer to be uses as pick-buffer
+         * Creates a texture buffer to be used as pick-buffer
          */
         private static getRayCastTexture;
         /**
@@ -4888,7 +4976,7 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    abstract class RenderParticles extends RenderManager {
+    abstract class RenderParticles extends Render {
         static drawParticles(): void;
     }
 }
@@ -4979,26 +5067,37 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    enum MIPMAP {
+        CRISP = 0,
+        MEDIUM = 1,
+        BLURRY = 2
+    }
     /**
      * Baseclass for different kinds of textures.
      * @authors Jirka Dell'Oro-Friedl, HFU, 2019
      */
-    abstract class Texture extends Mutable {
+    abstract class Texture extends Mutable implements SerializableResource {
         name: string;
+        idResource: string;
+        mipmap: MIPMAP;
         protected renderData: {
             [key: string]: unknown;
         };
+        constructor(_name?: string);
+        abstract get texImageSource(): TexImageSource;
         useRenderData(): void;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
         protected reduceMutator(_mutator: Mutator): void;
     }
     /**
      * Texture created from an existing image
      */
-    class TextureImage extends Texture implements SerializableResource {
+    class TextureImage extends Texture {
         image: HTMLImageElement;
         url: RequestInfo;
-        idResource: string;
         constructor(_url?: RequestInfo);
+        get texImageSource(): TexImageSource;
         /**
          * Asynchronously loads the image from the given url
          */
@@ -5010,17 +5109,34 @@ declare namespace FudgeCore {
     /**
      * Texture created from a canvas
      */
+    class TextureBase64 extends Texture {
+        image: HTMLImageElement;
+        constructor(_name: string, _base64: string, _mipmap?: MIPMAP);
+        get texImageSource(): TexImageSource;
+    }
+    /**
+     * Texture created from a canvas
+     */
     class TextureCanvas extends Texture {
+        get texImageSource(): TexImageSource;
     }
     /**
      * Texture created from a FUDGE-Sketch
      */
     class TextureSketch extends TextureCanvas {
+        get texImageSource(): TexImageSource;
     }
     /**
      * Texture created from an HTML-page
      */
     class TextureHTML extends TextureCanvas {
+        get texImageSource(): TexImageSource;
+    }
+}
+declare namespace FudgeCore {
+    class TextureDefault extends TextureBase64 {
+        static texture: TextureBase64;
+        private static get;
     }
 }
 declare namespace FudgeCore {
