@@ -31,9 +31,9 @@ namespace L02_DavidsRotation {
 
     let meshTorus: ƒ.MeshTorus = new ƒ.MeshTorus("Torus", 1, 10, 1);
     let cmpTorus: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshTorus);
-    cmpTorus.pivot.translateX(0);
-    cmpTorus.pivot.rotateZ(90);
-    cmpTorus.pivot.rotateX(90);
+    cmpTorus.mtxPivot.translateX(0);
+    cmpTorus.mtxPivot.rotateZ(90);
+    cmpTorus.mtxPivot.rotateX(90);
     torus.addComponent(cmpTorus);
 
     let orange: ƒ.Material = new ƒ.Material("Orange", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("ORANGE")));
@@ -49,8 +49,8 @@ namespace L02_DavidsRotation {
     let red: ƒ.Material = new ƒ.Material("Red", ƒ.ShaderUniColor, new ƒ.CoatColored(ƒ.Color.CSS("RED")));
     let cred: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(red);
 
-    cmpCube.pivot.scaleX(0.5);
-    cmpCube.pivot.scaleY(0.5);
+    cmpCube.mtxPivot.scaleX(0.5);
+    cmpCube.mtxPivot.scaleY(0.5);
 
     torus.addComponent(corange);
     cube.addComponent(cmpCube);
@@ -59,8 +59,8 @@ namespace L02_DavidsRotation {
 
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    cmpCamera.pivot.translateZ(4);
-    cmpCamera.pivot.rotateY(180);
+    cmpCamera.mtxPivot.translateZ(4);
+    cmpCamera.mtxPivot.rotateY(180);
 
 
     viewport = new ƒ.Viewport();

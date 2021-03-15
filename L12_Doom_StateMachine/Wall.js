@@ -8,7 +8,7 @@ var L12_Doom_StateMachine;
             super("Wall", _size, _position, _rotation);
             // let floor: ƒaid.Node = new ƒaid.Node("Floor", ƒ.Matrix4x4.ROTATION_X(-90), mtrFloor, meshQuad);
             let cmpMaterial = new ƒ.ComponentMaterial(_material);
-            cmpMaterial.pivot.scale(ƒ.Vector2.ONE(1));
+            cmpMaterial.mtxPivot.scale(ƒ.Vector2.ONE(1));
             this.addComponent(cmpMaterial);
         }
     }

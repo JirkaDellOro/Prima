@@ -16,7 +16,7 @@ namespace L06_BreakOut_Control {
 
       let cmpQuad: ƒ.ComponentMesh = new ƒ.ComponentMesh(GameObject.meshQuad);
       this.addComponent(cmpQuad);
-      cmpQuad.pivot.scale(_size.toVector3(0));
+      cmpQuad.mtxPivot.scale(_size.toVector3(0));
 
       let cMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(GameObject.mtrSolidWhite);
       this.addComponent(cMaterial);

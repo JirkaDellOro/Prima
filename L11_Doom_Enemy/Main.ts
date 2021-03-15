@@ -30,7 +30,7 @@ namespace L11_Doom_Enemy {
     let mtrFloor: ƒ.Material = new ƒ.Material("Floor", ƒ.ShaderTexture, new ƒ.CoatTextured(clrWhite, txtFloor));
     let floor: ƒaid.Node = new ƒaid.Node("Floor", ƒ.Matrix4x4.ROTATION_X(-90), mtrFloor, meshQuad);
     floor.mtxLocal.scale(ƒ.Vector3.ONE(sizeWall * numWalls));
-    floor.getComponent(ƒ.ComponentMaterial).pivot.scale(ƒ.Vector2.ONE(numWalls));
+    floor.getComponent(ƒ.ComponentMaterial).mtxPivot.scale(ƒ.Vector2.ONE(numWalls));
 
     root.appendChild(floor);
 
@@ -42,8 +42,8 @@ namespace L11_Doom_Enemy {
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
     cmpCamera.projectCentral(1, 45, ƒ.FIELD_OF_VIEW.DIAGONAL, 0.2, 10000);
-    cmpCamera.pivot.translate(ƒ.Vector3.Y(1.7));
-    cmpCamera.backgroundColor = ƒ.Color.CSS("darkblue");
+    cmpCamera.mtxPivot.translate(ƒ.Vector3.Y(1.7));
+    cmpCamera.clrBackground = ƒ.Color.CSS("darkblue");
 
     avatar.addComponent(cmpCamera);
     avatar.addComponent(new ƒ.ComponentTransform());

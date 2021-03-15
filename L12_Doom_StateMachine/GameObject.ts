@@ -15,9 +15,9 @@ namespace L12_Doom_StateMachine {
 
       let cmpQuad: ƒ.ComponentMesh = new ƒ.ComponentMesh(GameObject.meshQuad);
       this.addComponent(cmpQuad);
-      cmpQuad.pivot.scale(_size.toVector3(1));
+      cmpQuad.mtxPivot.scale(_size.toVector3(1));
 
-      this.mtxPivot = this.getComponent(ƒ.ComponentMesh).pivot;
+      this.mtxPivot = this.getComponent(ƒ.ComponentMesh).mtxPivot;
     }
 
     public calculateBounce(_posWith: ƒ.Vector3, _radius: number = 1): ƒ.Vector3 {

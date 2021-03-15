@@ -9,7 +9,7 @@ var L05_BreakOut_Bricks;
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position.toVector3(0))));
             let cmpQuad = new ƒ.ComponentMesh(GameObject.meshQuad);
             this.addComponent(cmpQuad);
-            cmpQuad.pivot.scale(_size.toVector3(0));
+            cmpQuad.mtxPivot.scale(_size.toVector3(0));
             let cMaterial = new ƒ.ComponentMaterial(GameObject.mtrSolidWhite);
             this.addComponent(cMaterial);
         }

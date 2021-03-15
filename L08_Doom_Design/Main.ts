@@ -17,7 +17,7 @@ namespace L08_Doom_Design {
     let mtrFloor: ƒ.Material = new ƒ.Material("Floor", ƒ.ShaderTexture, new ƒ.CoatTextured(null, txtFloor));
     let floor: ƒaid.Node = new ƒaid.Node("Floor", ƒ.Matrix4x4.ROTATION_X(-90), mtrFloor, meshQuad);
     floor.mtxLocal.scale(ƒ.Vector3.ONE(20));
-    floor.getComponent(ƒ.ComponentMaterial).pivot.scale(ƒ.Vector2.ONE(10));
+    floor.getComponent(ƒ.ComponentMaterial).mtxPivot.scale(ƒ.Vector2.ONE(10));
 
     root.appendChild(floor);
     
@@ -25,14 +25,14 @@ namespace L08_Doom_Design {
     let mtrWall: ƒ.Material = new ƒ.Material("Wall", ƒ.ShaderTexture, new ƒ.CoatTextured(null, txtWall));
     let wall: ƒaid.Node = new ƒaid.Node("Wall", ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(1)), mtrWall, meshQuad);
     wall.mtxLocal.scale(ƒ.Vector3.ONE(2));
-    wall.getComponent(ƒ.ComponentMaterial).pivot.scale(ƒ.Vector2.ONE(1));
+    wall.getComponent(ƒ.ComponentMaterial).mtxPivot.scale(ƒ.Vector2.ONE(1));
     
     root.appendChild(wall);
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    cmpCamera.pivot.translate(ƒ.Vector3.ONE(7));
-    cmpCamera.pivot.lookAt(ƒ.Vector3.ZERO());
-    cmpCamera.backgroundColor = ƒ.Color.CSS("darkblue");
+    cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(7));
+    cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
+    cmpCamera.clrBackground = ƒ.Color.CSS("darkblue");
 
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", root, cmpCamera, canvas);

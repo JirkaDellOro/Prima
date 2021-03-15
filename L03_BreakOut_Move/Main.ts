@@ -31,8 +31,8 @@ namespace L03_BreakOut_Move {
     root.addChild(ball);
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    cmpCamera.pivot.translateZ(40);
-    cmpCamera.pivot.rotateY(180);
+    cmpCamera.mtxPivot.translateZ(40);
+    cmpCamera.mtxPivot.rotateY(180);
 
 
     viewport = new ƒ.Viewport();

@@ -1,7 +1,7 @@
 "use strict";
 var L13_Doom_UI;
 (function (L13_Doom_UI) {
-    var ƒui = FudgeUserInterface;
+    var ƒUi = FudgeUserInterface;
     class GameState extends ƒ.Mutable {
         constructor() {
             super(...arguments);
@@ -16,7 +16,7 @@ var L13_Doom_UI;
     class Hud {
         static start() {
             let domHud = document.querySelector("div#hud");
-            Hud.controller = new ƒui.Controller(L13_Doom_UI.gameState, domHud);
+            Hud.controller = new ƒUi.Controller(L13_Doom_UI.gameState, domHud);
             Hud.controller.updateUserInterface();
         }
     }

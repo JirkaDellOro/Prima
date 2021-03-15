@@ -9,8 +9,8 @@ var L10_Doom_Mouse;
             this.mtxLocal.rotation = _rotation;
             let cmpQuad = new ƒ.ComponentMesh(GameObject.meshQuad);
             this.addComponent(cmpQuad);
-            cmpQuad.pivot.scale(_size.toVector3(1));
-            this.mtxPivot = this.getComponent(ƒ.ComponentMesh).pivot;
+            cmpQuad.mtxPivot.scale(_size.toVector3(1));
+            this.mtxPivot = this.getComponent(ƒ.ComponentMesh).mtxPivot;
         }
         calculateBounce(_posWith, _radius = 1) {
             // make sure inversions exist

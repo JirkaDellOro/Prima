@@ -11,7 +11,7 @@ namespace L09_Doom_Control {
 
       let cmpQuad: ƒ.ComponentMesh = new ƒ.ComponentMesh(GameObject.meshQuad);
       this.addComponent(cmpQuad);
-      cmpQuad.pivot.scale(_size.toVector3(1));
+      cmpQuad.mtxPivot.scale(_size.toVector3(1));
     }
 
     public calculateBounce(_posWith: ƒ.Vector3, _radius: number = 1): ƒ.Vector3 {
@@ -24,7 +24,7 @@ namespace L09_Doom_Control {
       if (distance < 0 || distance > _radius)
         return null;
 
-      let size: ƒ.Vector3 = this.getComponent(ƒ.ComponentMesh).pivot.scaling;
+      let size: ƒ.Vector3 = this.getComponent(ƒ.ComponentMesh).mtxPivot.scaling;
       let ray: ƒ.Ray = new ƒ.Ray(normal, _posWith);
       let intersect: ƒ.Vector3 = ray.intersectPlane(posThis, normal);
 

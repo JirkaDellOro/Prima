@@ -1,5 +1,5 @@
 namespace L13_Doom_UI {
-  import ƒui = FudgeUserInterface;
+  import ƒUi = FudgeUserInterface;
 
   export class GameState extends ƒ.Mutable {
     public health: number = 100;
@@ -11,11 +11,11 @@ namespace L13_Doom_UI {
   export let gameState: GameState = new GameState();
 
   export class Hud {
-    private static controller: ƒui.Controller;
+    private static controller: ƒUi.Controller;
 
     public static start(): void {
       let domHud: HTMLDivElement = document.querySelector("div#hud");
-      Hud.controller = new ƒui.Controller(gameState, domHud);
+      Hud.controller = new ƒUi.Controller(gameState, domHud);
       Hud.controller.updateUserInterface();
     }
   }
