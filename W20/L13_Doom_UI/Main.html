@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>L13_Doom_UI</title>
+  <script src="../FudgeCore/FudgeCore.js"></script>
+  <script src="../FudgeAid/FudgeAid.js"></script>
+  <script src="../FudgeUserInterface/FudgeUserInterface.js"></script>
+  <script src="GameObject.js"></script>
+  <script src="Wall.js"></script>
+  <script src="Enemy.js"></script>
+  <script src="StateMachine.js"></script>
+  <script src="Hud.js"></script>
+  <script src="Main.js"></script>
+
+  <style>
+    html,
+    body {
+      padding: 0px;
+      margin: 0px;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    div#hud {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      color: white;
+      font-size: large;
+    }
+
+    input[type="number"] {
+      appearance: textfield;
+
+      font-size: 5em;
+      border: none;
+      background-color: rgba(0, 255, 255, 0);
+      color: rgb(255, 0, 0);
+      text-shadow: black 5px 5px;
+      width:4em;
+    }
+
+  </style>
+</head>
+
+<body>
+  <canvas></canvas>
+  <div id="hud">
+    Health <input type="number" key="health" disabled />
+    Score <input type="number" key="score" disabled />
+    Ammo <meter min="0" max="100" key="ammo" disabled />
+  </div>
+</body>
+
+</html>
