@@ -2,14 +2,13 @@ namespace SpaceInvaders {
   import ƒ = FudgeCore;
   window.addEventListener("load", init);
   let viewport: ƒ.Viewport = new ƒ.Viewport();
+  export let quadMesh: ƒ.Mesh = new ƒ.MeshQuad("Quad");
+  export let material: ƒ.Material = new ƒ.Material("Florian", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
 
   function init(_event: Event): void {
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
 
     let space: ƒ.Node = new ƒ.Node("Space");
-
-    let quadMesh: ƒ.Mesh = new ƒ.MeshQuad("Quad");
-    let material: ƒ.Material = new ƒ.Material("Florian", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 1, 1, 1)));
 
     let ship: ƒ.Node = new ƒ.Node("Ship");
 
@@ -34,38 +33,32 @@ namespace SpaceInvaders {
 
     space.addChild(motherShip);
 
+    let invaders: ƒ.Node = new ƒ.Node("Invaders");
     for (let y: number = 0; y < 5; ++y) {
       for (let x: number = 0; x < 11; ++x) {
-        let invader: ƒ.Node = new ƒ.Node("Invader" + (x + y * 11));
-
-        invader.addComponent(new ƒ.ComponentTransform());
-        invader.getComponent(ƒ.ComponentTransform).mtxLocal.translateX((x - 5) * 15 / 13);
-        invader.getComponent(ƒ.ComponentTransform).mtxLocal.translateY((y * 15 + 65) / 13);
-
-        invader.addComponent(new ƒ.ComponentMesh(quadMesh));
-        invader.getComponent(ƒ.ComponentMesh).mtxPivot.scaleX(12 / 13);
-        invader.getComponent(ƒ.ComponentMesh).mtxPivot.scaleY(8 / 13);
-
-        invader.addComponent(new ƒ.ComponentMaterial(material));
-
-        space.addChild(invader);
+        let invader: ƒ.Node = new Invader(x, y);
+        invaders.addChild(invader);
       }
     }
 
+    space.addChild(invaders);
+
+
+    let barricades: ƒ.Node = new ƒ.Node("Barricades");
     let nStripes: number = 21;
     let barricadeStripeHeights: number[] = [14, 15, 16, 17, 17, 12, 11, 10, 9, 8, 8, 8, 9, 10, 11, 12, 17, 17, 16, 15, 14];
     let barricadeStripeYOffsets: number[] = [-1.5, -1, -0.5, 0, 0, 2.5, 3, 3.5, 4, 4.5, 4.5, 4.5, 4, 3.5, 3, 2.5, 0, 0, -0.5, -1, -1.5];
 
     for (let iBarricade: number = 0; iBarricade < 4; iBarricade++) {
       let barricade: ƒ.Node = new ƒ.Node("Barricade" + iBarricade);
-      
+
       barricade.addComponent(new ƒ.ComponentTransform());
       barricade.getComponent(ƒ.ComponentTransform).mtxLocal.translateX((iBarricade - 1.5) * 53 / 13);
       barricade.getComponent(ƒ.ComponentTransform).mtxLocal.translateY(24 / 13);
 
       for (let iStripe: number = 0; iStripe < nStripes; iStripe++) {
         let barricadeStripe: ƒ.Node = new ƒ.Node("BarricadeStripe" + (iStripe + iBarricade * nStripes));
-        
+
         let posX: number = iStripe - (nStripes - 1) / 2;
         let scaleX: number = 21 / (nStripes * 13);
 
@@ -82,11 +75,10 @@ namespace SpaceInvaders {
         barricade.addChild(barricadeStripe);
       }
 
-      space.addChild(barricade);
+      barricades.addChild(barricade);
     }
+    space.addChild(barricades);
 
-    console.log(space);
-    
     let projectile0: ƒ.Node = new ƒ.Node("Projektile0");
 
     projectile0.addComponent(new ƒ.ComponentTransform());
@@ -99,7 +91,7 @@ namespace SpaceInvaders {
     projectile0.addComponent(new ƒ.ComponentMaterial(material));
 
     space.addChild(projectile0);
-    
+
     let projectile1: ƒ.Node = new ƒ.Node("Projektile1");
 
     projectile1.addComponent(new ƒ.ComponentTransform());
@@ -118,9 +110,11 @@ namespace SpaceInvaders {
     cmpCamera.mtxPivot.translateZ(18);
     cmpCamera.mtxPivot.translateY(77 / 13);
     cmpCamera.mtxPivot.rotateY(180);
-    console.log(cmpCamera);
 
     viewport.initialize("Viewport", space, cmpCamera, canvas);
     viewport.draw();
+
+
+    console.log(space);
   }
 }
