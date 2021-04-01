@@ -11,7 +11,7 @@ namespace SpaceInvaders {
       this.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0.3, 0.7, 1, 1);
     }
 
-    static getInstance(): Invader {
+    static getInstance(): Ship {
       if (this.instance == null) this.instance = new Ship();
       return this.instance;
     }

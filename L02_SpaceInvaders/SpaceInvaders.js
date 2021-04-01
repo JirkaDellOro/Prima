@@ -4,10 +4,13 @@ var SpaceInvaders;
     var ƒ = FudgeCore;
     window.addEventListener("load", init);
     let viewport = new ƒ.Viewport();
+    let ship;
+    let speedShip = 5;
     function init(_event) {
         const canvas = document.querySelector("canvas");
         let space = new ƒ.Node("Space");
-        space.addChild(SpaceInvaders.Ship.getInstance());
+        ship = SpaceInvaders.Ship.getInstance();
+        space.addChild(ship);
         space.addChild(SpaceInvaders.MotherShip.getInstance());
         let invaders = new ƒ.Node("Invaders");
         let columnCount = 11;
@@ -48,6 +51,17 @@ var SpaceInvaders;
         viewport.initialize("Viewport", space, cmpCamera, canvas);
         viewport.draw();
         console.log(space);
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 30);
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+    }
+    function update(_event) {
+        // console.log(_event);
+        let offset = speedShip * ƒ.Loop.timeFrameReal / 1000;
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            ship.mtxLocal.translateX(-offset);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            ship.mtxLocal.translateX(+offset);
+        viewport.draw();
     }
 })(SpaceInvaders || (SpaceInvaders = {}));
 //# sourceMappingURL=SpaceInvaders.js.map

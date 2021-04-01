@@ -2,13 +2,15 @@ namespace SpaceInvaders {
   import ƒ = FudgeCore;
   window.addEventListener("load", init);
   let viewport: ƒ.Viewport = new ƒ.Viewport();
+  let ship: Ship;
+  let speedShip: number = 5;
 
   function init(_event: Event): void {
     const canvas: HTMLCanvasElement = document.querySelector("canvas");
 
     let space: ƒ.Node = new ƒ.Node("Space");
-    
-    space.addChild(Ship.getInstance());
+    ship = Ship.getInstance();
+    space.addChild(ship);
     space.addChild(MotherShip.getInstance());
 
     let invaders: ƒ.Node = new ƒ.Node("Invaders");
@@ -34,7 +36,7 @@ namespace SpaceInvaders {
       let pos: ƒ.Vector2 = new ƒ.Vector2();
       pos.x = (iBarricade - (nBarricade - 1) / 2) * 53 / 13;
       pos.y = 24 / 13;
-      
+
       barricades.addChild(new Barricade(pos));
     }
 
@@ -66,5 +68,21 @@ namespace SpaceInvaders {
     viewport.draw();
 
     console.log(space);
+
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 30);
+    ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
+  }
+
+  function update(_event: Event): void {
+    // console.log(_event);
+    let offset: number = speedShip * ƒ.Loop.timeFrameReal / 1000;
+
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+      ship.mtxLocal.translateX(-offset);
+
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+      ship.mtxLocal.translateX(+offset);
+
+    viewport.draw();
   }
 }
