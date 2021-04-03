@@ -947,9 +947,12 @@ declare namespace FudgeCore {
          * Dispatches a synthetic event to target. This implementation always returns true (standard: return true only if either event's cancelable attribute value is false or its preventDefault() method was not invoked)
          * The event travels into the hierarchy to this node dispatching the event, invoking matching handlers of the nodes ancestors listening to the capture phase,
          * than the matching handler of the target node in the target phase, and back out of the hierarchy in the bubbling phase, invoking appropriate handlers of the anvestors
-         * @param _event The event to dispatch
          */
         dispatchEvent(_event: Event): boolean;
+        /**
+         * Dispatches a synthetic event to target without travelling through the graph hierarchy neither during capture nor bubbling phase
+         */
+        dispatchEventToTargetOnly(_event: Event): boolean;
         /**
          * Broadcasts a synthetic event to this node and from there to all nodes deeper in the hierarchy,
          * invoking matching handlers of the nodes listening to the capture phase. Watch performance when there are many nodes involved
@@ -957,6 +960,7 @@ declare namespace FudgeCore {
          */
         broadcastEvent(_event: Event): void;
         private broadcastEventRecursive;
+        private callListeners;
     }
 }
 declare namespace FudgeCore {
@@ -5411,18 +5415,15 @@ declare namespace FudgeCore {
      * @author Jirka Dell'Oro-Friedl, HFU, 2019
      */
     class Loop extends EventTargetStatic {
-        /** The gametime the loop was started, overwritten at each start */
-        static timeStartGame: number;
-        /** The realtime the loop was started, overwritten at each start */
-        static timeStartReal: number;
-        /** The gametime elapsed since the last loop cycle */
-        static timeFrameGame: number;
-        /** The realtime elapsed since the last loop cycle */
-        static timeFrameReal: number;
-        private static timeLastFrameGame;
-        private static timeLastFrameReal;
-        private static timeLastFrameGameAvg;
-        private static timeLastFrameRealAvg;
+        private static ƒTimeStartGame;
+        private static ƒTimeStartReal;
+        private static ƒTimeFrameGame;
+        private static ƒTimeFrameReal;
+        private static ƒTimeFrameStartGame;
+        private static ƒTimeFrameStartReal;
+        private static ƒTimeLastFrameGameAvg;
+        private static ƒTimeLastFrameRealAvg;
+        private static ƒFrames;
         private static running;
         private static mode;
         private static idIntervall;
@@ -5430,6 +5431,24 @@ declare namespace FudgeCore {
         private static fpsDesired;
         private static framesToAverage;
         private static syncWithAnimationFrame;
+        /** The gametime the loop was started, overwritten at each start */
+        static get timeStartGame(): number;
+        /** The realtime the loop was started, overwritten at each start */
+        static get timeStartReal(): number;
+        /** The gametime elapsed since the last loop cycle */
+        static get timeFrameGame(): number;
+        /** The realtime elapsed since the last loop cycle */
+        static get timeFrameReal(): number;
+        /** The gametime the last loop cycle started*/
+        static get timeFrameStartGame(): number;
+        /** The realtime the last loop cycle started*/
+        static get timeFrameStartReal(): number;
+        /** The average number of frames per second in gametime */
+        static get fpsGameAverage(): number;
+        /** The average number of frames per second in realtime */
+        static get fpsRealAverage(): number;
+        /** The number of frames triggered so far */
+        static get frames(): number;
         /**
          * Starts the loop with the given mode and fps
          * @param _mode
@@ -5442,8 +5461,6 @@ declare namespace FudgeCore {
          */
         static stop(): void;
         static continue(): void;
-        static getFpsGameAverage(): number;
-        static getFpsRealAverage(): number;
         private static loop;
         private static loopFrame;
         private static loopTime;
