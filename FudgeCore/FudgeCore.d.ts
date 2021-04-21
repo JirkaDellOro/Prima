@@ -1999,6 +1999,9 @@ declare namespace FudgeCore {
         END = "\u0192dragend",
         OVER = "\u0192dragover"
     }
+    /**
+     * a subclass of DragEvent .A event that represents a drag and drop interaction
+     */
     class EventDragDrop extends DragEvent {
         pointerX: number;
         pointerY: number;
@@ -2009,6 +2012,10 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    /**
+     * a subclass of KeyboardEvent. EventKeyboard objects describe a user interaction with the keyboard
+     * each event describes a single interaction between the user and a key (or combination of a key with modifier keys) on the keyboard.
+     */
     class EventKeyboard extends KeyboardEvent {
         constructor(type: string, _event: EventKeyboard);
     }
@@ -2204,6 +2211,9 @@ declare namespace FudgeCore {
         GOTCAPTURE = "\u0192gotpointercapture",
         LOSTCAPTURE = "\u0192lostpointercapture"
     }
+    /**
+     * a subclass of PointerEvent. The state of a DOM event produced by a pointer such as the geometry of the contact point
+     * */
     class EventPointer extends PointerEvent {
         pointerX: number;
         pointerY: number;
@@ -2217,6 +2227,9 @@ declare namespace FudgeCore {
     const enum EVENT_TIMER {
         CALL = "\u0192lapse"
     }
+    /**
+     * An event that represents a call from a Timer
+     * */
     class EventTimer {
         type: EVENT_TIMER;
         target: Timer;
@@ -2231,6 +2244,9 @@ declare namespace FudgeCore {
     const enum EVENT_WHEEL {
         WHEEL = "\u0192wheel"
     }
+    /**
+     * A supclass of WheelEvent. Events that occur due to the user moving a mouse wheel or similar input device.
+     * */
     class EventWheel extends WheelEvent {
         constructor(type: string, _event: EventWheel);
     }
@@ -3221,26 +3237,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    /** This function type takes x and z as Parameters and returns a number - to be used as a heightmap.
-     * x and z are mapped from 0 to 1 when used to generate a Heightmap Mesh
-     * @authors Simon Storl-Schulke, HFU, 2020*/
-    type heightMapFunction = (x: number, z: number) => number;
-    /**
-     * Generates a planar Grid and applies a Heightmap-Function to it.
-     * @authors Jirka Dell'Oro-Friedl, Simon Storl-Schulke, HFU, 2020
-     */
-    class MeshHeightMap extends Mesh {
-        static readonly iSubclass: number;
-        private resolutionX;
-        private resolutionZ;
-        private heightMapFunction;
-        constructor(_name?: string, _resolutionX?: number, _resolutionZ?: number, _heightMapFunction?: heightMapFunction);
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
-    }
-}
-declare namespace FudgeCore {
     /**
      * Generate a simple pyramid with edges at the base of length 1 and a height of 1. The sides consisting of one, the base of two trigons
      * ```plaintext
@@ -3334,6 +3330,46 @@ declare namespace FudgeCore {
         protected createIndices(): Uint16Array;
         protected createTextureUVs(): Float32Array;
         protected createFaceNormals(): Float32Array;
+    }
+}
+declare namespace FudgeCore {
+    /** This function type takes x and z as Parameters and returns a number - to be used as a heightmap.
+     * x and z are mapped from 0 to 1 when used to generate a Heightmap Mesh
+     * x * z * 2 represent the amout of faces whiche are created. As a result you get 1 Vertice more in each direction (x and z achsis)
+     * For Example: x = 4, z = 4, 16 squares (32 Faces), 25 vertices
+     * @authors Simon Storl-Schulke, HFU, 2020*/
+    type HeightMapFunction = (x: number, z: number) => number;
+    class PositionOnTerrain {
+        position: Vector3;
+        normal: Vector3;
+    }
+    /**
+     * Generates a planar Grid and applies a Heightmap-Function to it.
+     * @authors Jirka Dell'Oro-Friedl, Simon Storl-Schulke, Moritz Beaugrand HFU, 2020
+     */
+    class MeshTerrain extends Mesh {
+        static readonly iSubclass: number;
+        resolutionX: number;
+        resolutionZ: number;
+        imgScale: number;
+        node: Node;
+        private heightMapFunction;
+        private image;
+        /**
+         * HeightMapFunction or PNG
+         * @param _name
+         * @param source
+         * @param _resolutionX
+         * @param _resolutionZ
+         */
+        constructor(_name?: string, source?: HeightMapFunction | TextureImage, _resolutionX?: number, _resolutionZ?: number);
+        getPositionOnTerrain(position: Vector3, mtxWorld?: Matrix4x4): PositionOnTerrain;
+        protected createVertices(): Float32Array;
+        protected createIndices(): Uint16Array;
+        protected createTextureUVs(): Float32Array;
+        protected imageToClampedArray(image: TextureImage): Uint8ClampedArray;
+        private calculateHeight;
+        private findNearestFace;
     }
 }
 declare namespace FudgeCore {
