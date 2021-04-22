@@ -11,13 +11,13 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   let root: ƒ.Node;
 
   let environment: ƒ.Node[] = new Array();
-  let player: ƒ.Node;
-  let playerBody: ƒ.ComponentRigidbody;
+  let avatar: ƒ.Node;
   let ball: ƒ.Node;
   let cmpBall: ƒ.ComponentRigidbody;
+  let cmpAvatar: ƒ.ComponentRigidbody;
 
   //Setting Variables
-  let mtrPlayer: ƒ.Material = new ƒ.Material("Player", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.7, 0.8, 0.6, 1)));
+  let mtrAvatar: ƒ.Material = new ƒ.Material("Avatar", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.7, 0.8, 0.6, 1)));
   let mtrBall: ƒ.Material = new ƒ.Material("Ball", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.8, 0.8, 0.2, 1)));
   let mtrEnvironment: ƒ.Material = new ƒ.Material("Environment", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.2, 0.2, 0.2, 1)));
   let mtrGoal: ƒ.Material = new ƒ.Material("Goal", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.5, 0.5, 0.5, 1)));
@@ -37,12 +37,12 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   function init(_event: Event): void {
     root = new ƒ.Node("Root");
     settingUpEnvironment();
-    settingUpAPlayer();
+    settingUpAvatar();
 
     ball = createNodeWithComponents("Ball", mtrBall, new ƒ.MeshSphere());
     cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
     cmpBall.setPosition(ƒ.Vector3.Y(5));
-    cmpBall.setVelocity(ƒ.Vector3.Y(15));
+    // cmpBall.setVelocity(ƒ.Vector3.Y(1));
     cmpBall.restitution = 2.5;
     ball.addComponent(cmpBall);
     root.appendChild(ball);
@@ -77,7 +77,6 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
       }
     });
 
-
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(); //Stard the game loop
   }
@@ -91,6 +90,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
 
     // console.log(ball.mtxLocal.translation.toString());
     viewPort.draw();
+    ƒ.Physics.settings.debugDraw = true;
   }
 
   function createNodeWithComponents(_name: string, _material: ƒ.Material, _mesh: ƒ.Mesh, _scale?: ƒ.Vector3): ƒ.Node {
@@ -109,18 +109,20 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     return node;
   }
 
-  function settingUpAPlayer(): void {
-    player = createNodeWithComponents("Player", mtrPlayer, new ƒ.MeshCube());
-    root.appendChild(player);
-    player.mtxLocal.scale(new ƒ.Vector3(0.5, 1.8, 0.3));
-    player.mtxLocal.translate(new ƒ.Vector3(2.5, 4, 3.5));
+  function settingUpAvatar(): void {
+    avatar = createNodeWithComponents("Avatar", mtrAvatar, new ƒ.MeshCube(), new ƒ.Vector3(0.5, 1.8, 0.3));
+    cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
+    cmpAvatar.setPosition(new ƒ.Vector3(2.5, 4, 3.5));
+    // cmpAvatar.restitution = 2.5;
+    avatar.addComponent(cmpAvatar);
+    root.appendChild(avatar);
 
     // Nose as direction indicator
-    let playerNose: ƒ.Node = createNodeWithComponents("PlayerNose", mtrPlayer, new ƒ.MeshCube());
+    let playerNose: ƒ.Node = createNodeWithComponents("PlayerNose", mtrAvatar, new ƒ.MeshCube());
     playerNose.mtxLocal.translate(new ƒ.Vector3(0, 0.2, 0.4));
     playerNose.mtxLocal.scale(new ƒ.Vector3(0.1, 0.2, 1.5));
 
-    player.addChild(playerNose);
+    avatar.addChild(playerNose);
   }
 
   function playerIsGroundedRaycast(): void {
@@ -175,7 +177,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   function player_Movement(_deltaTime?: number): void {
     let playerForward: ƒ.Vector3;
     playerForward = ƒ.Vector3.Z();
-    playerForward.transform(player.mtxWorld, false);
+    playerForward.transform(avatar.mtxWorld, false);
   }
 
 
@@ -184,7 +186,8 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     let environment: ƒ.Node = new ƒ.Node("Environment");
     let node: ƒ.Node;
     node = createNodeWithComponents("Ground", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 0.3, 20));
-    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2);
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
+    node.getComponent(ƒ.ComponentRigidbody).mtxPivot.scale(new ƒ.Vector3(20, 0.3, 20));
     environment.appendChild(node);
 
     //Protective Walls

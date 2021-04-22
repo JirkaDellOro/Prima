@@ -1,0 +1,73 @@
+{
+  "MeshCube|2021-04-22T15:36:17.716Z|39534": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-04-22T15:36:17.716Z|39534",
+      "name": "cube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-04-22T15:37:24.388Z|34033": {
+    "ƒ.Material": {
+      "name": "mtrRed",
+      "idResource": "Material|2021-04-22T15:37:24.388Z|34033",
+      "shader": "ShaderUniColor",
+      "coat": {
+        "ƒ.CoatColored": {
+          "name": "Coat",
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
+  "Graph|2021-04-22T15:37:53.044Z|74363": {
+    "ƒ.Graph": {
+      "name": "graphTest",
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "cube",
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2021-04-22T15:36:17.716Z|39534",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 0, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-04-22T15:37:24.388Z|34033"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2021-04-22T15:37:53.044Z|74363",
+      "type": "Graph"
+    }
+  }
+}
