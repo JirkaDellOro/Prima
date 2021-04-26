@@ -39,10 +39,8 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     settingUpEnvironment();
     settingUpAvatar();
 
-    ball = createNodeWithComponents("Ball", mtrBall, new ƒ.MeshSphere());
+    ball = createNodeWithComponents("Ball", mtrBall, new ƒ.MeshSphere(), ƒ.Vector3.ONE(), ƒ.Vector3.Y(5));
     cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
-    cmpBall.setPosition(ƒ.Vector3.Y(5));
-    // cmpBall.setVelocity(ƒ.Vector3.Y(1));
     cmpBall.restitution = 2.5;
     ball.addComponent(cmpBall);
     root.appendChild(ball);
@@ -77,6 +75,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
       }
     });
 
+    ƒ.Physics.start(root);
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(); //Stard the game loop
   }
@@ -93,12 +92,14 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     ƒ.Physics.settings.debugDraw = true;
   }
 
-  function createNodeWithComponents(_name: string, _material: ƒ.Material, _mesh: ƒ.Mesh, _scale?: ƒ.Vector3): ƒ.Node {
+  function createNodeWithComponents(_name: string, _material: ƒ.Material, _mesh: ƒ.Mesh, _scale?: ƒ.Vector3, _translate?: ƒ.Vector3): ƒ.Node {
     let node: ƒ.Node = new ƒ.Node(_name);
     let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(_mesh);
     let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(_material);
 
     let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
+    if (_translate)
+      cmpTransform.mtxLocal.translate(_translate);
     if (_scale)
       cmpTransform.mtxLocal.scale(_scale);
 
@@ -110,9 +111,8 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   }
 
   function settingUpAvatar(): void {
-    avatar = createNodeWithComponents("Avatar", mtrAvatar, new ƒ.MeshCube(), new ƒ.Vector3(0.5, 1.8, 0.3));
+    avatar = createNodeWithComponents("Avatar", mtrAvatar, new ƒ.MeshCube(), new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
     cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
-    cmpAvatar.setPosition(new ƒ.Vector3(2.5, 4, 3.5));
     // cmpAvatar.restitution = 2.5;
     avatar.addComponent(cmpAvatar);
     root.appendChild(avatar);
@@ -187,51 +187,37 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     let node: ƒ.Node;
     node = createNodeWithComponents("Ground", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 0.3, 20));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-    node.getComponent(ƒ.ComponentRigidbody).mtxPivot.scale(new ƒ.Vector3(20, 0.3, 20));
+    // node.getComponent(ƒ.ComponentRigidbody).mtxPivot.scale(new ƒ.Vector3(20, 0.3, 20));
     environment.appendChild(node);
 
     //Protective Walls
-    node = createNodeWithComponents("FrontWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0.5, 10.5))
-    ));
+    node = createNodeWithComponents("FrontWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, 10.5));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2)));
     environment.appendChild(node);
 
-    node = createNodeWithComponents("BackWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 0.5, -10.5))
-    ));
+    node = createNodeWithComponents("BackWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, -10.5));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     environment.appendChild(node);
 
-    node = createNodeWithComponents("LeftWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(10.5, 0.5, 0))
-    ));
+    node = createNodeWithComponents("LeftWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(10.5, 0.5, 0));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     environment.appendChild(node);
 
-    node = createNodeWithComponents("RightWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(-10.5, 0.5, 0))
-    ));
+    node = createNodeWithComponents("RightWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(-10.5, 0.5, 0));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     environment.appendChild(node);
 
     //Goal
-    node = createNodeWithComponents("Goal_Upper", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(8, 1, 1));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(0, 4.5, -9.5))
-    ));
+    node = createNodeWithComponents("Goal_Upper", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(8, 1, 1), new ƒ.Vector3(0, 4.5, -9.5));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     environment.appendChild(node);
 
-    node = createNodeWithComponents("Goal_Left", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(-4.5, 2.5, -9.5))
-    ));
+    node = createNodeWithComponents("Goal_Left", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(-4.5, 2.5, -9.5));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     environment.appendChild(node);
 
-    node = createNodeWithComponents("Goal_Right", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1));
-    node.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2, ƒ.Matrix4x4.TRANSLATION(new ƒ.Vector3(4.5, 2.5, -9.5))
-    ));
+    node = createNodeWithComponents("Goal_Right", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(4.5, 2.5, -9.5));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     environment.appendChild(node);
 
     root.appendChild(environment);
