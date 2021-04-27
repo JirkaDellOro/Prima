@@ -1,8 +1,9 @@
 "use strict";
 // /<reference types="./libs/FudgeCore.js"/>
-var ƒ = FudgeCore;
 var Turorials_FUDGEPhysics_Lesson1;
+// /<reference types="./libs/FudgeCore.js"/>
 (function (Turorials_FUDGEPhysics_Lesson1) {
+    var ƒ = FudgeCore;
     window.addEventListener("load", init);
     const app = document.querySelector("canvas");
     let viewPort;

@@ -1,8 +1,8 @@
 // /<reference types="./libs/FudgeCore.js"/>
 
-import ƒ = FudgeCore;
 
 namespace Turorials_FUDGEPhysics_Lesson1 {
+  import ƒ = FudgeCore;
 
 
   window.addEventListener("load", init);
