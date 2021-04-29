@@ -49,8 +49,6 @@ var Turorials_FUDGEPhysics_Lesson1;
         cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         viewPort = new ƒ.Viewport();
         viewPort.initialize("Viewport", root, cmpCamera, app);
-        document.addEventListener("keypress", handler_Key_Pressed);
-        document.addEventListener("keyup", handler_Key_Released);
         //Ball Resetting on enter trigger
         // Implementing kicking mechanic
         document.addEventListener("keypress", (_event) => {
@@ -63,11 +61,21 @@ var Turorials_FUDGEPhysics_Lesson1;
         ƒ.Loop.start(); //Stard the game loop
     }
     function update() {
+        let speed = 15;
+        let rotate = 5;
+        let forward;
+        forward = avatar.mtxWorld.getZ();
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, speed));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            cmpAvatar.setVelocity(ƒ.Vector3.SCALE(forward, -speed));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
         ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
         cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
         // playerIsGroundedRaycast();
-        // player_Movement();
-        // console.log(ball.mtxLocal.translation.toString());
         viewPort.draw();
         ƒ.Physics.settings.debugDraw = true;
     }
@@ -88,7 +96,9 @@ var Turorials_FUDGEPhysics_Lesson1;
     function settingUpAvatar() {
         avatar = createNodeWithComponents("Avatar", mtrAvatar, new ƒ.MeshCube(), new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
         cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
-        // cmpAvatar.restitution = 2.5;
+        cmpAvatar.restitution = 0.5;
+        cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
+        cmpAvatar.friction = 1;
         avatar.addComponent(cmpAvatar);
         root.appendChild(avatar);
         // Nose as direction indicator
@@ -99,51 +109,6 @@ var Turorials_FUDGEPhysics_Lesson1;
     }
     function playerIsGroundedRaycast() {
         //
-    }
-    function handler_Key_Pressed(_event) {
-        if (_event.code == ƒ.KEYBOARD_CODE.A) {
-            yTurn = 1;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.W) {
-            forwardMovement = 1;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.S) {
-            forwardMovement = -1;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.D) {
-            yTurn = -1;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.SPACE) {
-            if (isGrounded) {
-                //
-            }
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.T) {
-            //
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.Y) {
-            //
-        }
-    }
-    function handler_Key_Released(_event) {
-        if (_event.code == ƒ.KEYBOARD_CODE.A) {
-            yTurn = 0;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.W) {
-            forwardMovement = 0;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.S) {
-            forwardMovement = 0;
-        }
-        if (_event.code == ƒ.KEYBOARD_CODE.D) {
-            yTurn = 0;
-        }
-    }
-    //Actually moving the player
-    function player_Movement(_deltaTime) {
-        let playerForward;
-        playerForward = ƒ.Vector3.Z();
-        playerForward.transform(avatar.mtxWorld, false);
     }
     function settingUpEnvironment() {
         let environment = new ƒ.Node("Environment");
