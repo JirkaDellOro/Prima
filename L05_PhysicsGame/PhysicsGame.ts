@@ -28,7 +28,6 @@ namespace L05_PhysicsGame {
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", root, cmpCamera, canvas);
 
-    ƒ.Physics.start(root);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
@@ -60,6 +59,14 @@ namespace L05_PhysicsGame {
     for (let node of level.getChildren()) {
       let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.DEFAULT);
       node.addComponent(cmpRigidbody);
+      console.log(node.name, node.cmpTransform?.mtxLocal.toString());
+    }
+
+    ƒ.Physics.adjustTransforms(root, true);
+
+
+    for (let node of level.getChildren()) {
+      console.log(node.name, node.cmpTransform?.mtxLocal.toString());
     }
   }
 }
