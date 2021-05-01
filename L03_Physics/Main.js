@@ -16,29 +16,31 @@ var Turorials_FUDGEPhysics_Lesson1;
     //Setting Variables
     let mtrAvatar = new ƒ.Material("Avatar", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.7, 0.8, 0.6, 1)));
     let mtrBall = new ƒ.Material("Ball", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.8, 0.8, 0.2, 1)));
-    let mtrEnvironment = new ƒ.Material("Environment", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.2, 0.2, 0.2, 1)));
+    let mtrPlayfield = new ƒ.Material("Environment", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.2, 0.2, 0.2, 1)));
     let mtrGoal = new ƒ.Material("Goal", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.5, 0.5, 0.5, 1)));
     //Physical Player Variables
-    let isGrounded;
+    // let isGrounded: boolean;
     let cmpCamera;
     // let movementspeed: number = 12;
     // let turningspeed: number = 200;
     // let playerWeight: number = 75;
     // let playerJumpForce: number = 500;
     // let kickStrength: number = 100;
-    let yTurn = 0;
-    let forwardMovement = 0;
+    // let yTurn: number = 0;
+    // let forwardMovement: number = 0;
     function init(_event) {
         root = new ƒ.Node("Root");
-        settingUpEnvironment();
-        settingUpAvatar();
+        createPlayfield();
+        createAvatar();
         ball = createNodeWithComponents("Ball", mtrBall, new ƒ.MeshSphere(), ƒ.Vector3.ONE(), ƒ.Vector3.Y(5));
         cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
         cmpBall.restitution = 2.5;
         ball.addComponent(cmpBall);
         root.appendChild(ball);
-        settingUpTrigger();
-        settingUpAJoint();
+        ƒ.Physics.adjustTransforms(ball);
+        ƒ.Physics.adjustTransforms(root.getChildrenByName("Playfield")[0]);
+        createTrigger();
+        createJoint();
         //Standard Fudge Scene Initialization - Creating a directional light, a camera and initialize the viewport
         let cmpLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.CSS("WHITE")));
         cmpLight.mtxPivot.lookAt(new ƒ.Vector3(0.5, -1, -0.8)); //Set light direction
@@ -49,14 +51,12 @@ var Turorials_FUDGEPhysics_Lesson1;
         cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         viewPort = new ƒ.Viewport();
         viewPort.initialize("Viewport", root, cmpCamera, app);
-        //Ball Resetting on enter trigger
         // Implementing kicking mechanic
         document.addEventListener("keypress", (_event) => {
             if (_event.code == ƒ.KEYBOARD_CODE.E) {
                 //
             }
         });
-        ƒ.Physics.start(root);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); //Stard the game loop
     }
@@ -93,7 +93,7 @@ var Turorials_FUDGEPhysics_Lesson1;
         node.addComponent(cmpTransform);
         return node;
     }
-    function settingUpAvatar() {
+    function createAvatar() {
         avatar = createNodeWithComponents("Avatar", mtrAvatar, new ƒ.MeshCube(), new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
         cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
         cmpAvatar.restitution = 0.5;
@@ -106,59 +106,64 @@ var Turorials_FUDGEPhysics_Lesson1;
         playerNose.mtxLocal.translate(new ƒ.Vector3(0, 0.2, 0.4));
         playerNose.mtxLocal.scale(new ƒ.Vector3(0.1, 0.2, 1.5));
         avatar.addChild(playerNose);
+        ƒ.Physics.adjustTransforms(avatar);
     }
-    function playerIsGroundedRaycast() {
-        //
-    }
-    function settingUpEnvironment() {
-        let environment = new ƒ.Node("Environment");
+    // function playerIsGroundedRaycast(): void {
+    //   //
+    // }
+    function createPlayfield() {
+        let playfield = new ƒ.Node("Playfield");
         let node;
-        node = createNodeWithComponents("Ground", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 0.3, 20));
+        node = createNodeWithComponents("Ground", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(20, 0.3, 20));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        // node.getComponent(ƒ.ComponentRigidbody).mtxPivot.scale(new ƒ.Vector3(20, 0.3, 20));
-        environment.appendChild(node);
+        playfield.appendChild(node);
         //Protective Walls
-        node = createNodeWithComponents("FrontWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, 10.5));
+        node = createNodeWithComponents("FrontWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, 10.5));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
-        node = createNodeWithComponents("BackWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, -10.5));
+        playfield.appendChild(node);
+        node = createNodeWithComponents("BackWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, -10.5));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
-        node = createNodeWithComponents("LeftWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(10.5, 0.5, 0));
+        playfield.appendChild(node);
+        node = createNodeWithComponents("LeftWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(10.5, 0.5, 0));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
-        node = createNodeWithComponents("RightWall", mtrEnvironment, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(-10.5, 0.5, 0));
+        playfield.appendChild(node);
+        node = createNodeWithComponents("RightWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(-10.5, 0.5, 0));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
+        playfield.appendChild(node);
         //Goal
         node = createNodeWithComponents("Goal_Upper", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(8, 1, 1), new ƒ.Vector3(0, 4.5, -9.5));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
+        playfield.appendChild(node);
         node = createNodeWithComponents("Goal_Left", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(-4.5, 2.5, -9.5));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
+        playfield.appendChild(node);
         node = createNodeWithComponents("Goal_Right", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(4.5, 2.5, -9.5));
         node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
-        environment.appendChild(node);
-        root.appendChild(environment);
+        playfield.appendChild(node);
+        root.appendChild(playfield);
+        // ƒ.Physics.adjustTransforms(playfield);
     }
-    function settingUpTrigger() {
-        // Ball Resetting Triggers
-        environment[8] = createNodeWithComponents("Ground_BelowZero", mtrGoal, new ƒ.MeshCube());
-        environment[8].removeComponent(environment[8].getComponent(ƒ.ComponentMesh));
-        environment[8].mtxLocal.scale(new ƒ.Vector3(100, 10, 100));
-        environment[8].mtxLocal.translateY(-1);
-        root.appendChild(environment[8]);
-        environment[9] = createNodeWithComponents("Goal_Trigger", mtrGoal, new ƒ.MeshCube());
-        environment[9].removeComponent(environment[9].getComponent(ƒ.ComponentMesh));
-        environment[9].mtxLocal.scale(new ƒ.Vector3(9, 4.5, 1.5));
-        environment[9].mtxLocal.translate(new ƒ.Vector3(0, 0.5, -6.25));
-        root.appendChild(environment[9]);
+    function createTrigger() {
+        let triggerGoal = new ƒ.Node("TriggerGoal");
+        triggerGoal.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER, 
+        // ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 2.5, -10), rotation: null, scaling: new ƒ.Vector3(9, 4, 1.5) })
+        ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 0, 0.5), rotation: null, scaling: new ƒ.Vector3(2, 1, 2) })));
+        root.appendChild(triggerGoal);
+        let triggerLow = new ƒ.Node("TriggerLow");
+        triggerLow.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER, ƒ.Matrix4x4.CONSTRUCTION({ translation: ƒ.Vector3.Y(-5), rotation: null, scaling: new ƒ.Vector3(100, 10, 100) })));
+        root.appendChild(triggerLow);
+        triggerLow.getComponent(ƒ.ComponentRigidbody).addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, resetBall);
+        triggerGoal.getComponent(ƒ.ComponentRigidbody).addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, resetBall);
     }
     function resetBall(_event) {
-        //
+        console.log("Reset");
+        if (_event.cmpRigidbody == cmpBall) {
+            cmpBall.setVelocity(ƒ.Vector3.ZERO());
+            cmpBall.setAngularVelocity(ƒ.Vector3.ZERO());
+            cmpBall.setPosition(new ƒ.Vector3(0, 5, 0));
+        }
     }
-    function settingUpAJoint() {
+    function createJoint() {
         environment[10] = createNodeWithComponents("Holder", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.4, 0.4, 0.4, 1))), new ƒ.MeshCube());
         root.appendChild(environment[10]);
         environment[10].mtxLocal.translate(new ƒ.Vector3(5, 6, -2));
