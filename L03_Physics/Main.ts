@@ -4,7 +4,6 @@
 namespace Turorials_FUDGEPhysics_Lesson1 {
   import ƒ = FudgeCore;
 
-
   window.addEventListener("load", init);
   const app: HTMLCanvasElement = document.querySelector("canvas");
   let viewPort: ƒ.Viewport;
@@ -47,8 +46,8 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     ƒ.Physics.adjustTransforms(ball);
 
 
-    ƒ.Physics.adjustTransforms(root.getChildrenByName("Playfield")[0]);
     createTrigger();
+    ƒ.Physics.adjustTransforms(root.getChildrenByName("Playfield")[0]);
     createJoint();
 
 
@@ -191,8 +190,9 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     triggerGoal.addComponent(new ƒ.ComponentRigidbody(
       0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER,
       // ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 2.5, -10), rotation: null, scaling: new ƒ.Vector3(9, 4, 1.5) })
-      ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 0, 0.5), rotation: null, scaling: new ƒ.Vector3(2, 1, 2) })
+      ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 0, 2.5), rotation: null, scaling: new ƒ.Vector3(2, 1, 2) })
     ));
+    triggerGoal.addComponent(new ƒ.ComponentTransform);
     root.appendChild(triggerGoal);
 
     let triggerLow: ƒ.Node = new ƒ.Node("TriggerLow");
@@ -200,6 +200,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
       0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER,
       ƒ.Matrix4x4.CONSTRUCTION({ translation: ƒ.Vector3.Y(-5), rotation: null, scaling: new ƒ.Vector3(100, 10, 100) })
     ));
+    triggerLow.addComponent(new ƒ.ComponentTransform);
     root.appendChild(triggerLow);
 
 
