@@ -1,7 +1,5 @@
 "use strict";
-// /<reference types="./libs/FudgeCore.js"/>
 var Turorials_FUDGEPhysics_Lesson1;
-// /<reference types="./libs/FudgeCore.js"/>
 (function (Turorials_FUDGEPhysics_Lesson1) {
     var ƒ = FudgeCore;
     window.addEventListener("load", init);
@@ -36,8 +34,11 @@ var Turorials_FUDGEPhysics_Lesson1;
         cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
         cmpBall.restitution = 2.5;
         ball.addComponent(cmpBall);
-        root.appendChild(ball);
-        ƒ.Physics.adjustTransforms(ball);
+        let offset = new ƒ.Node("Offset");
+        offset.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.X(2))));
+        offset.appendChild(ball);
+        root.appendChild(offset);
+        ƒ.Physics.adjustTransforms(offset);
         createTrigger();
         ƒ.Physics.adjustTransforms(root.getChildrenByName("Playfield")[0]);
         createJoint();

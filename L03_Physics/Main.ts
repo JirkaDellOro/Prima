@@ -1,6 +1,3 @@
-// /<reference types="./libs/FudgeCore.js"/>
-
-
 namespace Turorials_FUDGEPhysics_Lesson1 {
   import ƒ = FudgeCore;
 
@@ -42,8 +39,12 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
     cmpBall.restitution = 2.5;
     ball.addComponent(cmpBall);
-    root.appendChild(ball);
-    ƒ.Physics.adjustTransforms(ball);
+
+    let offset: ƒ.Node = new ƒ.Node("Offset");
+    offset.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.X(2))));
+    offset.appendChild(ball);
+    root.appendChild(offset);
+    ƒ.Physics.adjustTransforms(offset);
 
 
     createTrigger();
