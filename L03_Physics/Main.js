@@ -27,11 +27,13 @@ var Turorials_FUDGEPhysics_Lesson1;
     // let yTurn: number = 0;
     // let forwardMovement: number = 0;
     function init(_event) {
+        ƒ.Physics.settings.defaultRestitution = 0.3;
+        ƒ.Physics.settings.defaultFriction = 0.8;
         root = new ƒ.Node("Root");
         createPlayfield();
         createAvatar();
         ball = createNodeWithComponents("Ball", mtrBall, new ƒ.MeshSphere(), ƒ.Vector3.ONE(), ƒ.Vector3.Y(5));
-        cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
+        cmpBall = new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
         cmpBall.restitution = 2.5;
         ball.addComponent(cmpBall);
         // cmpBall.activate(false);
@@ -59,6 +61,7 @@ var Turorials_FUDGEPhysics_Lesson1;
                 //
             }
         });
+        ƒ.Physics.settings.debugDraw = true;
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); //Stard the game loop
     }
@@ -80,7 +83,6 @@ var Turorials_FUDGEPhysics_Lesson1;
         // console.log(ball.mtxLocal.translation.toString());
         // playerIsGroundedRaycast();
         viewPort.draw();
-        ƒ.Physics.settings.debugDraw = true;
     }
     function createNodeWithComponents(_name, _material, _mesh, _scale, _translate) {
         let node = new ƒ.Node(_name);
@@ -98,7 +100,7 @@ var Turorials_FUDGEPhysics_Lesson1;
     }
     function createAvatar() {
         avatar = createNodeWithComponents("Avatar", mtrAvatar, meshCube, new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
-        cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
+        cmpAvatar = new ƒ.ComponentRigidbody(75, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
         cmpAvatar.restitution = 0.5;
         cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
         cmpAvatar.friction = 1;

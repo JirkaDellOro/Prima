@@ -31,12 +31,15 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
 
 
   function init(_event: Event): void {
+    ƒ.Physics.settings.defaultRestitution = 0.3;
+    ƒ.Physics.settings.defaultFriction = 0.8;
+
     root = new ƒ.Node("Root");
     createPlayfield();
     createAvatar();
 
     ball = createNodeWithComponents("Ball", mtrBall, new ƒ.MeshSphere(), ƒ.Vector3.ONE(), ƒ.Vector3.Y(5));
-    cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
+    cmpBall = new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
     cmpBall.restitution = 2.5;
     ball.addComponent(cmpBall);
     // cmpBall.activate(false);
@@ -73,6 +76,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
       }
     });
 
+    ƒ.Physics.settings.debugDraw = true;
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(); //Stard the game loop
   }
@@ -102,7 +106,6 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     // playerIsGroundedRaycast();
 
     viewPort.draw();
-    ƒ.Physics.settings.debugDraw = true;
   }
 
   function createNodeWithComponents(_name: string, _material: ƒ.Material, _mesh: ƒ.Mesh, _scale?: ƒ.Vector3, _translate?: ƒ.Vector3): ƒ.Node {
@@ -125,7 +128,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
 
   function createAvatar(): void {
     avatar = createNodeWithComponents("Avatar", mtrAvatar, meshCube, new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
-    cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
+    cmpAvatar = new ƒ.ComponentRigidbody(75, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
     cmpAvatar.restitution = 0.5;
     cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
     cmpAvatar.friction = 1;

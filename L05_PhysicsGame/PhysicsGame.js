@@ -10,6 +10,8 @@ var L05_PhysicsGame;
     window.addEventListener("load", start);
     async function start(_event) {
         ƒ.Physics.settings.debugDraw = true;
+        ƒ.Physics.settings.defaultRestitution = 0.5;
+        ƒ.Physics.settings.defaultFriction = 0.8;
         await FudgeCore.Project.loadResourcesFromHTML();
         // await FudgeCore.Project.loadResources("PhysicsGame.json");
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
@@ -19,9 +21,9 @@ var L05_PhysicsGame;
         createRigidbodies();
         ƒ.Physics.adjustTransforms(root, true);
         let cmpCamera = new ƒ.ComponentCamera();
-        camera.addComponent(cmpCamera);
-        // cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
-        // cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
+        // camera.addComponent(cmpCamera);
+        cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
+        cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         let canvas = document.querySelector("canvas");
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
@@ -29,10 +31,10 @@ var L05_PhysicsGame;
         ƒ.Loop.start();
     }
     function createAvatar() {
-        cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.DEFAULT);
-        cmpAvatar.restitution = 0.5;
+        cmpAvatar = new ƒ.ComponentRigidbody(80, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.DEFAULT);
+        cmpAvatar.restitution = 0;
         cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
-        cmpAvatar.friction = 2;
+        // cmpAvatar.friction = 2;
         let avatar = new ƒ.Node("Avatar");
         avatar.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
         avatar.addComponent(cmpAvatar);
@@ -40,7 +42,7 @@ var L05_PhysicsGame;
         root.appendChild(avatar);
     }
     function update() {
-        let speed = 1;
+        let speed = 1000;
         let rotate = 3;
         let forward;
         forward = cmpAvatar.getContainer().mtxWorld.getZ();
@@ -58,7 +60,6 @@ var L05_PhysicsGame;
         //cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
         // playerIsGroundedRaycast();
         viewport.draw();
-        ƒ.Physics.settings.debugDraw = true;
     }
     function tryGrab() {
         let mtxAvatar = cmpAvatar.getContainer().mtxLocal;
@@ -88,8 +89,8 @@ var L05_PhysicsGame;
         }
         let moveables = root.getChildrenByName("moveables")[0];
         for (let node of moveables.getChildren()) {
-            let cmpRigidbody = new ƒ.ComponentRigidbody(0.01, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.DEFAULT);
-            cmpRigidbody.restitution = 2.5;
+            let cmpRigidbody = new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.DEFAULT);
+            cmpRigidbody.restitution = 0.8;
             cmpRigidbody.friction = 2.5;
             node.addComponent(cmpRigidbody);
             // console.log(node.name, node.cmpTransform?.mtxLocal.toString());

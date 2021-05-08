@@ -10,6 +10,8 @@ namespace L05_PhysicsGame {
 
   async function start(_event: Event): Promise<void> {
     ƒ.Physics.settings.debugDraw = true;
+    ƒ.Physics.settings.defaultRestitution = 0.5;
+    ƒ.Physics.settings.defaultFriction = 0.8;
 
     await FudgeCore.Project.loadResourcesFromHTML();
     // await FudgeCore.Project.loadResources("PhysicsGame.json");
@@ -23,9 +25,9 @@ namespace L05_PhysicsGame {
     ƒ.Physics.adjustTransforms(root, true);
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    camera.addComponent(cmpCamera);
-    // cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
-    // cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
+    // camera.addComponent(cmpCamera);
+    cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
+    cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
 
     let canvas: HTMLCanvasElement = document.querySelector("canvas");
     viewport = new ƒ.Viewport();
@@ -37,10 +39,10 @@ namespace L05_PhysicsGame {
   }
 
   function createAvatar(): void {
-    cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.DEFAULT);
-    cmpAvatar.restitution = 0.5;
+    cmpAvatar = new ƒ.ComponentRigidbody(80, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.DEFAULT);
+    cmpAvatar.restitution = 0;
     cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
-    cmpAvatar.friction = 2;
+    // cmpAvatar.friction = 2;
     let avatar: ƒ.Node = new ƒ.Node("Avatar");
     avatar.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
     avatar.addComponent(cmpAvatar);
@@ -50,7 +52,7 @@ namespace L05_PhysicsGame {
   }
 
   function update(): void {
-    let speed: number = 1;
+    let speed: number = 1000;
     let rotate: number = 3;
     let forward: ƒ.Vector3;
     forward = cmpAvatar.getContainer().mtxWorld.getZ();
@@ -75,7 +77,6 @@ namespace L05_PhysicsGame {
     // playerIsGroundedRaycast();
 
     viewport.draw();
-    ƒ.Physics.settings.debugDraw = true;
   }
 
   function tryGrab(): void {
@@ -109,8 +110,8 @@ namespace L05_PhysicsGame {
 
     let moveables: ƒ.Node = root.getChildrenByName("moveables")[0];
     for (let node of moveables.getChildren()) {
-      let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(0.01, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.DEFAULT);
-      cmpRigidbody.restitution = 2.5;
+      let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.DEFAULT);
+      cmpRigidbody.restitution = 0.8;
       cmpRigidbody.friction = 2.5;
       node.addComponent(cmpRigidbody);
       // console.log(node.name, node.cmpTransform?.mtxLocal.toString());
