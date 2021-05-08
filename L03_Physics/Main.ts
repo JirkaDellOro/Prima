@@ -6,11 +6,11 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   let viewPort: ƒ.Viewport;
   let root: ƒ.Node;
 
-  let environment: ƒ.Node[] = new Array();
   let avatar: ƒ.Node;
   let ball: ƒ.Node;
   let cmpBall: ƒ.ComponentRigidbody;
   let cmpAvatar: ƒ.ComponentRigidbody;
+  let meshCube: ƒ.MeshCube = new ƒ.MeshCube();
 
   //Setting Variables
   let mtrAvatar: ƒ.Material = new ƒ.Material("Avatar", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.7, 0.8, 0.6, 1)));
@@ -39,6 +39,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     cmpBall = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.SPHERE, ƒ.PHYSICS_GROUP.GROUP_2);
     cmpBall.restitution = 2.5;
     ball.addComponent(cmpBall);
+    // cmpBall.activate(false);
 
     let offset: ƒ.Node = new ƒ.Node("Offset");
     offset.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.X(2))));
@@ -48,7 +49,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
 
 
     createTrigger();
-    ƒ.Physics.adjustTransforms(root.getChildrenByName("Playfield")[0]);
+    // ƒ.Physics.adjustTransforms(root.getChildrenByName("Playfield")[0]);
     createJoint();
 
 
@@ -97,6 +98,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
 
     cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
+    // console.log(ball.mtxLocal.translation.toString());
     // playerIsGroundedRaycast();
 
     viewPort.draw();
@@ -122,7 +124,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   }
 
   function createAvatar(): void {
-    avatar = createNodeWithComponents("Avatar", mtrAvatar, new ƒ.MeshCube(), new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
+    avatar = createNodeWithComponents("Avatar", mtrAvatar, meshCube, new ƒ.Vector3(0.5, 1.8, 0.3), new ƒ.Vector3(2.5, 4, 3.5));
     cmpAvatar = new ƒ.ComponentRigidbody(0.1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.GROUP_2);
     cmpAvatar.restitution = 0.5;
     cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
@@ -131,7 +133,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     root.appendChild(avatar);
 
     // Nose as direction indicator
-    let playerNose: ƒ.Node = createNodeWithComponents("PlayerNose", mtrAvatar, new ƒ.MeshCube());
+    let playerNose: ƒ.Node = createNodeWithComponents("PlayerNose", mtrAvatar, meshCube);
     playerNose.mtxLocal.translate(new ƒ.Vector3(0, 0.2, 0.4));
     playerNose.mtxLocal.scale(new ƒ.Vector3(0.1, 0.2, 1.5));
 
@@ -148,42 +150,42 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   function createPlayfield(): void {
     let playfield: ƒ.Node = new ƒ.Node("Playfield");
     let node: ƒ.Node;
-    node = createNodeWithComponents("Ground", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(20, 0.3, 20));
+    node = createNodeWithComponents("Ground", mtrPlayfield, meshCube, new ƒ.Vector3(20, 0.3, 20));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
     //Protective Walls
-    node = createNodeWithComponents("FrontWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, 10.5));
+    node = createNodeWithComponents("FrontWall", mtrPlayfield, meshCube, new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, 10.5));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
-    node = createNodeWithComponents("BackWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, -10.5));
+    node = createNodeWithComponents("BackWall", mtrPlayfield, meshCube, new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, -10.5));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
-    node = createNodeWithComponents("LeftWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(10.5, 0.5, 0));
+    node = createNodeWithComponents("LeftWall", mtrPlayfield, meshCube, new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(10.5, 0.5, 0));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
-    node = createNodeWithComponents("RightWall", mtrPlayfield, new ƒ.MeshCube(), new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(-10.5, 0.5, 0));
+    node = createNodeWithComponents("RightWall", mtrPlayfield, meshCube, new ƒ.Vector3(1, 1, 20), new ƒ.Vector3(-10.5, 0.5, 0));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
     //Goal
-    node = createNodeWithComponents("Goal_Upper", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(8, 1, 1), new ƒ.Vector3(0, 4.5, -9.5));
+    node = createNodeWithComponents("Goal_Upper", mtrGoal, meshCube, new ƒ.Vector3(8, 1, 1), new ƒ.Vector3(0, 4.5, -9.5));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
-    node = createNodeWithComponents("Goal_Left", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(-4.5, 2.5, -9.5));
+    node = createNodeWithComponents("Goal_Left", mtrGoal, meshCube, new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(-4.5, 2.5, -9.5));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
-    node = createNodeWithComponents("Goal_Right", mtrGoal, new ƒ.MeshCube(), new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(4.5, 2.5, -9.5));
+    node = createNodeWithComponents("Goal_Right", mtrGoal, meshCube, new ƒ.Vector3(1, 5, 1), new ƒ.Vector3(4.5, 2.5, -9.5));
     node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
     root.appendChild(playfield);
-    // ƒ.Physics.adjustTransforms(playfield);
+    ƒ.Physics.adjustTransforms(playfield);
   }
 
   function createTrigger(): void {
@@ -219,15 +221,27 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   }
 
   function createJoint(): void {
-    environment[10] = createNodeWithComponents("Holder", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.4, 0.4, 0.4, 1))), new ƒ.MeshCube());
-    root.appendChild(environment[10]);
-    environment[10].mtxLocal.translate(new ƒ.Vector3(5, 6, -2));
-    environment[10].mtxLocal.scale(new ƒ.Vector3(0.5, 1, 0.5));
+    let door: ƒ.Node = new ƒ.Node("Door");
+    let hinge: ƒ.Node = createNodeWithComponents("Hinge", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.4, 0.4, 0.4, 1))), meshCube);
+    hinge.addComponent(new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_1));
+    hinge.mtxLocal.translate(new ƒ.Vector3(5, 6, -2));
+    hinge.mtxLocal.scale(new ƒ.Vector3(0.5, 1, 0.5));
+    door.appendChild(hinge);
 
-    environment[11] = createNodeWithComponents("MovingDrill", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 0, 1))), new ƒ.MeshCube());
-    root.appendChild(environment[11]);
-    environment[11].mtxLocal.translate(new ƒ.Vector3(5, 2.5, -2));
-    environment[11].mtxLocal.scale(new ƒ.Vector3(3, 2, 0.2));
+    let board: ƒ.Node = createNodeWithComponents("Board", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 0, 1))), meshCube);
+    board.addComponent(new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_1));
+    board.mtxLocal.translate(new ƒ.Vector3(5, 2.5, -2));
+    board.mtxLocal.scale(new ƒ.Vector3(3, 2, 0.2));
+
+    let cylindricalJoint: ƒ.ComponentJointCylindrical = new ƒ.ComponentJointCylindrical(hinge.getComponent(ƒ.ComponentRigidbody), board.getComponent(ƒ.ComponentRigidbody), new ƒ.Vector3(0, 1, 0));
+    cylindricalJoint.translationMotorLimitLower = -1;
+    cylindricalJoint.translationMotorLimitUpper = 0;
+
+    board.addComponent(cylindricalJoint);
+    door.appendChild(board);
+
+    root.appendChild(door);
+    ƒ.Physics.adjustTransforms(door);
   }
 }
 

@@ -3250,45 +3250,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    /** Allows to create custom meshes from given Data */
-    class MeshFromData extends Mesh {
-        protected verticesToSet: Float32Array;
-        protected textureUVsToSet: Float32Array;
-        protected indicesToSet: Uint16Array;
-        protected faceNormalsToSet: Float32Array;
-        constructor(_vertices: Float32Array, _textureUVs: Float32Array, _indices: Uint16Array, _faceNormals: Float32Array);
-        protected createVertices(): Float32Array;
-        protected createTextureUVs(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createFaceNormals(): Float32Array;
-    }
-}
-declare namespace FudgeCore {
-    /**Simple Wavefront OBJ import. Takes a wavefront obj string. To Load from a file url, use the
-     * static LOAD Method. Currently only works with triangulated Meshes
-     * (activate 'Geomentry → Triangulate Faces' in Blenders obj exporter)
-     * @todo UVs, Load Materials, Support Quads
-     * @authors Simon Storl-Schulke 2021 */
-    class MeshObj extends Mesh {
-        protected verts: number[];
-        protected uvs: number[];
-        protected inds: number[];
-        protected facenormals: number[];
-        constructor(objString: string);
-        /** Loads an obj file from the given source url and a returns a complete Node from it.
-        * Multiple Objects are treated as a single Mesh. If no material is given, uses a default flat white material. */
-        static LOAD(src: string, name?: string, material?: Material): Node;
-        /** Creates three Vertices from each face. Although inefficient, this has to be done for now - see Issue 244 */
-        protected splitVertices(): void;
-        /** Splits up the obj string into separate arrays for each datatype */
-        protected parseObj(data: string): void;
-        protected createVertices(): Float32Array;
-        protected createTextureUVs(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createFaceNormals(): Float32Array;
-    }
-}
-declare namespace FudgeCore {
     /**
      * Generate a simple pyramid with edges at the base of length 1 and a height of 1. The sides consisting of one, the base of two trigons
      * ```plaintext
@@ -3382,46 +3343,6 @@ declare namespace FudgeCore {
         protected createIndices(): Uint16Array;
         protected createTextureUVs(): Float32Array;
         protected createFaceNormals(): Float32Array;
-    }
-}
-declare namespace FudgeCore {
-    /** This function type takes x and z as Parameters and returns a number - to be used as a heightmap.
-     * x and z are mapped from 0 to 1 when used to generate a Heightmap Mesh
-     * x * z * 2 represent the amout of faces whiche are created. As a result you get 1 Vertice more in each direction (x and z achsis)
-     * For Example: x = 4, z = 4, 16 squares (32 Faces), 25 vertices
-     * @authors Simon Storl-Schulke, HFU, 2020*/
-    type HeightMapFunction = (x: number, z: number) => number;
-    class PositionOnTerrain {
-        position: Vector3;
-        normal: Vector3;
-    }
-    /**
-     * Generates a planar Grid and applies a Heightmap-Function to it.
-     * @authors Jirka Dell'Oro-Friedl, Simon Storl-Schulke, Moritz Beaugrand HFU, 2020
-     */
-    class MeshTerrain extends Mesh {
-        static readonly iSubclass: number;
-        resolutionX: number;
-        resolutionZ: number;
-        imgScale: number;
-        node: Node;
-        private heightMapFunction;
-        private image;
-        /**
-         * HeightMapFunction or PNG
-         * @param _name
-         * @param source
-         * @param _resolutionX
-         * @param _resolutionZ
-         */
-        constructor(_name?: string, source?: HeightMapFunction | TextureImage, _resolutionX?: number, _resolutionZ?: number);
-        getPositionOnTerrain(position: Vector3, mtxWorld?: Matrix4x4): PositionOnTerrain;
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
-        protected imageToClampedArray(image: TextureImage): Uint8ClampedArray;
-        private calculateHeight;
-        private findNearestFace;
     }
 }
 declare namespace FudgeCore {
@@ -5036,7 +4957,6 @@ declare namespace FudgeCore {
         * Physics Part -> Take all nodes with cmpRigidbody, and overwrite their local position/rotation with the one coming from
         * the rb component, which is the new "local" WORLD position.
         */
-        private static setupPhysicalTransform;
         private static transformByPhysics;
     }
 }
