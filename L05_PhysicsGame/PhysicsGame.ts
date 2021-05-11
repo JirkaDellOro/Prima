@@ -9,6 +9,7 @@ namespace L05_PhysicsGame {
   window.addEventListener("load", start);
 
   async function start(_event: Event): Promise<void> {
+    ƒ.Physics.settings.debugMode = ƒ.PHYSICS_DEBUGMODE.PHYSIC_OBJECTS_ONLY;
     ƒ.Physics.settings.debugDraw = true;
     ƒ.Physics.settings.defaultRestitution = 0.5;
     ƒ.Physics.settings.defaultFriction = 0.8;
@@ -48,7 +49,21 @@ namespace L05_PhysicsGame {
     avatar.addComponent(cmpAvatar);
 
     avatar.appendChild(camera);
+
+    let triggerInteraction: ƒ.Node = new ƒ.Node("TriggerInteraction");
+    triggerInteraction.addComponent(new ƒ.ComponentRigidbody(
+      0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER,
+      ƒ.Matrix4x4.CONSTRUCTION({ translation: ƒ.Vector3.Y(3), rotation: null, scaling: null })
+    ));
+    triggerInteraction.addComponent(new ƒ.ComponentTransform());
+    triggerInteraction.mtxLocal.translateZ(1.5);
+    avatar.appendChild(triggerInteraction);
+    triggerInteraction.getComponent(ƒ.ComponentRigidbody).addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, hndTrigger);
     root.appendChild(avatar);
+  }
+
+  function hndTrigger(_event: ƒ.EventPhysics): void {
+    console.log(_event.cmpRigidbody.getContainer().name);
   }
 
   function update(): void {
@@ -68,10 +83,12 @@ namespace L05_PhysicsGame {
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
       cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
 
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E]))
-      tryGrab();
-
+    // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E]))
     ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
+    try {
+      tryGrab();
+    } catch (_e: unknown) { /* */ }
+
 
     //cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
     // playerIsGroundedRaycast();
@@ -80,17 +97,18 @@ namespace L05_PhysicsGame {
   }
 
   function tryGrab(): void {
-    let mtxAvatar: ƒ.Matrix4x4 = cmpAvatar.getContainer().mtxLocal;
-    // let rayHit: ƒ.RayHitInfo = ƒ.Physics.raycast(mtxAvatar.translation, mtxAvatar.getZ(), 4, ƒ.PHYSICS_GROUP.DEFAULT);
-    // console.log(rayHit.hit);
-    let moveables: ƒ.Node = root.getChildrenByName("moveables")[0];
-    for (let node of moveables.getChildren()) {
-      let distance: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(mtxAvatar.translation, node.mtxLocal.translation);
-      if (distance.magnitude > 2)
-        continue;
-      pickup(node);
-      break;
-    }
+    let mtxAvatar: ƒ.Matrix4x4 = cmpAvatar.getContainer().mtxWorld;
+    let rayHit: ƒ.RayHitInfo = ƒ.Physics.raycast(ƒ.Vector3.DIFFERENCE(cmpAvatar.getPosition(), ƒ.Vector3.Y(0.5)), mtxAvatar.getZ(), 4);
+    // if (rayHit.hit)
+    //   console.log(rayHit.hitDistance);
+    // let moveables: ƒ.Node = root.getChildrenByName("moveables")[0];
+    // for (let node of moveables.getChildren()) {
+    //   let distance: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(mtxAvatar.translation, node.mtxLocal.translation);
+    //   if (distance.magnitude > 2)
+    //     continue;
+    //   pickup(node);
+    //   break;
+    // }
   }
 
   function pickup(_node: ƒ.Node): void {

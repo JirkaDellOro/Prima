@@ -105,6 +105,10 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     // console.log(ball.mtxLocal.translation.toString());
     // playerIsGroundedRaycast();
 
+    // let hitInfo: ƒ.RayHitInfo = ƒ.Physics.raycast(avatar.mtxLocal.translation, new ƒ.Vector3(5, -1, 0), 2);
+    // if (hitInfo.hit) 
+    //   console.log(hitInfo.hitDistance);
+
     viewPort.draw();
   }
 
