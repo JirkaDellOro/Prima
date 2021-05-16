@@ -9,7 +9,7 @@ var L05_PhysicsGame;
     let viewport;
     window.addEventListener("load", start);
     async function start(_event) {
-        ƒ.Physics.settings.debugMode = ƒ.PHYSICS_DEBUGMODE.PHYSIC_OBJECTS_ONLY;
+        ƒ.Physics.settings.debugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         ƒ.Physics.settings.debugDraw = true;
         ƒ.Physics.settings.defaultRestitution = 0.5;
         ƒ.Physics.settings.defaultFriction = 0.8;
@@ -22,14 +22,37 @@ var L05_PhysicsGame;
         createRigidbodies();
         ƒ.Physics.adjustTransforms(root, true);
         let cmpCamera = new ƒ.ComponentCamera();
-        // camera.addComponent(cmpCamera);
-        cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
-        cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
+        camera.addComponent(cmpCamera);
+        // cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
+        // cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         let canvas = document.querySelector("canvas");
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
+    }
+    function update() {
+        let speed = 1000;
+        let rotate = 3;
+        let forward;
+        forward = cmpAvatar.getContainer().mtxWorld.getZ();
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+            cmpAvatar.applyForce(ƒ.Vector3.SCALE(forward, speed));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            cmpAvatar.applyForce(ƒ.Vector3.SCALE(forward, -speed));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E]))
+            try {
+                tryGrab();
+            }
+            catch (_e) { /* */ }
+        ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
+        //cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
+        // playerIsGroundedRaycast();
+        viewport.draw();
     }
     function createAvatar() {
         cmpAvatar = new ƒ.ComponentRigidbody(80, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.DEFAULT);
@@ -51,42 +74,19 @@ var L05_PhysicsGame;
     function hndTrigger(_event) {
         console.log(_event.cmpRigidbody.getContainer().name);
     }
-    function update() {
-        let speed = 1000;
-        let rotate = 3;
-        let forward;
-        forward = cmpAvatar.getContainer().mtxWorld.getZ();
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-            cmpAvatar.applyForce(ƒ.Vector3.SCALE(forward, speed));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-            cmpAvatar.applyForce(ƒ.Vector3.SCALE(forward, -speed));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-            cmpAvatar.rotateBody(ƒ.Vector3.Y(rotate));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-            cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
-        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.E]))
-        ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
-        try {
-            tryGrab();
-        }
-        catch (_e) { /* */ }
-        //cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
-        // playerIsGroundedRaycast();
-        viewport.draw();
-    }
     function tryGrab() {
         let mtxAvatar = cmpAvatar.getContainer().mtxWorld;
         let rayHit = ƒ.Physics.raycast(ƒ.Vector3.DIFFERENCE(cmpAvatar.getPosition(), ƒ.Vector3.Y(0.5)), mtxAvatar.getZ(), 4);
-        // if (rayHit.hit)
-        //   console.log(rayHit.hitDistance);
-        // let moveables: ƒ.Node = root.getChildrenByName("moveables")[0];
-        // for (let node of moveables.getChildren()) {
-        //   let distance: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(mtxAvatar.translation, node.mtxLocal.translation);
-        //   if (distance.magnitude > 2)
-        //     continue;
-        //   pickup(node);
-        //   break;
-        // }
+        if (rayHit.hit)
+            console.log(rayHit.hitDistance);
+        let moveables = root.getChildrenByName("moveables")[0];
+        for (let node of moveables.getChildren()) {
+            let distance = ƒ.Vector3.DIFFERENCE(mtxAvatar.translation, node.mtxLocal.translation);
+            if (distance.magnitude > 2)
+                continue;
+            pickup(node);
+            break;
+        }
     }
     function pickup(_node) {
         let avatar = cmpAvatar.getContainer();
