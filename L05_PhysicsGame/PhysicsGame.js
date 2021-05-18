@@ -8,6 +8,26 @@ var L05_PhysicsGame;
     let camera = new ƒ.Node("Camera");
     let viewport;
     window.addEventListener("load", start);
+    class ComponentScriptTest extends ƒ.ComponentScript {
+        constructor() {
+            super();
+            this.hndTimer = (_event) => {
+                // console.log("Timer", this);
+                let body = this.getContainer().getComponent(ƒ.ComponentRigidbody);
+                if (ƒ.Random.default.getRangeFloored(0, 5) == 0)
+                    body.applyLinearImpulse(ƒ.Vector3.Y(1));
+            };
+            console.log("ComponentScriptTest created");
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndComponentAdd);
+            // ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.hndTimer);
+            ƒ.Time.game.setTimer(100, 0, this.hndTimer);
+        }
+        hndComponentAdd(_event) {
+            console.log("ComponentAdd");
+            // this.getContainer().addEventListener(ƒ.EVENT.RENDER_PREPARE_START, (_event: Event): void => console.log("Render"));
+        }
+    }
+    L05_PhysicsGame.ComponentScriptTest = ComponentScriptTest;
     async function start(_event) {
         ƒ.Physics.settings.debugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         ƒ.Physics.settings.debugDraw = true;
@@ -55,16 +75,19 @@ var L05_PhysicsGame;
         viewport.draw();
     }
     function createAvatar() {
+        let avatar = new ƒ.Node("Avatar");
         cmpAvatar = new ƒ.ComponentRigidbody(80, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CAPSULE, ƒ.PHYSICS_GROUP.DEFAULT);
         cmpAvatar.restitution = 0;
         cmpAvatar.rotationInfluenceFactor = ƒ.Vector3.ZERO();
         // cmpAvatar.friction = 2;
-        let avatar = new ƒ.Node("Avatar");
-        avatar.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
         avatar.addComponent(cmpAvatar);
+        avatar.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(ƒ.Vector3.Y(3))));
+        let audListener = new ƒ.ComponentAudioListener();
+        avatar.addComponent(audListener);
+        ƒ.AudioManager.default.listenTo(root);
         avatar.appendChild(camera);
         let triggerInteraction = new ƒ.Node("TriggerInteraction");
-        triggerInteraction.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER, ƒ.Matrix4x4.CONSTRUCTION({ translation: ƒ.Vector3.Y(3), rotation: null, scaling: null })));
+        triggerInteraction.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER));
         triggerInteraction.addComponent(new ƒ.ComponentTransform());
         triggerInteraction.mtxLocal.translateZ(1.5);
         avatar.appendChild(triggerInteraction);
@@ -108,6 +131,8 @@ var L05_PhysicsGame;
             cmpRigidbody.friction = 2.5;
             node.addComponent(cmpRigidbody);
             // console.log(node.name, node.cmpTransform?.mtxLocal.toString());
+            node.addComponent(new ComponentScriptTest());
+            // console.log(node);
         }
     }
 })(L05_PhysicsGame || (L05_PhysicsGame = {}));

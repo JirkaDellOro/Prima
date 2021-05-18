@@ -114,6 +114,14 @@
       "stacks": 6
     }
   },
+  "Audio|2021-05-16T10:55:13.138Z|27431": {
+    "ƒ.Audio": {
+      "url": "Audio\\Crash.mp3",
+      "idResource": "Audio|2021-05-16T10:55:13.138Z|27431",
+      "name": "audCrash",
+      "type": "Audio"
+    }
+  },
   "Graph|2021-04-27T14:37:42.239Z|64317": {
     "ƒ.Graph": {
       "name": "root",
@@ -504,6 +512,25 @@
                           }
                         }
                       }
+                    ],
+                    "ComponentAudio": [
+                      {
+                        "ƒ.ComponentAudio": {
+                          "active": true,
+                          "idResource": "Audio|2021-05-16T10:55:13.138Z|27431",
+                          "playing": false,
+                          "loop": false,
+                          "volume": 1
+                        }
+                      }
+                    ],
+                    "ComponentScriptBall": [
+                      {
+                        "L05_PhysicsGame.ComponentScriptBall": {
+                          "active": true,
+                          "name": "AudioControl"
+                        }
+                      }
                     ]
                   },
                   "children": []
@@ -559,6 +586,17 @@
                           }
                         }
                       }
+                    ],
+                    "ComponentAudio": [
+                      {
+                        "ƒ.ComponentAudio": {
+                          "active": true,
+                          "idResource": "Audio|2021-05-16T10:55:13.138Z|27431",
+                          "playing": false,
+                          "loop": false,
+                          "volume": 1
+                        }
+                      }
                     ]
                   },
                   "children": []
@@ -612,6 +650,17 @@
                           "Component": {
                             "active": true
                           }
+                        }
+                      }
+                    ],
+                    "ComponentAudio": [
+                      {
+                        "ƒ.ComponentAudio": {
+                          "active": true,
+                          "idResource": "Audio|2021-05-16T10:55:13.138Z|27431",
+                          "playing": false,
+                          "loop": false,
+                          "volume": 1
                         }
                       }
                     ]
