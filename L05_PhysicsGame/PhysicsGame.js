@@ -42,12 +42,13 @@ var L05_PhysicsGame;
         createRigidbodies();
         ƒ.Physics.adjustTransforms(root, true);
         let cmpCamera = new ƒ.ComponentCamera();
-        camera.addComponent(cmpCamera);
-        // cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
-        // cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
+        // camera.addComponent(cmpCamera);
+        cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
+        cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         let canvas = document.querySelector("canvas");
         viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", root, cmpCamera, canvas);
+        L05_PhysicsGame.Hud.start();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }

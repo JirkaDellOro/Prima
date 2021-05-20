@@ -16,7 +16,8 @@ var L05_PhysicsGame;
             };
             this.hndCollision = (_event) => {
                 let cmpAudio = this.getContainer().getComponent(ƒ.ComponentAudio);
-                cmpAudio.play(true);
+                cmpAudio.play(false);
+                L05_PhysicsGame.gameState.hits++;
             };
             console.log("ComponentScriptBall is alive!");
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndComponentAdd);

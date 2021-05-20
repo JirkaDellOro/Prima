@@ -3,14 +3,20 @@ html, body {
   margin: 0px;
   width: 100%;
   height: 100%;
- overflow: hidden;
+  overflow: hidden;
 }
 
-dialog { 
-  text-align: center; 
+dialog {
+  text-align: center;
 }
 
-canvas.fullscreen { 
-  width: 100vw; 
-  height: 100vh; 
+canvas.fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
+
+div {
+  position: absolute;
+  top: 100px;
+  left: 20px;
 }

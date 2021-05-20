@@ -48,14 +48,15 @@ namespace L05_PhysicsGame {
     ƒ.Physics.adjustTransforms(root, true);
 
     let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
-    camera.addComponent(cmpCamera);
-    // cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
-    // cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
+    // camera.addComponent(cmpCamera);
+    cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
+    cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
 
     let canvas: HTMLCanvasElement = document.querySelector("canvas");
     viewport = new ƒ.Viewport();
     viewport.initialize("Viewport", root, cmpCamera, canvas);
 
+    Hud.start();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();

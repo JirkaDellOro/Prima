@@ -21,7 +21,8 @@ namespace L05_PhysicsGame {
     }
     private hndCollision = (_event: CustomEvent): void => {
       let cmpAudio: ƒ.ComponentAudio = this.getContainer().getComponent(ƒ.ComponentAudio);
-      cmpAudio.play(true);
+      cmpAudio.play(false);
+      gameState.hits++;
     }
   }
 }
