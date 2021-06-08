@@ -7,6 +7,7 @@ var L05_PhysicsGame;
     let cmpAvatar;
     let camera = new ƒ.Node("Camera");
     let viewport;
+    let config;
     window.addEventListener("load", start);
     class ComponentScriptTest extends ƒ.ComponentScript {
         constructor() {
@@ -33,6 +34,8 @@ var L05_PhysicsGame;
         ƒ.Physics.settings.debugDraw = true;
         ƒ.Physics.settings.defaultRestitution = 0.5;
         ƒ.Physics.settings.defaultFriction = 0.8;
+        let response = await fetch("Config.json");
+        config = await response.json();
         await FudgeCore.Project.loadResourcesFromHTML();
         // await FudgeCore.Project.loadResources("PhysicsGame.json");
         FudgeCore.Debug.log("Project:", FudgeCore.Project.resources);
@@ -53,7 +56,7 @@ var L05_PhysicsGame;
         ƒ.Loop.start();
     }
     function update() {
-        let speed = 1000;
+        let speed = config.speed;
         let rotate = 3;
         let forward;
         forward = cmpAvatar.getContainer().mtxWorld.getZ();

@@ -8,7 +8,7 @@
   },
   "Material|2021-04-22T15:37:24.388Z|34033": {
     "ƒ.Material": {
-      "name": "mtrRed",
+      "name": "mtrWhite",
       "idResource": "Material|2021-04-22T15:37:24.388Z|34033",
       "shader": "ShaderUniColor",
       "coat": {
@@ -57,7 +57,7 @@
                     "Component": {
                       "active": true
                     },
-                    "idMaterial": "Material|2021-04-22T15:37:24.388Z|34033"
+                    "idMaterial": "Material|2021-06-08T15:06:45.546Z|71122"
                   }
                 }
               ]
@@ -68,6 +68,28 @@
       ],
       "idResource": "Graph|2021-04-22T15:37:53.044Z|74363",
       "type": "Graph"
+    }
+  },
+  "Material|2021-06-08T15:06:45.546Z|71122": {
+    "ƒ.Material": {
+      "name": "mtrTexture",
+      "idResource": "Material|2021-06-08T15:06:45.546Z|71122",
+      "shader": "ShaderTexture",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "name": "Coat",
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2021-06-08T15:09:09.813Z|06294"
+        }
+      }
+    }
+  },
+  "TextureImage|2021-06-08T15:09:09.813Z|06294": {
+    "ƒ.TextureImage": {
+      "url": "Images/Susanne.jpg",
+      "idResource": "TextureImage|2021-06-08T15:09:09.813Z|06294",
+      "name": "Susanne.jpg",
+      "type": "TextureImage"
     }
   }
 }

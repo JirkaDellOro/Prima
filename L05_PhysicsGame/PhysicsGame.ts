@@ -1,10 +1,16 @@
 namespace L05_PhysicsGame {
   import ƒ = FudgeCore;
+
+  interface Config {
+    speed: number;
+  }
+
   // import ƒAid = FudgeAid;
   let root: ƒ.Graph;
   let cmpAvatar: ƒ.ComponentRigidbody;
   let camera: ƒ.Node = new ƒ.Node("Camera");
   let viewport: ƒ.Viewport;
+  let config: Config;
 
   window.addEventListener("load", start);
 
@@ -20,7 +26,7 @@ namespace L05_PhysicsGame {
     public hndTimer = (_event: ƒ.EventTimer): void => {
       // console.log("Timer", this);
       let body: ƒ.ComponentRigidbody = this.getContainer().getComponent(ƒ.ComponentRigidbody);
-      if (ƒ.Random.default.getRangeFloored(0, 5) == 0) 
+      if (ƒ.Random.default.getRangeFloored(0, 5) == 0)
         body.applyLinearImpulse(ƒ.Vector3.Y(1));
     }
 
@@ -35,6 +41,9 @@ namespace L05_PhysicsGame {
     ƒ.Physics.settings.debugDraw = true;
     ƒ.Physics.settings.defaultRestitution = 0.5;
     ƒ.Physics.settings.defaultFriction = 0.8;
+
+    let response: Response = await fetch("Config.json");
+    config = await response.json();
 
     await FudgeCore.Project.loadResourcesFromHTML();
     // await FudgeCore.Project.loadResources("PhysicsGame.json");
@@ -63,7 +72,7 @@ namespace L05_PhysicsGame {
   }
 
   function update(): void {
-    let speed: number = 1000;
+    let speed: number = config.speed;
     let rotate: number = 3;
     let forward: ƒ.Vector3;
     forward = cmpAvatar.getContainer().mtxWorld.getZ();
