@@ -3,7 +3,7 @@ var Turorials_FUDGEPhysics_Lesson1;
 (function (Turorials_FUDGEPhysics_Lesson1) {
     var ƒ = FudgeCore;
     window.addEventListener("load", init);
-    const app = document.querySelector("canvas");
+    const canvas = document.querySelector("canvas");
     let viewPort;
     let root;
     let avatar;
@@ -54,7 +54,8 @@ var Turorials_FUDGEPhysics_Lesson1;
         cmpCamera.mtxPivot.translate(new ƒ.Vector3(20, 10, 20));
         cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         viewPort = new ƒ.Viewport();
-        viewPort.initialize("Viewport", root, cmpCamera, app);
+        viewPort.initialize("Viewport", root, cmpCamera, canvas);
+        canvas.addEventListener("mousemove", hndMouseMove);
         // Implementing kicking mechanic
         document.addEventListener("keypress", (_event) => {
             if (_event.code == ƒ.KEYBOARD_CODE.E) {
@@ -79,13 +80,19 @@ var Turorials_FUDGEPhysics_Lesson1;
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
             cmpAvatar.rotateBody(ƒ.Vector3.Y(-rotate));
         ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
-        cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
+        // cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
         // console.log(ball.mtxLocal.translation.toString());
         // playerIsGroundedRaycast();
         // let hitInfo: ƒ.RayHitInfo = ƒ.Physics.raycast(avatar.mtxLocal.translation, new ƒ.Vector3(5, -1, 0), 2);
         // if (hitInfo.hit) 
         //   console.log(hitInfo.hitDistance);
         viewPort.draw();
+    }
+    function hndMouseMove(_event) {
+        let playfield = root.getChildrenByName("Playfield")[0];
+        // console.log(playfield);
+        playfield.mtxLocal.rotateX(_event.movementX);
+        playfield.mtxLocal.rotateZ(_event.movementY);
     }
     function createNodeWithComponents(_name, _material, _mesh, _scale, _translate) {
         let node = new ƒ.Node(_name);
@@ -121,9 +128,10 @@ var Turorials_FUDGEPhysics_Lesson1;
     // }
     function createPlayfield() {
         let playfield = new ƒ.Node("Playfield");
+        playfield.addComponent(new ƒ.ComponentTransform());
         let node;
         node = createNodeWithComponents("Ground", mtrPlayfield, meshCube, new ƒ.Vector3(20, 0.3, 20));
-        node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
+        node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
         playfield.appendChild(node);
         //Protective Walls
         node = createNodeWithComponents("FrontWall", mtrPlayfield, meshCube, new ƒ.Vector3(20, 1, 1), new ƒ.Vector3(0, 0.5, 10.5));

@@ -2,7 +2,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   import ƒ = FudgeCore;
 
   window.addEventListener("load", init);
-  const app: HTMLCanvasElement = document.querySelector("canvas");
+  const canvas: HTMLCanvasElement = document.querySelector("canvas");
   let viewPort: ƒ.Viewport;
   let root: ƒ.Node;
 
@@ -67,7 +67,9 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
 
     viewPort = new ƒ.Viewport();
-    viewPort.initialize("Viewport", root, cmpCamera, app);
+    viewPort.initialize("Viewport", root, cmpCamera, canvas);
+
+    canvas.addEventListener("mousemove", hndMouseMove);
 
     // Implementing kicking mechanic
     document.addEventListener("keypress", (_event: ƒ.EventKeyboard) => {
@@ -101,7 +103,7 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
 
     ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
 
-    cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
+    // cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
     // console.log(ball.mtxLocal.translation.toString());
     // playerIsGroundedRaycast();
 
@@ -110,6 +112,13 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     //   console.log(hitInfo.hitDistance);
 
     viewPort.draw();
+  }
+
+  function hndMouseMove(_event:MouseEvent): void  {
+    let playfield: ƒ.Node = root.getChildrenByName("Playfield")[0];
+    // console.log(playfield);
+    playfield.mtxLocal.rotateX(_event.movementX)
+    playfield.mtxLocal.rotateZ(_event.movementY);
   }
 
   function createNodeWithComponents(_name: string, _material: ƒ.Material, _mesh: ƒ.Mesh, _scale?: ƒ.Vector3, _translate?: ƒ.Vector3): ƒ.Node {
@@ -156,9 +165,10 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
 
   function createPlayfield(): void {
     let playfield: ƒ.Node = new ƒ.Node("Playfield");
+    playfield.addComponent(new ƒ.ComponentTransform());
     let node: ƒ.Node;
     node = createNodeWithComponents("Ground", mtrPlayfield, meshCube, new ƒ.Vector3(20, 0.3, 20));
-    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
+    node.addComponent(new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_2));
     playfield.appendChild(node);
 
     //Protective Walls
