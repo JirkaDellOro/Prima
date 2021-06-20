@@ -114,10 +114,10 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     viewPort.draw();
   }
 
-  function hndMouseMove(_event:MouseEvent): void  {
+  function hndMouseMove(_event: MouseEvent): void {
     let playfield: ƒ.Node = root.getChildrenByName("Playfield")[0];
     // console.log(playfield);
-    playfield.mtxLocal.rotateX(_event.movementX)
+    playfield.mtxLocal.rotateX(_event.movementX);
     playfield.mtxLocal.rotateZ(_event.movementY);
   }
 
