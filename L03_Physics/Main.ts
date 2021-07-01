@@ -242,13 +242,15 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     let hinge: ƒ.Node = createNodeWithComponents("Hinge", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(0.4, 0.4, 0.4, 1))), meshCube);
     hinge.addComponent(new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_1));
     hinge.mtxLocal.translate(new ƒ.Vector3(5, 6, -2));
-    hinge.mtxLocal.scale(new ƒ.Vector3(0.5, 1, 0.5));
+    // hinge.mtxLocal.scale(new ƒ.Vector3(0.5, 1, 0.5));
+    hinge.getComponent(ƒ.ComponentMesh).mtxPivot.scale(new ƒ.Vector3(0.5, 1, 0.5));
     door.appendChild(hinge);
 
     let board: ƒ.Node = createNodeWithComponents("Board", new ƒ.Material("Cube", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 0, 1))), meshCube);
     board.addComponent(new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.DYNAMIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_1));
     board.mtxLocal.translate(new ƒ.Vector3(5, 2.5, -2));
-    board.mtxLocal.scale(new ƒ.Vector3(3, 2, 0.2));
+    // board.mtxLocal.scale(new ƒ.Vector3(3, 2, 0.2));
+    board.getComponent(ƒ.ComponentMesh).mtxPivot.scale(new ƒ.Vector3(3, 2, 0.2));
 
     let cylindricalJoint: ƒ.ComponentJointCylindrical = new ƒ.ComponentJointCylindrical(hinge.getComponent(ƒ.ComponentRigidbody), board.getComponent(ƒ.ComponentRigidbody), new ƒ.Vector3(0, 1, 0));
     cylindricalJoint.translationMotorLimitLower = -1;
@@ -257,8 +259,13 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     board.addComponent(cylindricalJoint);
     door.appendChild(board);
 
+    let knob: ƒ.Node = createNodeWithComponents("Knob", new ƒ.Material("Knob", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 0.5, 1))), new ƒ.MeshSphere());
+    knob.mtxLocal.translate(new ƒ.Vector3(1.3, 0, 0));
+    knob.mtxLocal.scale(ƒ.Vector3.ONE(0.4));
+    board.appendChild(knob);
+
     root.appendChild(door);
-    ƒ.Physics.adjustTransforms(door);
+    ƒ.Physics.adjustTransforms(door, true);
   }
 }
 
