@@ -260,7 +260,8 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
     door.appendChild(board);
 
     let knob: ƒ.Node = createNodeWithComponents("Knob", new ƒ.Material("Knob", ƒ.ShaderFlat, new ƒ.CoatColored(new ƒ.Color(1, 1, 0.5, 1))), new ƒ.MeshSphere());
-    knob.mtxLocal.translate(new ƒ.Vector3(1.3, 0, 0));
+    knob.addComponent(new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.GROUP_1));
+    knob.mtxLocal.translate(new ƒ.Vector3(1.3, 0, 0.4));
     knob.mtxLocal.scale(ƒ.Vector3.ONE(0.4));
     board.appendChild(knob);
 
