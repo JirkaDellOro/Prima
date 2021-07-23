@@ -45,7 +45,7 @@ var L05_PhysicsGame;
         createRigidbodies();
         ƒ.Physics.adjustTransforms(root, true);
         let cmpCamera = new ƒ.ComponentCamera();
-        // camera.addComponent(cmpCamera);
+        camera.addComponent(cmpCamera);
         cmpCamera.mtxPivot.translate(ƒ.Vector3.ONE(20));
         cmpCamera.mtxPivot.lookAt(ƒ.Vector3.ZERO());
         let canvas = document.querySelector("canvas");
