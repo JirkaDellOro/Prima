@@ -73,7 +73,7 @@ var L05_PhysicsGame;
                 tryGrab();
             }
             catch (_e) { /* */ }
-        ƒ.Physics.world.simulate(ƒ.Loop.timeFrameReal / 1000);
+        ƒ.Physics.world.simulate(Math.min(0.1, ƒ.Loop.timeFrameReal / 1000));
         //cmpCamera.mtxPivot.lookAt(ball.mtxLocal.translation);
         // playerIsGroundedRaycast();
         viewport.draw();
