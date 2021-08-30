@@ -120,18 +120,20 @@ namespace L05_PhysicsGame {
     avatar.appendChild(camera);
 
     let triggerInteraction: ƒ.Node = new ƒ.Node("TriggerInteraction");
-    triggerInteraction.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER
-    ));
+    let trigger: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(
+      0, ƒ.PHYSICS_TYPE.KINEMATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.DEFAULT
+    );
+    trigger.isTrigger = true;
+    triggerInteraction.addComponent(trigger);
     triggerInteraction.addComponent(new ƒ.ComponentTransform());
     triggerInteraction.mtxLocal.translateZ(1.5);
     avatar.appendChild(triggerInteraction);
-    triggerInteraction.getComponent(ƒ.ComponentRigidbody).addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, hndTrigger);
+    trigger.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, hndTrigger);
     root.appendChild(avatar);
   }
 
   function hndTrigger(_event: ƒ.EventPhysics): void {
-    console.log(_event.cmpRigidbody.getContainer().name);
+    console.log("Trigger", _event.cmpRigidbody.getContainer().name);
   }
   function tryGrab(): void {
     let mtxAvatar: ƒ.Matrix4x4 = cmpAvatar.getContainer().mtxWorld;
@@ -158,7 +160,7 @@ namespace L05_PhysicsGame {
   function createRigidbodies(): void {
     let level: ƒ.Node = root.getChildrenByName("level")[0];
     for (let node of level.getChildren()) {
-      let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.DEFAULT);
+      let cmpRigidbody: ƒ.ComponentRigidbody = new ƒ.ComponentRigidbody(1, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.DEFAULT);
       node.addComponent(cmpRigidbody);
       // console.log(node.name, node.cmpTransform?.mtxLocal.toString());
     }

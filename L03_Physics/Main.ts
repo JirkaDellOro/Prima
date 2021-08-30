@@ -208,18 +208,21 @@ namespace Turorials_FUDGEPhysics_Lesson1 {
   function createTrigger(): void {
     let triggerGoal: ƒ.Node = new ƒ.Node("TriggerGoal");
     triggerGoal.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER,
+      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.DEFAULT,
       // ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 2.5, -10), rotation: null, scaling: new ƒ.Vector3(9, 4, 1.5) })
       ƒ.Matrix4x4.CONSTRUCTION({ translation: new ƒ.Vector3(0, 0, 2.5), rotation: null, scaling: new ƒ.Vector3(2, 1, 2) })
     ));
+    triggerGoal.getComponent(ƒ.ComponentRigidbody).isTrigger = true;
     triggerGoal.addComponent(new ƒ.ComponentTransform);
     root.appendChild(triggerGoal);
 
     let triggerLow: ƒ.Node = new ƒ.Node("TriggerLow");
     triggerLow.addComponent(new ƒ.ComponentRigidbody(
-      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.TRIGGER,
+      0, ƒ.PHYSICS_TYPE.STATIC, ƒ.COLLIDER_TYPE.CUBE, ƒ.PHYSICS_GROUP.DEFAULT,
       ƒ.Matrix4x4.CONSTRUCTION({ translation: ƒ.Vector3.Y(-5), rotation: null, scaling: new ƒ.Vector3(100, 10, 100) })
     ));
+    
+    triggerLow.getComponent(ƒ.ComponentRigidbody).isTrigger = true;
     triggerLow.addComponent(new ƒ.ComponentTransform);
     root.appendChild(triggerLow);
 
