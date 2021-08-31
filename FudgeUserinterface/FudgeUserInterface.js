@@ -2382,5 +2382,5 @@ var FudgeUserInterface;
     }
     FudgeUserInterface.TreeItem = TreeItem;
     customElements.define("li-tree-item", TreeItem, { extends: "li" });
-})(FudgeUserInterface || (FudgeUserInterface = {}));
+})(FudgeUserInterface || (FudgeUserInterface = {})); 
 //# sourceMappingURL=FudgeUserInterface.js.map
