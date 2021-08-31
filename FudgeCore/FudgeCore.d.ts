@@ -3431,6 +3431,7 @@ declare namespace FudgeCore {
      */
     class MeshTerrain extends Mesh {
         static readonly iSubclass: number;
+        private static readonly fMinimal;
         resolutionX: number;
         resolutionZ: number;
         imgScale: number;
@@ -3440,11 +3441,11 @@ declare namespace FudgeCore {
         /**
          * HeightMapFunction or PNG
          * @param _name
-         * @param source
+         * @param _source
          * @param _resolutionX
          * @param _resolutionZ
          */
-        constructor(_name?: string, source?: HeightMapFunction | TextureImage, _resolutionX?: number, _resolutionZ?: number);
+        constructor(_name?: string, _source?: HeightMapFunction | TextureImage, _resolutionX?: number, _resolutionZ?: number);
         getPositionOnTerrain(position: Vector3, mtxWorld?: Matrix4x4): PositionOnTerrain;
         protected createVertices(): Float32Array;
         protected createIndices(): Uint16Array;
