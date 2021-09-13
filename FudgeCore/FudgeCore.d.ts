@@ -2541,6 +2541,10 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    function Mash(): Function;
+    function LFIB4(): Function;
+}
+declare namespace FudgeCore {
     /**
      * Simple class for 3x3 matrix operations
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2020
@@ -2891,6 +2895,81 @@ declare namespace FudgeCore {
     }
     export {};
 }
+/**
+ * Baseclass for Noise2, Noise3 and Noise4
+ * @authors Jirka Dell'Oro-Friedl, HFU, 2021
+ * This is an adaption of https://www.npmjs.com/package/fast-simplex-noise
+ */
+declare namespace FudgeCore {
+    class Noise {
+        protected perm: Uint8Array;
+        protected permMod12: Uint8Array;
+        constructor(_random?: Function);
+    }
+}
+/**
+ * This is an adaption of https://www.npmjs.com/package/fast-simplex-noise
+ * done by Jirka Dell'Oro-Friedl, HFU, 2021
+ *
+ * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
+ * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
+ * Better rank ordering method by Stefan Gustavson in 2012.
+ *
+ * This code was placed in the public domain by its original author,
+ * Stefan Gustavson. You may use it as you see fit, but
+ * attribution is appreciated.
+ */
+declare namespace FudgeCore {
+    class Noise2 extends Noise {
+        #private;
+        private static offset;
+        private static gradient;
+        constructor(_random?: Function);
+        sample: (_x: number, _y: number) => number;
+    }
+}
+/**
+ * This is an adaption of https://www.npmjs.com/package/fast-simplex-noise
+ * done by Jirka Dell'Oro-Friedl, HFU, 2021
+ *
+ * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
+ * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
+ * Better rank ordering method by Stefan Gustavson in 2012.
+ *
+ * This code was placed in the public domain by its original author,
+ * Stefan Gustavson. You may use it as you see fit, but
+ * attribution is appreciated.
+ */
+declare namespace FudgeCore {
+    class Noise3 extends Noise {
+        #private;
+        private static offset;
+        private static gradient;
+        constructor(_random?: Function);
+        sample: (_x: number, _y: number, _z: number) => number;
+    }
+}
+/**
+ * This is an adaption of https://www.npmjs.com/package/fast-simplex-noise
+ * done by Jirka Dell'Oro-Friedl, HFU, 2021
+ *
+ * Based on example code by Stefan Gustavson (stegu@itn.liu.se).
+ * Optimisations by Peter Eastman (peastman@drizzle.stanford.edu).
+ * Better rank ordering method by Stefan Gustavson in 2012.
+ *
+ * This code was placed in the public domain by its original author,
+ * Stefan Gustavson. You may use it as you see fit, but
+ * attribution is appreciated.
+ */
+declare namespace FudgeCore {
+    class Noise4 extends Noise {
+        #private;
+        private static offset;
+        private static gradient;
+        constructor(_random?: Function);
+        sample: (_x: number, _y: number, _z: number, _w: number) => number;
+    }
+}
 declare namespace FudgeCore {
     /**
      * Class for creating random values, supporting Javascript's Math.random and a deterministig pseudo-random number generator (PRNG)
@@ -2902,15 +2981,11 @@ declare namespace FudgeCore {
         static default: Random;
         private generate;
         /**
-         * Create an instance of {@link Random}. If desired, creates a PRNG with it and feeds the given seed.
-         * @param _ownGenerator Default is false
-         * @param _seed Default is Math.random()
+         * Create an instance of {@link Random}.
+         * If a seed is given, LFIB4 is used as generator, reproducing a series of numbers from that seed.
+         * If a function producing values between 0 and 1 is given, it will be used as generator.
          */
-        constructor(_ownGenerator?: boolean, _seed?: number);
-        /**
-         * Creates a dererminstic PRNG with the given seed
-         */
-        static createGenerator(_seed: number): Function;
+        constructor(_seedOrFunction?: number | Function);
         /**
          * Returns a normed random number, thus in the range of [0, 1[
          */
@@ -3358,6 +3433,60 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     /**
+     * This function type takes x and z as Parameters and returns a number between -1 and 1 to be used as a heightmap.
+     * x * z * 2 represent the amout of faces which are created. As a result you get 1 vertex more in each direction (x and z axis)
+     * The y-component of the resulting mesh may be moved to values between 0 and a maximum height.
+     * @authors Simon Storl-Schulke, HFU, 2020 | Jirka Dell'Oro-Friedl, HFU, 2021
+     */
+    type HeightMapFunction = (x: number, z: number) => number;
+    class PositionOnTerrain {
+        position: Vector3;
+        normal: Vector3;
+    }
+    /**
+     * Generates a planar grid and applies a heightmap-function to it.
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2021 | Simon Storl-Schulke, HFU, 2020 | Moritz Beaugrand, HFU, 2021
+     */
+    class MeshTerrain extends Mesh {
+        static readonly iSubclass: number;
+        protected resolution: Vector2;
+        protected scale: Vector2;
+        protected seed: number;
+        protected heightMapFunction: HeightMapFunction;
+        constructor(_name?: string, _resolution?: Vector2, _scaleInput?: Vector2, _functionOrSeed?: HeightMapFunction | number);
+        create(_resolution?: Vector2, _scaleInput?: Vector2, _functionOrSeed?: HeightMapFunction | number): void;
+        getPositionOnTerrain(position: Vector3, mtxWorld?: Matrix4x4): PositionOnTerrain;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        mutate(_mutator: Mutator): Promise<void>;
+        protected createVertices(): Float32Array;
+        protected createIndices(): Uint16Array;
+        protected createTextureUVs(): Float32Array;
+        private calculateHeight;
+        private findNearestFace;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Generates a planar Grid and applies a Heightmap-Function to it.
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2021 | Moritz Beaugrand, HFU, 2020
+     */
+    class MeshRelief extends MeshTerrain {
+        static readonly iSubclass: number;
+        private texture;
+        constructor(_name?: string, _texture?: TextureImage);
+        private static createHeightMapFunction;
+        private static textureToClampedArray;
+        setTexture(_texture?: TextureImage): void;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        mutate(_mutator: Mutator): Promise<void>;
+        protected reduceMutator(_mutator: Mutator): void;
+        protected createVertices(): Float32Array;
+    }
+}
+declare namespace FudgeCore {
+    /**
      * Generates a rotation of a polygon around the y-axis
      * ```plaintext
      * ```
@@ -3384,7 +3513,6 @@ declare namespace FudgeCore {
      */
     class MeshSphere extends Mesh {
         static readonly iSubclass: number;
-        protected ƒnormals: Float32Array;
         private sectors;
         private stacks;
         constructor(_name?: string, _sectors?: number, _stacks?: number);
@@ -3412,47 +3540,6 @@ declare namespace FudgeCore {
         protected createIndices(): Uint16Array;
         protected createTextureUVs(): Float32Array;
         protected createFaceNormals(): Float32Array;
-    }
-}
-declare namespace FudgeCore {
-    /** This function type takes x and z as Parameters and returns a number - to be used as a heightmap.
-     * x and z are mapped from 0 to 1 when used to generate a Heightmap Mesh
-     * x * z * 2 represent the amout of faces whiche are created. As a result you get 1 Vertice more in each direction (x and z achsis)
-     * For Example: x = 4, z = 4, 16 squares (32 Faces), 25 vertices
-     * @authors Simon Storl-Schulke, HFU, 2020*/
-    type HeightMapFunction = (x: number, z: number) => number;
-    class PositionOnTerrain {
-        position: Vector3;
-        normal: Vector3;
-    }
-    /**
-     * Generates a planar Grid and applies a Heightmap-Function to it.
-     * @authors Jirka Dell'Oro-Friedl, Simon Storl-Schulke, Moritz Beaugrand HFU, 2020
-     */
-    class MeshTerrain extends Mesh {
-        static readonly iSubclass: number;
-        private static readonly fMinimal;
-        resolutionX: number;
-        resolutionZ: number;
-        imgScale: number;
-        node: Node;
-        private heightMapFunction;
-        private image;
-        /**
-         * HeightMapFunction or PNG
-         * @param _name
-         * @param _source
-         * @param _resolutionX
-         * @param _resolutionZ
-         */
-        constructor(_name?: string, _source?: HeightMapFunction | TextureImage, _resolutionX?: number, _resolutionZ?: number);
-        getPositionOnTerrain(position: Vector3, mtxWorld?: Matrix4x4): PositionOnTerrain;
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
-        protected imageToClampedArray(image: TextureImage): Uint8ClampedArray;
-        private calculateHeight;
-        private findNearestFace;
     }
 }
 declare namespace FudgeCore {
