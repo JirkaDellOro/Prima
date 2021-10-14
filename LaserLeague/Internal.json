@@ -18,6 +18,13 @@
       }
     }
   },
+  "MeshQuad|2021-10-13T08:36:13.222Z|94762": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2021-10-13T08:36:13.222Z|94762",
+      "name": "meshQuad",
+      "type": "MeshQuad"
+    }
+  },
   "Graph|2021-10-07T13:41:02.121Z|30122": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -135,7 +142,22 @@
               {
                 "ƒ.Node": {
                   "name": "Laser",
-                  "components": {},
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
                   "children": [
                     {
                       "ƒ.Node": {
@@ -352,13 +374,6 @@
       ],
       "idResource": "Graph|2021-10-07T13:41:02.121Z|30122",
       "type": "Graph"
-    }
-  },
-  "MeshQuad|2021-10-13T08:36:13.222Z|94762": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2021-10-13T08:36:13.222Z|94762",
-      "name": "meshQuad",
-      "type": "MeshQuad"
     }
   }
 }
