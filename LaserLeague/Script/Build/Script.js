@@ -46,16 +46,25 @@ var Script;
         let laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
         agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
+        viewport.camera.mtxPivot.translateZ(-16);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
+        let deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        let speedLaserRotate = 360; // degres per second
+        let speedAgentTranslation = 10; // meters per second
+        let speedAgentRotation = 360; // meters per second
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-            agent.mtxLocal.translateY(0.1);
+            agent.mtxLocal.translateY(speedAgentTranslation * deltaTime);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-            agent.mtxLocal.translateY(-0.1);
-        transform.rotateZ(5);
+            agent.mtxLocal.translateY(-speedAgentTranslation * deltaTime);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime);
+        transform.rotateZ(speedLaserRotate * deltaTime);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
