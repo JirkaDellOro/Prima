@@ -40,10 +40,13 @@ var Script;
     document.addEventListener("interactiveViewportStarted", start);
     let transform;
     let agent;
+    let laser;
+    let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
+    ctrForward.setDelay(200);
     function start(_event) {
         viewport = _event.detail;
         let graph = viewport.getBranch();
-        let laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+        laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
         agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
         viewport.camera.mtxPivot.translateZ(-16);
@@ -54,19 +57,28 @@ var Script;
         // ƒ.Physics.world.simulate();  // if physics is included and used
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
         let speedLaserRotate = 360; // degres per second
-        let speedAgentTranslation = 10; // meters per second
         let speedAgentRotation = 360; // meters per second
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-            agent.mtxLocal.translateY(speedAgentTranslation * deltaTime);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-            agent.mtxLocal.translateY(-speedAgentTranslation * deltaTime);
+        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+        //   ctrForward.setInput(1);
+        // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+        let value = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
+            + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]));
+        ctrForward.setInput(value * deltaTime);
+        agent.mtxLocal.translateY(ctrForward.getOutput());
+        // agent.mtxLocal.translateY(-speedAgentTranslation * deltaTime);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
             agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
             agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime);
-        transform.rotateZ(speedLaserRotate * deltaTime);
+        // transform.rotateZ(speedLaserRotate * deltaTime);
         viewport.draw();
+        checkCollision();
         ƒ.AudioManager.default.update();
+    }
+    function checkCollision() {
+        let beam = laser.getChildren()[3];
+        let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+        console.log(posLocal.toString());
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
