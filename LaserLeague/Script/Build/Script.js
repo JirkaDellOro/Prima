@@ -43,13 +43,20 @@ var Script;
     let laser;
     let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(200);
-    function start(_event) {
+    let copyLaser;
+    async function start(_event) {
         viewport = _event.detail;
         let graph = viewport.getBranch();
         laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
         agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
         viewport.camera.mtxPivot.translateZ(-16);
+        let graphLaser = await ƒ.Project.registerAsGraph(laser, false);
+        copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
+        console.log("Copy", copyLaser);
+        graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+        // copyLaser.addComponent(new ƒ.ComponentTransform);
+        copyLaser.mtxLocal.translateX(5);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -70,15 +77,15 @@ var Script;
             agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
             agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime);
-        // transform.rotateZ(speedLaserRotate * deltaTime);
+        transform.rotateZ(speedLaserRotate * deltaTime);
         viewport.draw();
         checkCollision();
         ƒ.AudioManager.default.update();
     }
     function checkCollision() {
-        let beam = laser.getChildren()[3];
-        let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
-        console.log(posLocal.toString());
+        // let beam: ƒ.Node = laser.getChildren()[3];
+        // let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+        // console.log(posLocal.toString());
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
