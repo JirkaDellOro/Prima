@@ -10,7 +10,7 @@ var Script;
     // let laser: ƒ.Node;
     let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(200);
-    let copyLaser;
+    let laser;
     async function start(_event) {
         viewport = _event.detail;
         let graph = viewport.getBranch();
@@ -19,11 +19,11 @@ var Script;
         agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
         viewport.camera.mtxPivot.translateZ(-16);
         let graphLaser = FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
-        copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
-        console.log("Copy", copyLaser);
-        graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+        laser = await ƒ.Project.createGraphInstance(graphLaser);
+        console.log("Copy", laser);
+        graph.getChildrenByName("Lasers")[0].addChild(laser);
         // copyLaser.addComponent(new ƒ.ComponentTransform);
-        copyLaser.mtxLocal.translateX(5);
+        laser.mtxLocal.translateX(5);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }

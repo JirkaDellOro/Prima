@@ -10,7 +10,7 @@ namespace Script {
   // let laser: ƒ.Node;
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
-  let copyLaser: ƒ.GraphInstance;
+  let laser: ƒ.GraphInstance;
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
@@ -23,12 +23,12 @@ namespace Script {
     viewport.camera.mtxPivot.translateZ(-16);
 
     let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
-    copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
-    console.log("Copy", copyLaser);
+    laser = await ƒ.Project.createGraphInstance(graphLaser);
+    console.log("Copy", laser);
 
-    graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+    graph.getChildrenByName("Lasers")[0].addChild(laser);
     // copyLaser.addComponent(new ƒ.ComponentTransform);
-    copyLaser.mtxLocal.translateX(5);
+    laser.mtxLocal.translateX(5);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
