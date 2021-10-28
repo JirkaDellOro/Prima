@@ -7,7 +7,7 @@ namespace Script {
 
   // let transform: ƒ.Matrix4x4;
   let agent: ƒ.Node;
-  let laser: ƒ.Node;
+  // let laser: ƒ.Node;
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
   let copyLaser: ƒ.GraphInstance;
@@ -16,13 +16,13 @@ namespace Script {
     viewport = _event.detail;
 
     let graph: ƒ.Node = viewport.getBranch();
-    laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+    // laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
     // transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
     agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
 
     viewport.camera.mtxPivot.translateZ(-16);
 
-    let graphLaser: ƒ.Graph = await ƒ.Project.registerAsGraph(laser, false);
+    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
     copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
     console.log("Copy", copyLaser);
 
