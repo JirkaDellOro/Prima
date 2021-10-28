@@ -2,11 +2,11 @@ namespace Script {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
 
-  export class CustomComponentScript extends ƒ.ComponentScript {
+  export class ScriptLaser extends ƒ.ComponentScript {
     // Register the script as component for use in the editor via drag&drop
-    public static readonly iSubclass: number = ƒ.Component.registerSubclass(CustomComponentScript);
+    public static readonly iSubclass: number = ƒ.Component.registerSubclass(ScriptLaser);
     // Properties may be mutated by users in the editor via the automatically created user interface
-    public message: string = "CustomComponentScript added to ";
+    public rotSpeed: number = 60;  // rotation per millisecond in degrees
 
 
     constructor() {
@@ -22,16 +22,20 @@ namespace Script {
     }
 
     // Activate the functions of this component as response to events
-    public hndEvent = (_event: Event) => {
+    public hndEvent = (_event: Event): void => {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
-          ƒ.Debug.log(this.message, this.node);
+          ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
           this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
           break;
       }
+    }
+
+    public update = (_event: Event): void => {
+      this.node.mtxLocal.rotateZ(this.rotSpeed * ƒ.Loop.timeFrameGame / 1000);
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {

@@ -5,7 +5,7 @@ namespace Script {
   let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
-  let transform: ƒ.Matrix4x4;
+  // let transform: ƒ.Matrix4x4;
   let agent: ƒ.Node;
   let laser: ƒ.Node;
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
@@ -17,7 +17,7 @@ namespace Script {
 
     let graph: ƒ.Node = viewport.getBranch();
     laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
-    transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
+    // transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
     agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
 
     viewport.camera.mtxPivot.translateZ(-16);
@@ -38,7 +38,7 @@ namespace Script {
     // ƒ.Physics.world.simulate();  // if physics is included and used
 
     let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
-    let speedLaserRotate: number = 360; // degres per second
+    // let speedLaserRotate: number = 360; // degres per second
     let speedAgentRotation: number = 360; // meters per second
 
     // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
@@ -58,7 +58,7 @@ namespace Script {
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
       agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime);
 
-    transform.rotateZ(speedLaserRotate * deltaTime);
+    // transform.rotateZ(speedLaserRotate * deltaTime);
 
     viewport.draw();
 

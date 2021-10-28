@@ -157,11 +157,10 @@
                         }
                       }
                     ],
-                    "CustomComponentScript": [
+                    "ScriptLaser": [
                       {
-                        "Script.CustomComponentScript": {
-                          "active": true,
-                          "message": "CustomComponentScript added to "
+                        "Script.ScriptLaser": {
+                          "active": true
                         }
                       }
                     ]
