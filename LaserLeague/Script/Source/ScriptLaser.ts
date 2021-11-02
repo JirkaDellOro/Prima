@@ -1,6 +1,6 @@
-namespace Script {
+namespace LaserLeague {
   import ƒ = FudgeCore;
-  ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
+  ƒ.Project.registerScriptNamespace(LaserLeague);  // Register the namespace to FUDGE for serialization
 
   export class ScriptLaser extends ƒ.ComponentScript {
     // Register the script as component for use in the editor via drag&drop

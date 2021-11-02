@@ -1,6 +1,12 @@
-declare namespace Script {
+declare namespace LaserLeague {
+    import ƒ = FudgeCore;
+    class Agent extends ƒ.Node {
+        constructor();
+    }
 }
-declare namespace Script {
+declare namespace LaserLeague {
+}
+declare namespace LaserLeague {
     import ƒ = FudgeCore;
     class ScriptLaser extends ƒ.ComponentScript {
         static readonly iSubclass: number;

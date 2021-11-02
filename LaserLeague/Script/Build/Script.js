@@ -1,6 +1,20 @@
 "use strict";
-var Script;
-(function (Script) {
+var LaserLeague;
+(function (LaserLeague) {
+    var ƒ = FudgeCore;
+    class Agent extends ƒ.Node {
+        constructor() {
+            super("Agent");
+            this.addComponent(new ƒ.ComponentTransform);
+            this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshQuad("MeshAgent")));
+            this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("mtrAgent", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 0, 1, 1)))));
+            this.mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+        }
+    }
+    LaserLeague.Agent = Agent;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
@@ -16,7 +30,9 @@ var Script;
         let graph = viewport.getBranch();
         // laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
         // transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
-        agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
+        // agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
+        agent = new LaserLeague.Agent();
+        graph.getChildrenByName("Agents")[0].addChild(agent);
         viewport.camera.mtxPivot.translateZ(-16);
         let graphLaser = FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
         laser = await ƒ.Project.createGraphInstance(graphLaser);
@@ -54,11 +70,11 @@ var Script;
         // let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
         // console.log(posLocal.toString());
     }
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
     class ScriptLaser extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(ScriptLaser);
@@ -89,6 +105,6 @@ var Script;
             this.node.mtxLocal.rotateZ(this.rotSpeed * ƒ.Loop.timeFrameGame / 1000);
         };
     }
-    Script.ScriptLaser = ScriptLaser;
-})(Script || (Script = {}));
+    LaserLeague.ScriptLaser = ScriptLaser;
+})(LaserLeague || (LaserLeague = {}));
 //# sourceMappingURL=Script.js.map

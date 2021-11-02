@@ -1,4 +1,4 @@
-namespace Script {
+namespace LaserLeague {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
@@ -6,7 +6,7 @@ namespace Script {
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
   // let transform: ƒ.Matrix4x4;
-  let agent: ƒ.Node;
+  let agent: Agent;
   // let laser: ƒ.Node;
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
@@ -18,7 +18,10 @@ namespace Script {
     let graph: ƒ.Node = viewport.getBranch();
     // laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
     // transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
-    agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
+    // agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
+    agent = new Agent();
+    graph.getChildrenByName("Agents")[0].addChild(agent);
+
 
     viewport.camera.mtxPivot.translateZ(-16);
 
