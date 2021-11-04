@@ -21,6 +21,8 @@ namespace LaserLeague {
     // agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
     agent = new Agent();
     graph.getChildrenByName("Agents")[0].addChild(agent);
+    let domName: HTMLElement = document.querySelector("#Hud>h1");
+    domName.textContent = agent.name;
 
 
     viewport.camera.mtxPivot.translateZ(-16);
@@ -69,6 +71,10 @@ namespace LaserLeague {
 
 
     ƒ.AudioManager.default.update();
+
+    agent.health -= 0.01;
+    let domHealth: HTMLInputElement = document.querySelector("input");
+    domHealth.value = agent.health.toString();
   }
 
   function checkCollision(): void {

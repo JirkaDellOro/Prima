@@ -1,6 +1,8 @@
 declare namespace LaserLeague {
     import ƒ = FudgeCore;
     class Agent extends ƒ.Node {
+        health: number;
+        name: string;
         constructor();
     }
 }

@@ -3,6 +3,8 @@ var LaserLeague;
 (function (LaserLeague) {
     var ƒ = FudgeCore;
     class Agent extends ƒ.Node {
+        health = 1;
+        name = "Agent Smith";
         constructor() {
             super("Agent");
             this.addComponent(new ƒ.ComponentTransform);
@@ -33,6 +35,8 @@ var LaserLeague;
         // agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
         agent = new LaserLeague.Agent();
         graph.getChildrenByName("Agents")[0].addChild(agent);
+        let domName = document.querySelector("#Hud>h1");
+        domName.textContent = agent.name;
         viewport.camera.mtxPivot.translateZ(-16);
         let graphLaser = FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
         laser = await ƒ.Project.createGraphInstance(graphLaser);
@@ -64,6 +68,9 @@ var LaserLeague;
         viewport.draw();
         checkCollision();
         ƒ.AudioManager.default.update();
+        agent.health -= 0.01;
+        let domHealth = document.querySelector("input");
+        domHealth.value = agent.health.toString();
     }
     function checkCollision() {
         // let beam: ƒ.Node = laser.getChildren()[3];
