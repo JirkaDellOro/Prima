@@ -24,6 +24,10 @@ namespace LaserLeague {
     agent = new Agent();
     graph.getChildrenByName("Agents")[0].addChild(agent);
 
+
+    document.addEventListener("click", hndClick);
+    graph.addEventListener("agentSentEvent", hndAgentEvent);
+
     viewport.camera.mtxPivot.translateZ(-16);
 
     let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
@@ -78,5 +82,13 @@ namespace LaserLeague {
     // let beam: ƒ.Node = laser.getChildren()[3];
     // let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
     // console.log(posLocal.toString());
+  }
+
+  function hndClick(_event: MouseEvent): void {
+    console.log("Click");
+    agent.dispatchEvent(new CustomEvent("agentSentEvent", { bubbles: true }));
+  }
+  function hndAgentEvent(_event: Event): void {
+    console.log("Agent event received");
   }
 }
