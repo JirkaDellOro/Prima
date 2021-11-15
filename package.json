@@ -4,7 +4,7 @@
   "description": "FUDGE_Server starts on Heroku using this package.json",
   "main": "",
   "scripts": {
-    "start": "Server/Server.js"
+    "start": "node Server/Server.js"
   },
   "repository": {
     "type": "git",
