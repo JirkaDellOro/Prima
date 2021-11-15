@@ -2,9 +2,9 @@
   "name": "prima",
   "version": "1.0.0",
   "description": "FUDGE_Server starts on Heroku using this package.json",
-  "main": "index.js",
+  "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "Server/Server.js"
   },
   "repository": {
     "type": "git",
