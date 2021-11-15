@@ -16,7 +16,7 @@
     "url": "https://github.com/JirkaDellOro/Prima/issues"
   },
   "homepage": "https://github.com/JirkaDellOro/Prima#readme",
-  "devDependencies": {
+  "dependencies": {
     "@types/node": "^16.11.7",
     "node": "^14.18.1",
     "webrtc-adapter": "^8.1.0",
