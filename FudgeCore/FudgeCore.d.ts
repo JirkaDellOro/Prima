@@ -2434,6 +2434,11 @@ declare namespace FudgeCore {
     class GraphInstance extends Node {
         /** id of the resource that instance was created from */
         private idSource;
+        /**
+         * This constructor allone will not create a reconstruction, but only save the id.
+         * To create an instance of the graph, call reset on this or set with a graph as parameter.
+         * Prefer Project.createGraphInstance(_graph).
+         */
         constructor(_graph?: Graph);
         /**
          * Recreate this node from the {@link Graph} referenced
@@ -4137,7 +4142,7 @@ declare namespace FudgeCore {
         PYRAMID = 5,
         CONVEX = 6
     }
-    /** Displaying different types of debug information about different physic features. Default = JOINTS_AND_COLLIDER. debugDraw in the settings must be active to see anything. */
+    /** Displaying different types of debug information about different physic features. Default = JOINTS_AND_COLLIDER. */
     enum PHYSICS_DEBUGMODE {
         NONE = 0,
         COLLIDERS = 1,
@@ -5310,6 +5315,7 @@ declare namespace FudgeCore {
         constructor(_name?: string);
         abstract get texImageSource(): TexImageSource;
         useRenderData(): void;
+        refresh(): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
