@@ -52,4 +52,4 @@ var FudgeNet;
         ROUTE["VIA_SERVER_HOST"] = "viaServerToHost";
     })(ROUTE = FudgeNet.ROUTE || (FudgeNet.ROUTE = {}));
 })(FudgeNet || (FudgeNet = {}));
-module.exports = {FudgeNet: FudgeNet}; 
+module.exports = { FudgeNet: FudgeNet };
