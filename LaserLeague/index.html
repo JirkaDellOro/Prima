@@ -68,7 +68,7 @@
         // setup audio
         let cmpListener = new ƒ.ComponentAudioListener();
         cmpCamera.node.addComponent(cmpListener);
-        // FudgeCore.AudioManager.default.listenWith(cmpListener);
+        FudgeCore.AudioManager.default.listenWith(cmpListener);
         FudgeCore.AudioManager.default.listenTo(graph);
         FudgeCore.Debug.log("Audio:", FudgeCore.AudioManager.default);
         // draw viewport once for immediate feedback

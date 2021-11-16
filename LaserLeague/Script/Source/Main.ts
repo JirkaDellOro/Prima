@@ -6,37 +6,34 @@ namespace LaserLeague {
 
   let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
-
-  // let transform: ƒ.Matrix4x4;
   let agent: Agent;
-  // let laser: ƒ.Node;
+  let lasers: ƒ.Node;
+
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
-  let laser: ƒ.GraphInstance;
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
 
     let graph: ƒ.Node = viewport.getBranch();
-    // laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
-    // transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
-    // agent = graph.getChildrenByName("Agents")[0].getChildren()[0];
+    lasers = graph.getChildrenByName("Lasers")[0];
+
     agent = new Agent();
     graph.getChildrenByName("Agents")[0].addChild(agent);
 
-
-    document.addEventListener("click", hndClick);
-    graph.addEventListener("agentSentEvent", hndAgentEvent);
+    viewport.getCanvas().addEventListener("mousedown", hndClick);
+    graph.addEventListener("agentEvent", hndAgentEvent);
 
     viewport.camera.mtxPivot.translateZ(-16);
 
     let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-10-28T13:06:19.996Z|71944"];
-    laser = await ƒ.Project.createGraphInstance(graphLaser);
-    console.log("Copy", laser);
 
-    graph.getChildrenByName("Lasers")[0].addChild(laser);
-    // copyLaser.addComponent(new ƒ.ComponentTransform);
-    laser.mtxLocal.translateX(5);
+    for (let i: number = -1; i < 2; i++) {
+      let laser: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(graphLaser);
+      laser.addEventListener("graphEvent", hndGraphEvent, true);
+      lasers.addChild(laser);
+      laser.mtxLocal.translateX(7 * i);
+    }
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -46,12 +43,7 @@ namespace LaserLeague {
     // ƒ.Physics.world.simulate();  // if physics is included and used
 
     let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
-    // let speedLaserRotate: number = 360; // degres per second
     let speedAgentRotation: number = 360; // meters per second
-
-    // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-    //   ctrForward.setInput(1);
-    // if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
 
     let value: number = (
       ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
@@ -60,35 +52,35 @@ namespace LaserLeague {
     ctrForward.setInput(value * deltaTime);
     agent.mtxLocal.translateY(ctrForward.getOutput());
 
-    // agent.mtxLocal.translateY(-speedAgentTranslation * deltaTime);
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
       agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime);
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
       agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime);
 
-    // transform.rotateZ(speedLaserRotate * deltaTime);
-
     viewport.draw();
 
-    checkCollision();
-
+    agent.getComponent(ƒ.ComponentMaterial).clrPrimary.a = 1;
+    for (let laser of lasers.getChildren()) {
+      if (laser.getComponent(ScriptLaser).checkCollision(agent.mtxWorld.translation, 0.25)) {
+        agent.getComponent(ƒ.ComponentMaterial).clrPrimary.a = 0.5;
+        break;
+      }
+    }
 
     ƒ.AudioManager.default.update();
 
     GameState.get().health -= 0.01;
   }
 
-  function checkCollision(): void {
-    // let beam: ƒ.Node = laser.getChildren()[3];
-    // let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
-    // console.log(posLocal.toString());
-  }
-
   function hndClick(_event: MouseEvent): void {
-    console.log("Click");
-    agent.dispatchEvent(new CustomEvent("agentSentEvent", { bubbles: true }));
+    console.log("mousedown event");
+    agent.dispatchEvent(new CustomEvent("agentEvent", { bubbles: true }));
   }
   function hndAgentEvent(_event: Event): void {
-    console.log("Agent event received");
+    console.log("Agent event received by", _event.currentTarget);
+    (<ƒ.Node>_event.currentTarget).broadcastEvent(new CustomEvent("graphEvent"));
+  }
+  function hndGraphEvent(_event: Event): void {
+    console.log("Graph event received", _event.currentTarget);
   }
 }

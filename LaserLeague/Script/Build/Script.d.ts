@@ -30,5 +30,6 @@ declare namespace LaserLeague {
         constructor();
         hndEvent: (_event: Event) => void;
         update: (_event: Event) => void;
+        checkCollision(_pos: ƒ.Vector3, _radius: number): boolean;
     }
 }
