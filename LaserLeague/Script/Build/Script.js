@@ -44,14 +44,34 @@ var LaserLeague;
     LaserLeague.ƒui = FudgeUserInterface;
     LaserLeague.ƒ.Debug.info("Main Program Template running!");
     let viewport;
-    document.addEventListener("interactiveViewportStarted", start);
     let agent;
     let lasers;
     let ctrForward = new LaserLeague.ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(200);
+    window.addEventListener("load", init);
+    // show dialog for startup
+    function init(_event) {
+        let dialog = document.querySelector("dialog");
+        dialog.querySelector("h1").textContent = document.title;
+        dialog.addEventListener("click", function (_event) {
+            // @ts-ignore until HTMLDialog is implemented by all browsers and available in dom.d.ts
+            dialog.close();
+            start(null);
+        });
+        //@ts-ignore
+        dialog.showModal();
+    }
     async function start(_event) {
-        viewport = _event.detail;
-        let graph = viewport.getBranch();
+        await FudgeCore.Project.loadResourcesFromHTML();
+        let graph = LaserLeague.ƒ.Project.resources[document.head.querySelector("meta[autoView]").getAttribute("autoView")];
+        let cmpCamera = new LaserLeague.ƒ.ComponentCamera();
+        cmpCamera.mtxPivot.rotateY(180);
+        cmpCamera.mtxPivot.translateZ(-9);
+        let canvas = document.querySelector("canvas");
+        viewport = new LaserLeague.ƒ.Viewport();
+        viewport.initialize("Viewport", graph, cmpCamera, canvas);
+        LaserLeague.ƒ.AudioManager.default.listenTo(graph);
+        LaserLeague.ƒ.AudioManager.default.listenWith(graph.getComponent(LaserLeague.ƒ.ComponentAudioListener));
         lasers = graph.getChildrenByName("Lasers")[0];
         agent = new LaserLeague.Agent();
         graph.getChildrenByName("Agents")[0].addChild(agent);

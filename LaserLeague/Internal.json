@@ -42,9 +42,9 @@
             "ƒ.ComponentAudio": {
               "active": true,
               "idResource": "Audio|2021-11-09T14:25:23.125Z|25837",
-              "playing": false,
+              "playing": true,
               "loop": true,
-              "volume": 1
+              "volume": 0.1
             }
           }
         ],

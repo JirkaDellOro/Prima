@@ -5,17 +5,41 @@ namespace LaserLeague {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
   let agent: Agent;
   let lasers: ƒ.Node;
 
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 10, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
+  window.addEventListener("load", init);
+  // show dialog for startup
 
-  async function start(_event: CustomEvent): Promise<void> {
-    viewport = _event.detail;
 
-    let graph: ƒ.Node = viewport.getBranch();
+  function init(_event: Event): void {
+    let dialog: HTMLDialogElement = document.querySelector("dialog");
+    dialog.querySelector("h1").textContent = document.title;
+    dialog.addEventListener("click", function (_event: Event): void {
+      // @ts-ignore until HTMLDialog is implemented by all browsers and available in dom.d.ts
+      dialog.close();
+      start(null);
+    });
+    //@ts-ignore
+    dialog.showModal();
+  }
+  async function start(_event: Event): Promise<void> {
+    await FudgeCore.Project.loadResourcesFromHTML();
+    let graph: ƒ.Node = <ƒ.Graph>ƒ.Project.resources[document.head.querySelector("meta[autoView]").getAttribute("autoView")];
+
+    let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
+    cmpCamera.mtxPivot.rotateY(180);
+    cmpCamera.mtxPivot.translateZ(-9);
+
+    let canvas: HTMLCanvasElement = document.querySelector("canvas");
+    viewport = new ƒ.Viewport();
+    viewport.initialize("Viewport", graph, cmpCamera, canvas);
+
+    ƒ.AudioManager.default.listenTo(graph);
+    ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
+
     lasers = graph.getChildrenByName("Lasers")[0];
 
     agent = new Agent();
