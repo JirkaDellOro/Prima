@@ -75,15 +75,9 @@ declare namespace FudgeNet {
         MESSAGE_RECEIVED = "message"
     }
     let configuration: {
-        iceServers: ({
+        iceServers: {
             urls: string;
-            username?: undefined;
-            credential?: undefined;
-        } | {
-            urls: string;
-            username: string;
-            credential: string;
-        })[];
+        }[];
     };
     /**
      * Manages a single rtc peer-to-peer connection with multiple channels.
@@ -92,13 +86,14 @@ declare namespace FudgeNet {
      * used internally by the {@link FudgeClient} and should not be used otherwise.
      * @author Jirka Dell'Oro-Friedl, HFU, 2021
      */
-    class RtcConnection {
+    class Rtc {
         peerConnection: RTCPeerConnection;
         dataChannel: RTCDataChannel | undefined;
         mediaStream: MediaStream | undefined;
         constructor();
         createDataChannel(_client: FudgeClient, _idRemote: string): void;
         addDataChannel(_client: FudgeClient, _dataChannel: RTCDataChannel): void;
+        private logState;
     }
 }
 declare namespace FudgeNet {
@@ -114,7 +109,7 @@ declare namespace FudgeNet {
         urlServer: string;
         socket: WebSocket;
         peers: {
-            [id: string]: RtcConnection;
+            [id: string]: Rtc;
         };
         clientsInfoFromServer: {
             [id: string]: {
@@ -156,15 +151,15 @@ declare namespace FudgeNet {
         private sendToPeer;
         private sendToAllPeers;
         private addWebSocketEventListeners;
-        private beginPeerConnectionNegotiation;
-        private createNegotiationOfferAndSendToPeer;
-        private receiveNegotiationOfferAndSetRemoteDescription;
-        private answerNegotiationOffer;
-        private receiveAnswerAndSetRemoteDescription;
-        private sendIceCandidatesToPeer;
-        private addReceivedCandidateToPeerConnection;
-        private receiveDataChannelAndEstablishConnection;
         private loginValidAddUser;
         private assignIdAndSendConfirmation;
+        private cRstartNegotiation;
+        private cRsendOffer;
+        private cRreceiveAnswer;
+        private cRsendIceCandidates;
+        private cEreceiveOffer;
+        private cEaddIceCandidate;
+        private cEestablishConnection;
+        private delay;
     }
 }

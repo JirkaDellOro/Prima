@@ -9,44 +9,41 @@
       "resolution": "[100, 100]"
     }
   },
+  "Material|2021-11-18T14:35:38.341Z|80180": {
+    "ƒ.Material": {
+      "name": "mtrFlat",
+      "idResource": "Material|2021-11-18T14:35:38.341Z|80180",
+      "shader": "ShaderFlat",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
+  "MeshCube|2021-11-18T14:46:15.005Z|64677": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-11-18T14:46:15.005Z|64677",
+      "name": "MeshCube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-11-21T17:22:53.935Z|12710": {
+    "ƒ.Material": {
+      "name": "mtrTexFlat",
+      "idResource": "Material|2021-11-21T17:22:53.935Z|12710",
+      "shader": "ShaderTextureFlat",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
   "Graph|2021-11-18T14:33:55.349Z|10541": {
     "ƒ.Graph": {
       "name": "Graph",
-      "components": {
-        "ComponentMesh": [
-          {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
-              "pivot": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 0.49999991059303284, 2]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 0, 0, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2021-11-18T14:35:38.341Z|80180"
-            }
-          }
-        ]
-      },
+      "components": {},
       "children": [
         {
           "ƒ.Node": {
@@ -71,17 +68,17 @@
                 {
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrPrimary": "[0.36470588235294116, 0.7568627450980392, 0.28627450980392155, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
                       "rotation": 0,
-                      "scaling": "[1, 1]"
+                      "scaling": "[10, 10]"
                     },
                     "Component": {
                       "active": true
                     },
-                    "idMaterial": "Material|2021-11-18T14:35:38.341Z|80180"
+                    "idMaterial": "Material|2021-11-21T17:22:53.935Z|12710"
                   }
                 }
               ],
@@ -95,7 +92,7 @@
                     },
                     "light": {
                       "ƒ.LightAmbient": {
-                        "color": "[0.2784313725490196, 0.3411764705882353, 0.23921568627450981, 1]"
+                        "color": "[0.25882352941176473, 0.25882352941176473, 0.25882352941176473, 1]"
                       }
                     }
                   }
@@ -104,12 +101,12 @@
                   "ƒ.ComponentLight": {
                     "pivot": {
                       "translation": "[0, 0, 0]",
-                      "rotation": "[80, 0, 0]",
+                      "rotation": "[50, 0, 0]",
                       "scaling": "[1, 1, 1]"
                     },
                     "light": {
                       "ƒ.LightDirectional": {
-                        "color": "[0.6039215686274509, 0.611764705882353, 0.4666666666666667, 1]"
+                        "color": "[0.7803921568627451, 0.7803921568627451, 0.7803921568627451, 1]"
                       }
                     }
                   }
@@ -122,25 +119,47 @@
         {
           "ƒ.Node": {
             "name": "Cart",
-            "components": {},
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 0.49999991059303284, 2]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 0, 0, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-11-18T14:35:38.341Z|80180"
+                  }
+                }
+              ]
+            },
             "children": []
           }
         }
       ],
       "idResource": "Graph|2021-11-18T14:33:55.349Z|10541",
       "type": "Graph"
-    }
-  },
-  "Material|2021-11-18T14:35:38.341Z|80180": {
-    "ƒ.Material": {
-      "name": "mtrFlat",
-      "idResource": "Material|2021-11-18T14:35:38.341Z|80180",
-      "shader": "ShaderFlat",
-      "coat": {
-        "ƒ.CoatColored": {
-          "color": "[1, 1, 1, 1]"
-        }
-      }
     }
   },
   "Material|2021-11-18T14:36:26.426Z|05338": {
@@ -153,13 +172,6 @@
           "color": "[1, 1, 1, 1]"
         }
       }
-    }
-  },
-  "MeshCube|2021-11-18T14:46:15.005Z|64677": {
-    "ƒ.MeshCube": {
-      "idResource": "MeshCube|2021-11-18T14:46:15.005Z|64677",
-      "name": "MeshCube",
-      "type": "MeshCube"
     }
   }
 }
