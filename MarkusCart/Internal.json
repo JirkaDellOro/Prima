@@ -35,8 +35,20 @@
       "shader": "ShaderTextureFlat",
       "coat": {
         "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]"
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2021-11-23T09:56:29.729Z|31083"
         }
+      }
+    }
+  },
+  "TextureImage|2021-11-23T09:56:29.729Z|31083": {
+    "ƒ.TextureImage": {
+      "url": "Image\\maptex.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-23T09:56:29.729Z|31083",
+        "name": "imgMoritz",
+        "mipmap": "CRISP"
       }
     }
   },
@@ -56,7 +68,7 @@
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[100, 8.100000381469727, 100]"
+                      "scaling": "[100, 11, 100]"
                     },
                     "Component": {
                       "active": true
@@ -68,12 +80,12 @@
                 {
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
-                    "clrPrimary": "[0.36470588235294116, 0.7568627450980392, 0.28627450980392155, 1]",
+                    "clrPrimary": "[0.9372549019607843, 0.9254901960784314, 0.9254901960784314, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
                       "rotation": 0,
-                      "scaling": "[10, 10]"
+                      "scaling": "[1, 1]"
                     },
                     "Component": {
                       "active": true
@@ -152,6 +164,20 @@
                     "idMaterial": "Material|2021-11-18T14:35:38.341Z|80180"
                   }
                 }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
               ]
             },
             "children": []
@@ -172,6 +198,24 @@
           "color": "[1, 1, 1, 1]"
         }
       }
+    }
+  },
+  "TextureImage|2021-11-23T13:45:42.476Z|74218": {
+    "ƒ.TextureImage": {
+      "url": "Image\\mapheight.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2021-11-23T13:45:42.476Z|74218",
+        "name": "Image\\mapheight.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "MeshRelief|2021-11-23T13:45:48.845Z|60473": {
+    "ƒ.MeshRelief": {
+      "idResource": "MeshRelief|2021-11-23T13:45:48.845Z|60473",
+      "name": "MeshRelief",
+      "type": "MeshRelief"
     }
   }
 }
