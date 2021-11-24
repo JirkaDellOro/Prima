@@ -64,7 +64,7 @@
               "ComponentMesh": [
                 {
                   "ƒ.ComponentMesh": {
-                    "idMesh": "MeshTerrain|2021-11-18T14:30:22.304Z|62761",
+                    "idMesh": "MeshRelief|2021-11-23T13:45:48.845Z|60473",
                     "pivot": {
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
@@ -137,7 +137,7 @@
                   "ƒ.ComponentMesh": {
                     "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
                     "pivot": {
-                      "translation": "[0, 0.6, 0]",
+                      "translation": "[0, 0.6000000238418579, 0]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[1, 0.49999991059303284, 2]"
                     },
@@ -215,7 +215,8 @@
     "ƒ.MeshRelief": {
       "idResource": "MeshRelief|2021-11-23T13:45:48.845Z|60473",
       "name": "MeshRelief",
-      "type": "MeshRelief"
+      "type": "MeshRelief",
+      "idTexture": "TextureImage|2021-11-23T13:45:42.476Z|74218"
     }
   }
 }
