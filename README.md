@@ -4,22 +4,14 @@ Repository for the module "Prototyping interactive media-applications and games"
 [Pages-Version](https://jirkadelloro.github.io/Prima/)
 
 ## Examples
-See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes.  
-### W21 (running)
-- [LaserLeague](https://jirkadelloro.github.io/Prima/LaserLeague)
-- [MarkusCart](https://jirkadelloro.github.io/Prima/MarkusCart)
-### S21
-- [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html)
-- [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html)
-### W20
-- [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)
-- [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)
-### S20
-- [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)
-- [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)
-### W19
-- [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)
-- [Craftris](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)
+See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes. Usually, we examine one 2d and one 3d application.
+| Semester | 2D                                                                                             | 3D                                                                                       |
+|---------:|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+|      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/LaserLeague)                                | [MarkusCart](https://jirkadelloro.github.io/Prima/MarkusCart)                            |
+|      S21 | [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html) | [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html) |
+|      W20 | [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)              | [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)                   |
+|      S20 | [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)                  | [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)  |
+|      W19 | [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)                       | [Craftris](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)                        |
 
 
 ## Checkliste für Leistungsnachweis
@@ -27,15 +19,15 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 
 | Nr | Bezeichnung           | Inhalt                                                                                                                                                                                                                                                                         |
 |---:|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|    | Titel                 |
-|    | Name                  |
-|    | Matrikelnummer        |
+|    | Titel                 |                                                                                                                                                                                                                                                                                |
+|    | Name                  |                                                                                                                                                                                                                                                                                |
+|    | Matrikelnummer        |                                                                                                                                                                                                                                                                                |
 |  1 | Nutzerinteraktion     | Der Nutzer kann mit der Applikation interagieren. Mit welchen Mitteln und welchen Aktionen werden welche Reaktionen ausgelöst?                                                                                                                                                 |
 |  2 | Objektinteraktion     | Mit Hilfe von Kollisionsprüfung interagieren Objekte miteinander. Wann passiert dabei wie was?                                                                                                                                                                                 |
 |  3 | Objektanzahl variabel | Eine variable Anzahl von Objekten wird zur Laufzeit generiert. Welche sind dies und wann und wie geschieht die Erzeugung?                                                                                                                                                      |
 |  4 | Szenenhierarchie      | Die Szenenhierarchie ist sinnvoll aufgebaut. Wer ist wessen Parent, wie sind Elemente in anderen gruppiert und warum?                                                                                                                                                          |
 |  5 | Sound                 | Sounds sind eingebunden und unterstützen oder ermöglichen die Wahrnehmung der Aktionen. Welche Ereignisse werden durch Geräusche akustisch unterstützt, und durch welche Geräuschkulisse oder Musik die Atmosphäre?                                                            |
-|  6 | GUI                   | Ein grafisches Interface gibt dem Nutzer die Möglichkeit, Einstellungen beim Programmstart oder während des Programmlaufs vorzunehmen. Was kann er dort tun?                                                                                   |
+|  6 | GUI                   | Ein grafisches Interface gibt dem Nutzer die Möglichkeit, Einstellungen beim Programmstart oder während des Programmlaufs vorzunehmen. Was kann er dort tun?                                                                                                                   |
 |  7 | Externe Daten         | Spielparameter sind extern in einer Datei veränderbar, so dass das Spiel nur neu gestartet, aber nicht neu kompiliert werden muss. Welche Parameter sind dies und was sind die Auswirkungen?                                                                                   |
 |  8 | Verhaltensklassen     | Das Verhalten von Objekten ist in den Methoden von Klassen definiert, die in externen Dateien abgelegt sind. Welche Klassen sind dies und welches Verhalten wird dort beschrieben?                                                                                             |
 |  9 | Subklassen            | Es existiert eine Klassenhierarchie, einige Objekte sind Instanzen von einer oder mehreren abgeleiteten Subklassen mit gegenüber den anderen Objekten speziellem Verhalten und besonderen Eigenschaften. Welche Klassen sind dies und welches Verhalten wird dort beschrieben? |
