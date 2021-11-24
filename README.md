@@ -11,7 +11,7 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |      S21 | [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html) | [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html) |
 |      W20 | [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)              | [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)                   |
 |      S20 | [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)                  | [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)  |
-|      W19 | [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)                       | [Craftris](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)                        |
+|      W19 | [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)                       | [Craftris (3D-Tetris)](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)                        |
 
 
 ## Checkliste für Leistungsnachweis
