@@ -4,7 +4,8 @@ Repository for the module "Prototyping interactive media-applications and games"
 [Pages-Version](https://jirkadelloro.github.io/Prima/)
 
 ## Examples
-See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes. Usually, we examine one 2d and one 3d application.
+See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes. Usually, we examine one 2d and one 3d application.  
+
 | Semester | 2D                                                                                             | 3D                                                                                       |
 |---------:|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
 |      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/LaserLeague)                                | [MarkusCart](https://jirkadelloro.github.io/Prima/MarkusCart)                            |
