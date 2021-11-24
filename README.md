@@ -3,8 +3,23 @@ Repository for the module "Prototyping interactive media-applications and games"
 
 [Pages-Version](https://jirkadelloro.github.io/Prima/)
 
-- [PONG](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)
-- [CRAFTRIS](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)
+## Examples
+See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes.  
+### W21 (running)
+- [LaserLeague](https://jirkadelloro.github.io/Prima/LaserLeague)
+- [MarkusCart](https://jirkadelloro.github.io/Prima/MarkusCart)
+### S21
+- [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html)
+- [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html)
+### W20
+- [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)
+- [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)
+### S20
+- [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)
+- [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)
+### W19
+- [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)
+- [Craftris](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)
 
 
 ## Checkliste für Leistungsnachweis
