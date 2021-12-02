@@ -1,3 +1,4 @@
+/// <reference types="../../../FudgeCore/FudgeCore" />
 declare namespace Script {
     import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {

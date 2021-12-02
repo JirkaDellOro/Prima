@@ -38,6 +38,7 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let cart;
+    let body;
     let mtxTerrain;
     let meshTerrain;
     let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
@@ -52,21 +53,33 @@ var Script;
         meshTerrain = cmpMeshTerrain.mesh;
         mtxTerrain = cmpMeshTerrain.mtxWorld;
         cart = viewport.getBranch().getChildrenByName("Cart")[0];
+        body = cart.getComponent(ƒ.ComponentRigidbody);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
-        // ƒ.Physics.world.simulate();  // if physics is included and used
-        let deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        let maxHeight = 0.3;
+        let minHeight = 0.2;
+        let forceNodes = cart.getChildren();
+        let force = ƒ.Vector3.SCALE(ƒ.Physics.world.getGravity(), -body.mass / forceNodes.length);
+        for (let forceNode of forceNodes) {
+            let posForce = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
+            let terrainInfo = meshTerrain.getTerrainInfo(posForce, mtxTerrain);
+            let height = posForce.y - terrainInfo.position.y;
+            console.log(height);
+            body.applyForceAtPoint(force, posForce);
+        }
+        ƒ.Physics.world.simulate(); // if physics is included and used
+        // let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
         let turn = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
         ctrTurn.setInput(turn);
-        cart.mtxLocal.rotateY(ctrTurn.getOutput() * deltaTime);
+        // cart.mtxLocal.rotateY(ctrTurn.getOutput() * deltaTime);
         let forward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
         ctrForward.setInput(forward);
-        cart.mtxLocal.translateZ(ctrForward.getOutput() * deltaTime);
-        let terrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
-        cart.mtxLocal.translation = terrainInfo.position;
-        cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
+        // cart.mtxLocal.translateZ(ctrForward.getOutput() * deltaTime);
+        // let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
+        // cart.mtxLocal.translation = terrainInfo.position;
+        // cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
