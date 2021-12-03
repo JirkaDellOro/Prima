@@ -245,11 +245,11 @@
                 {
                   "ƒ.ComponentRigidbody": {
                     "initialization": "TO_MESH",
-                    "friction": 0.2,
-                    "restitution": 0.2,
+                    "friction": 0,
+                    "restitution": 0,
                     "mass": 200,
-                    "dampTranslation": 0.1,
-                    "dampRotation": 0.1,
+                    "dampTranslation": 3,
+                    "dampRotation": 100,
                     "effectGravity": 1,
                     "typeBody": "DYNAMIC",
                     "typeCollider": "CUBE",

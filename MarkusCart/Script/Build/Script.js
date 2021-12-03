@@ -41,9 +41,9 @@ var Script;
     let body;
     let mtxTerrain;
     let meshTerrain;
-    let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
+    let ctrForward = new ƒ.Control("Forward", 5000, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(200);
-    let ctrTurn = new ƒ.Control("Turn", 100, 0 /* PROPORTIONAL */);
+    let ctrTurn = new ƒ.Control("Turn", 1000, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(50);
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
@@ -66,20 +66,16 @@ var Script;
             let posForce = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
             let terrainInfo = meshTerrain.getTerrainInfo(posForce, mtxTerrain);
             let height = posForce.y - terrainInfo.position.y;
-            console.log(height);
-            body.applyForceAtPoint(force, posForce);
+            if (height < maxHeight)
+                body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - height) / (maxHeight - minHeight)), posForce);
         }
-        ƒ.Physics.world.simulate(); // if physics is included and used
-        // let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
         let turn = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
         ctrTurn.setInput(turn);
-        // cart.mtxLocal.rotateY(ctrTurn.getOutput() * deltaTime);
+        body.applyTorque(ƒ.Vector3.SCALE(cart.mtxLocal.getY(), ctrTurn.getOutput()));
         let forward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
         ctrForward.setInput(forward);
-        // cart.mtxLocal.translateZ(ctrForward.getOutput() * deltaTime);
-        // let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
-        // cart.mtxLocal.translation = terrainInfo.position;
-        // cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
+        body.applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
+        ƒ.Physics.world.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
