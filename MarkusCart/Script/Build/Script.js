@@ -41,10 +41,10 @@ var Script;
     let body;
     let mtxTerrain;
     let meshTerrain;
-    let ctrForward = new ƒ.Control("Forward", 5000, 0 /* PROPORTIONAL */);
+    let ctrForward = new ƒ.Control("Forward", 7000, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(200);
     let ctrTurn = new ƒ.Control("Turn", 1000, 0 /* PROPORTIONAL */);
-    ctrForward.setDelay(50);
+    ctrTurn.setDelay(50);
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;

@@ -8,10 +8,10 @@ namespace Script {
   let mtxTerrain: ƒ.Matrix4x4;
   let meshTerrain: ƒ.MeshTerrain;
 
-  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 5000, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 7000, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
   let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 1000, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  ctrForward.setDelay(50);
+  ctrTurn.setDelay(50);
 
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
