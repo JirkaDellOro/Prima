@@ -35,7 +35,7 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |  A | Physics           | Add rigidbody components and work with collisions (1) and/or forces and torques (1) and/or joints (1)               |
 |  B | Net               | Add multiplayer functionality via network (3)                                                                       |
 |  C | State Machines    | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid          |
-|  D | Animation         | Animate using the animation system of FudgeCore (1) and/or Sprites as defined in FudgeAid                           |
+|  D | Animation         | Animate using the animation system of FudgeCore (1) and/or Sprites (1) as defined in FudgeAid                           |
 
 The criteria 0 to 9 are mandatory and yield 1 point each. Choose from A to D for additional points as noted in brackets. An aspect of your application may not fullfill multiple criteria.  
 | Points | 9   | 10  | 11  | 12  |
