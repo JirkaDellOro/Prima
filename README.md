@@ -15,64 +15,57 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |      W19 | [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)                       | [Craftris (3D-Tetris)](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)            |
 
 
-## Checkliste für Leistungsnachweis
+## Checklist for the final assignment
 © Prof. Dipl.-Ing. Jirka R. Dell'Oro-Friedl, HFU
-| Nr | Bezeichnung       | Inhalt                                                                                                            |
-|---:|-------------------|-------------------------------------------------------------------------------------------------------------------|
-|    | Title             |                                                                                                                   |
-|    | Name              |                                                                                                                   |
-|    | Matrikelnummer    |                                                                                                                   |
-|  1 | Units and Postion | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                  |
-|  2 | Hierarchy         | Explain the setup of the graphs and the advantages you gain by it.                                                |
-|  3 | Editor            | Use the visual editor and explain which parts are better done by coding and why.                                  |
-|  4 | Scriptcomponents  | Use scriptcomponents and explain if they were useful in your context.                                             |
-|  5 | Extend FUDGE      | Derive classes from FUDGE and explain if that was useful in your context.                                         |
-|  6 | Sound             | Use sounds and explain your choice of sounds and placement in respect to the user's perception.                   |
-|  7 | VUI               | Create a virtual user interface using the interface controller and mutables. Explain the interface.               |
-|  8 | Event-System      | Use the event system to send messages through graphs and explain if that was useful in your context.              |
-|  9 | External Data     | Create a configuration file your application loads and adjusts to the content. Explain your choice of parameters. |
-| 10 | Light             | Explain you choice of lights in your graphs                                                                       |
+| Nr | Bezeichnung       | Inhalt                                                                                                              |
+|---:|-------------------|---------------------------------------------------------------------------------------------------------------------|
+|    | Title             |                                                                                                                     |
+|    | Name              |                                                                                                                     |
+|    | Matrikelnummer    |                                                                                                                     |
+|  0 | Units and Postion | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                    |
+|  1 | Hierarchy         | Explain the setup of the graphs and the advantages you gain by it.                                                  |
+|  2 | Editor            | Use the visual editor and explain which parts are better done by coding and why.                                    |
+|  3 | Scriptcomponents  | Use scriptcomponents and explain if they were useful in your context or not and why.                                |
+|  4 | Extend            | Derive classes from FudgeCore and explain if that was useful in your context or not and why.                        |
+|  5 | Sound             | Use sounds and explain your choice of sounds and placement in respect to the user's perception.                     |
+|  6 | VUI               | Create a virtual user interface using the interface controller and mutables. Explain the interface.                 |
+|  7 | Event-System      | Use the event system to send messages through graphs and explain if that was useful in your context or not and why. |
+|  8 | External Data     | Create a configuration file your application loads and adjusts to the content. Explain your choice of parameters.   |
+|  9 | Light             | Explain you choice of lights in your graphs.                                                                        |
+|  A | Physics           | Add rigidbody components and work with collisions (1) and/or forces and torques (1) and/or joints (1)               |
+|  B | Net               | Add multiplayer functionality via network (3)                                                                       |
+|  C | State Machines    | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid          |
+|  D | Animation         | Animate using the animation system of FudgeCore (1) and/or Sprites as defined in FudgeAid                           |
 
-Additional
-- Physics
-  - Rigidbody
-  - Collisions
-  - Force/Momentum
+The criteria 0 to 9 are mandatory and yield 1 point each. Choose from A to D for additional points as noted in brackets. An aspect of your application may not fullfill multiple criteria.  
+| Points | 9   | 10  | 11  | 12  |
+|--------|-----|-----|-----|-----|
+| Grade  | 4.0 | 3.0 | 2.0 | 1.0 |
 
-- Net
-  
-- State Machines
-  - own
-  - Fudge built in Aid
+## Format 
+- Copy the FUDGE-files used to your repository so they don't outdate.
+- Bundle the design documentation in a single well formatted PDF-file.
+- Create a README.md file in your PRIMA-Repository on Github including the following
+  * Title
+  * Author
+  * Year and season (Summer, Winter)
+  * Curriculum and semester
+  * Course this development was created in (PRIMA) 
+  * Docent
+  - Link to the finished and executable application on Github-Pages
+  - Link to the source code
+  - Link to the design document
+  - Description for users on how to interact
+  - Description on how to install, if applicable (additional services, database etc.) 
+  - A copy of the catalogue of criteria above, the right column replaced with very brief explanations and descriptions of the fullfullments of these criteria
 
-- Animation
-  - Fudge Animation System
-  - Sprites built in Aid
-
-
-## Abgabeformat
-* Fasse die Konzeption als ein wohlformatiertes Designdokument in PDF zusammen!
-* Platziere einen Link in der Readme-Datei deines PRIMA-Repositories auf Github auf die fertige und in Github-Pages lauffähige Anwendung.
-* Platziere ebenso Links zu den Stellen in deinem Repository, an denen der Quellcode und das Designdokument zu finden sind.
-* Stelle zudem auf diese Art dort auch ein gepacktes Archiv zur Verfügung, welches folgende Daten enthält
-  * Das Designdokument 
-  * Die Projektordner inklusive aller erforderlichen Dateien, also auch Bild- und Audiodaten
-  * Eine kurze Anleitung zur Installation der Anwendung unter Berücksichtigung erforderlicher Dienste (z.B. Heroku, MongoDB etc.) 
-  * Eine kurze Anleitung zur Interaktion mit der Anwendung
-
-## GameZone
-Wenn Du dein Spiel bei der Dauerausstellung "GameZone" am Tag der Medien sehen möchtest, ergänze folgendes  
-* Einen Ordner mit zwei Screenshots der laufenden Applikation in den Größen 250x100 und 1920x400 pixel sowie ein Textdokument mit den Informationen:
-* Titel
-* Autor
-* Jahr und Semester der Entwicklung (Sose, Wise)
-* Studiensemester
-* Lehrplansemester
-* Studiengang
-* Veranstaltung im Rahmen derer die Entwicklung durchgeführt wurde
-* betreuender Dozent
-* Genre des Spiels
-* ggf. passende Tags/ Schlagwörter zu dem Spiel
-* Untertitel (max 40 Zeichen), der Menschen zum Spielen animiert
-* Kurzbeschreibung (max 250 Zeichen), die kurz erklärt wie zu spielen ist
-* Erklärung, dass die Fakultät Digitale Medien die Anwendung bei Veranstaltungen, insbesondere am Tag der Medien, mit einem expliziten Verweis auf den Autor, vorführen darf.
+### GameZone
+If you'd like to see youra application in the exhibition "GameZone", add the following
+- Two screenshots of the running application of the sizes
+  - 250 x 100 pixel
+  - 1920 x 400 pixel 
+* Genre, if applicable
+* Tags
+* Subtitel (max 40 characters), to encourage to start the application
+* Short instructions (max 250 characters) on how to play
+* A declaration of consent with the display of the application in the GameZone with an explicit reference to the author.
