@@ -12,28 +12,43 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |      S21 | [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html) | [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html) |
 |      W20 | [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)              | [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)                   |
 |      S20 | [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)                  | [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)  |
-|      W19 | [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)                       | [Craftris (3D-Tetris)](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)                        |
+|      W19 | [Pong](https://jirkadelloro.github.io/Prima/W19/L06_PongFinal/Main.html)                       | [Craftris (3D-Tetris)](https://jirkadelloro.github.io/Prima/W19/L13_Craftris)            |
 
 
 ## Checkliste für Leistungsnachweis
 © Prof. Dipl.-Ing. Jirka R. Dell'Oro-Friedl, HFU
+| Nr | Bezeichnung       | Inhalt                                                                                                            |
+|---:|-------------------|-------------------------------------------------------------------------------------------------------------------|
+|    | Title             |                                                                                                                   |
+|    | Name              |                                                                                                                   |
+|    | Matrikelnummer    |                                                                                                                   |
+|  1 | Units and Postion | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                  |
+|  2 | Hierarchy         | Explain the setup of the graphs and the advantages you gain by it.                                                |
+|  3 | Editor            | Use the visual editor and explain which parts are better done by coding and why.                                  |
+|  4 | Scriptcomponents  | Use scriptcomponents and explain if they were useful in your context.                                             |
+|  5 | Extend FUDGE      | Derive classes from FUDGE and explain if that was useful in your context.                                         |
+|  6 | Sound             | Use sounds and explain your choice of sounds and placement in respect to the user's perception.                   |
+|  7 | VUI               | Create a virtual user interface using the interface controller and mutables. Explain the interface.               |
+|  8 | Event-System      | Use the event system to send messages through graphs and explain if that was useful in your context.              |
+|  9 | External Data     | Create a configuration file your application loads and adjusts to the content. Explain your choice of parameters. |
+| 10 | Light             | Explain you choice of lights in your graphs                                                                       |
 
-| Nr | Bezeichnung           | Inhalt                                                                                                                                                                                                                                                                         |
-|---:|-----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|    | Titel                 |                                                                                                                                                                                                                                                                                |
-|    | Name                  |                                                                                                                                                                                                                                                                                |
-|    | Matrikelnummer        |                                                                                                                                                                                                                                                                                |
-|  1 | Nutzerinteraktion     | Der Nutzer kann mit der Applikation interagieren. Mit welchen Mitteln und welchen Aktionen werden welche Reaktionen ausgelöst?                                                                                                                                                 |
-|  2 | Objektinteraktion     | Mit Hilfe von Kollisionsprüfung interagieren Objekte miteinander. Wann passiert dabei wie was?                                                                                                                                                                                 |
-|  3 | Objektanzahl variabel | Eine variable Anzahl von Objekten wird zur Laufzeit generiert. Welche sind dies und wann und wie geschieht die Erzeugung?                                                                                                                                                      |
-|  4 | Szenenhierarchie      | Die Szenenhierarchie ist sinnvoll aufgebaut. Wer ist wessen Parent, wie sind Elemente in anderen gruppiert und warum?                                                                                                                                                          |
-|  5 | Sound                 | Sounds sind eingebunden und unterstützen oder ermöglichen die Wahrnehmung der Aktionen. Welche Ereignisse werden durch Geräusche akustisch unterstützt, und durch welche Geräuschkulisse oder Musik die Atmosphäre?                                                            |
-|  6 | GUI                   | Ein grafisches Interface gibt dem Nutzer die Möglichkeit, Einstellungen beim Programmstart oder während des Programmlaufs vorzunehmen. Was kann er dort tun?                                                                                                                   |
-|  7 | Externe Daten         | Spielparameter sind extern in einer Datei veränderbar, so dass das Spiel nur neu gestartet, aber nicht neu kompiliert werden muss. Welche Parameter sind dies und was sind die Auswirkungen?                                                                                   |
-|  8 | Verhaltensklassen     | Das Verhalten von Objekten ist in den Methoden von Klassen definiert, die in externen Dateien abgelegt sind. Welche Klassen sind dies und welches Verhalten wird dort beschrieben?                                                                                             |
-|  9 | Subklassen            | Es existiert eine Klassenhierarchie, einige Objekte sind Instanzen von einer oder mehreren abgeleiteten Subklassen mit gegenüber den anderen Objekten speziellem Verhalten und besonderen Eigenschaften. Welche Klassen sind dies und welches Verhalten wird dort beschrieben? |
-| 10 | Maße & Positionen     | Maße, Skala und Positionen sind gut durchdacht. Wie groß sind Spielfiguren, wie ist die Welt angeordnet bezogen auf den Ursprung, wie sind Spielelemente bezogen auf ihre lokalen Koordinatensysteme definiert?                                                                |
-| 11 | Event-System          | Das Event-System wird verwendet. Wer sendet wem Informationen oder Methodenaufrufe und wofür?                                                                                                                                                                                  |
+Additional
+- Physics
+  - Rigidbody
+  - Collisions
+  - Force/Momentum
+
+- Net
+  
+- State Machines
+  - own
+  - Fudge built in Aid
+
+- Animation
+  - Fudge Animation System
+  - Sprites built in Aid
+
 
 ## Abgabeformat
 * Fasse die Konzeption als ein wohlformatiertes Designdokument in PDF zusammen!
