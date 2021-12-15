@@ -22,7 +22,7 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |    | Title             |                                                                                                                     |
 |    | Name              |                                                                                                                     |
 |    | Matrikelnummer    |                                                                                                                     |
-|  0 | Units and Postion | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                    |
+|  0 | Units and Positions | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                    |
 |  1 | Hierarchy         | Explain the setup of the graphs and the advantages you gain by it.                                                  |
 |  2 | Editor            | Use the visual editor and explain which parts are better done by coding and why.                                    |
 |  3 | Scriptcomponents  | Use scriptcomponents and explain if they were useful in your context or not and why.                                |
