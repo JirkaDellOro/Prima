@@ -40,7 +40,7 @@ The criteria 0 to 9 are mandatory and yield 1 point each. Choose from A to D for
 | Grade  | 4.0 | 3.0 | 2.0 | 1.0 |
 
 ## Format 
-- Copy the FUDGE-files used to your repository so they don't outdate.
+- Include the runtime files of FUDGE used in your repository so they don't outdate.
 - Bundle the design documentation in a single well formatted PDF-file.
 - Create a README.md file in your PRIMA-Repository on Github including the following
   * Title
