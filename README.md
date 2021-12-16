@@ -17,12 +17,9 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 
 ## Checklist for the final assignment
 © Prof. Dipl.-Ing. Jirka R. Dell'Oro-Friedl, HFU
-| Nr | Bezeichnung       | Inhalt                                                                                                              |
+| Nr | Criterion       | Explanation                                                                                                              |
 |---:|-------------------|---------------------------------------------------------------------------------------------------------------------|
-|    | Title             |                                                                                                                     |
-|    | Name              |                                                                                                                     |
-|    | Matrikelnummer    |                                                                                                                     |
-|  0 | Units and Postion | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                    |
+|  0 | Units and Positions | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                    |
 |  1 | Hierarchy         | Explain the setup of the graphs and the advantages you gain by it.                                                  |
 |  2 | Editor            | Use the visual editor and explain which parts are better done by coding and why.                                    |
 |  3 | Scriptcomponents  | Use scriptcomponents and explain if they were useful in your context or not and why.                                |
@@ -35,7 +32,7 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |  A | Physics           | Add rigidbody components and work with collisions (1) and/or forces and torques (1) and/or joints (1)               |
 |  B | Net               | Add multiplayer functionality via network (3)                                                                       |
 |  C | State Machines    | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid          |
-|  D | Animation         | Animate using the animation system of FudgeCore (1) and/or Sprites as defined in FudgeAid                           |
+|  D | Animation         | Animate using the animation system of FudgeCore (1) and/or Sprites (1) as defined in FudgeAid                           |
 
 The criteria 0 to 9 are mandatory and yield 1 point each. Choose from A to D for additional points as noted in brackets. An aspect of your application may not fullfill multiple criteria.  
 | Points | 9   | 10  | 11  | 12  |
@@ -43,7 +40,7 @@ The criteria 0 to 9 are mandatory and yield 1 point each. Choose from A to D for
 | Grade  | 4.0 | 3.0 | 2.0 | 1.0 |
 
 ## Format 
-- Copy the FUDGE-files used to your repository so they don't outdate.
+- Include the runtime files of FUDGE used in your repository so they don't outdate.
 - Bundle the design documentation in a single well formatted PDF-file.
 - Create a README.md file in your PRIMA-Repository on Github including the following
   * Title
