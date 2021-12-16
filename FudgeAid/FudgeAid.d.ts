@@ -1,4 +1,4 @@
-/// <reference path="../../core/build/fudgecore.d.ts" />
+/// <reference path="../../Core/Build/FudgeCore.d.ts" />
 /// <reference types="../../core/build/fudgecore" />
 import ƒ = FudgeCore;
 import ƒAid = FudgeAid;
@@ -235,7 +235,7 @@ declare namespace FudgeAid {
  */
 declare namespace FudgeAid {
     /** Format of methods to be used as transitions or actions */
-    type StateMachineMethod<State> = (_machine: StateMachine<State>) => void;
+    type StateMachineMethod<State> = (_machine: StateMachine<State> | ComponentStateMachine<State>) => void;
     /** Type for maps associating a state to a method */
     type StateMachineMapStateToMethod<State> = Map<State, StateMachineMethod<State>>;
     /** Interface mapping a state to one action multiple transitions */
