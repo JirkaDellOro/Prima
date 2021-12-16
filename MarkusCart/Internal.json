@@ -779,7 +779,7 @@
                     "dampTranslation": 0.1,
                     "dampRotation": 0.1,
                     "effectGravity": 0.001,
-                    "typeBody": "DYNAMIC",
+                    "typeBody": "KINEMATIC",
                     "typeCollider": "PYRAMID",
                     "isTrigger": false,
                     "id": 1,
@@ -831,10 +831,10 @@
                           "pivot": {
                             "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[10, 10, 10]"
+                            "scaling": "[3.700000286102295, 3.700000286102295, 3.700000286102295]"
                           },
                           "Component": {
-                            "active": false
+                            "active": true
                           }
                         }
                       }

@@ -3,7 +3,7 @@ namespace Script {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  let cart: ƒ.Node;
+  export let cart: ƒ.Node;
   let body: ƒ.ComponentRigidbody;
   let mtxTerrain: ƒ.Matrix4x4;
   let meshTerrain: ƒ.MeshTerrain;
@@ -21,6 +21,7 @@ namespace Script {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     viewport.calculateTransforms();
+    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.PHYSIC_OBJECTS_ONLY;
 
     let cmpMeshTerrain: ƒ.ComponentMesh = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
     meshTerrain = <ƒ.MeshTerrain>cmpMeshTerrain.mesh;
