@@ -28,7 +28,7 @@ See the results created by the docents during the PRIMA-lectures. This is experi
 |  6 | VUI               | Create a virtual user interface using the interface controller and mutables. Explain the interface.                 |
 |  7 | Event-System      | Use the event system to send messages through graphs and explain if that was useful in your context or not and why. |
 |  8 | External Data     | Create a configuration file your application loads and adjusts to the content. Explain your choice of parameters.   |
-|  9 | Light             | Explain you choice of lights in your graphs.                                                                        |
+|  9 | Light             | Explain your choice of lights in your graphs.                                                                       |
 |  A | Physics           | Add rigidbody components and work with collisions (1) and/or forces and torques (1) and/or joints (1)               |
 |  B | Net               | Add multiplayer functionality via network (3)                                                                       |
 |  C | State Machines    | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid          |
