@@ -4,9 +4,9 @@ namespace Script {
 
   let viewport: ƒ.Viewport;
   export let cart: ƒ.Node;
+  export let meshTerrain: ƒ.MeshTerrain;
+  export let mtxTerrain: ƒ.Matrix4x4;
   let body: ƒ.ComponentRigidbody;
-  let mtxTerrain: ƒ.Matrix4x4;
-  let meshTerrain: ƒ.MeshTerrain;
   let isGrounded: boolean = false;
   let dampTranslation: number;
   let dampRotation: number;
@@ -45,10 +45,9 @@ namespace Script {
     for (let forceNode of forceNodes) {
       let posForce: ƒ.Vector3 = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
       let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(posForce, mtxTerrain);
-      let height: number = posForce.y - terrainInfo.position.y;
 
-      if (height < maxHeight) {
-        body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - height) / (maxHeight - minHeight)), posForce);
+      if (terrainInfo.distance < maxHeight) {
+        body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - terrainInfo.distance) / (maxHeight - minHeight)), posForce);
         isGrounded = true;
       }
     }

@@ -733,8 +733,8 @@
               "ComponentMaterial": [
                 {
                   "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[0.9333333333333333, 0, 1, 1]",
+                    "sortForAlpha": true,
+                    "clrPrimary": "[0.9333333333333333, 0, 1, 0.55]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
@@ -765,7 +765,9 @@
               "StateMachine": [
                 {
                   "Script.StateMachine": {
-                    "active": true
+                    "active": true,
+                    "forceEscape": 25,
+                    "torqueIdle": 5
                   }
                 }
               ],
@@ -776,10 +778,10 @@
                     "friction": 0.2,
                     "restitution": 0.2,
                     "mass": 1,
-                    "dampTranslation": 0.1,
-                    "dampRotation": 0.1,
-                    "effectGravity": 0.001,
-                    "typeBody": "KINEMATIC",
+                    "dampTranslation": 2,
+                    "dampRotation": 1,
+                    "effectGravity": 1,
+                    "typeBody": "DYNAMIC",
                     "typeCollider": "PYRAMID",
                     "isTrigger": false,
                     "id": 1,

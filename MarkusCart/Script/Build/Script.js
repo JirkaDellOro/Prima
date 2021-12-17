@@ -5,8 +5,6 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let body;
-    let mtxTerrain;
-    let meshTerrain;
     let isGrounded = false;
     let dampTranslation;
     let dampRotation;
@@ -20,8 +18,8 @@ var Script;
         viewport.calculateTransforms();
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         let cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
-        meshTerrain = cmpMeshTerrain.mesh;
-        mtxTerrain = cmpMeshTerrain.mtxWorld;
+        Script.meshTerrain = cmpMeshTerrain.mesh;
+        Script.mtxTerrain = cmpMeshTerrain.mtxWorld;
         Script.cart = viewport.getBranch().getChildrenByName("Cart")[0];
         body = Script.cart.getComponent(ƒ.ComponentRigidbody);
         dampTranslation = body.dampTranslation;
@@ -37,10 +35,9 @@ var Script;
         isGrounded = false;
         for (let forceNode of forceNodes) {
             let posForce = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
-            let terrainInfo = meshTerrain.getTerrainInfo(posForce, mtxTerrain);
-            let height = posForce.y - terrainInfo.position.y;
-            if (height < maxHeight) {
-                body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - height) / (maxHeight - minHeight)), posForce);
+            let terrainInfo = Script.meshTerrain.getTerrainInfo(posForce, Script.mtxTerrain);
+            if (terrainInfo.distance < maxHeight) {
+                body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - terrainInfo.distance) / (maxHeight - minHeight)), posForce);
                 isGrounded = true;
             }
         }
@@ -76,7 +73,10 @@ var Script;
     class StateMachine extends ƒAid.ComponentStateMachine {
         static iSubclass = ƒ.Component.registerSubclass(StateMachine);
         static instructions = StateMachine.get();
-        speedEscape = 3;
+        forceEscape = 25;
+        torqueIdle = 5;
+        cmpBody;
+        cmpMaterial;
         constructor() {
             super();
             this.instructions = StateMachine.instructions; // setup instructions with the static set
@@ -94,21 +94,48 @@ var Script;
             setup.actDefault = StateMachine.actDefault;
             setup.setAction(JOB.IDLE, this.actIdle);
             setup.setAction(JOB.ESCAPE, this.actEscape);
+            setup.setAction(JOB.DIE, this.actDie);
+            setup.setAction(JOB.RESPAWN, this.actRespawn);
+            setup.setTransition(JOB.ESCAPE, JOB.DIE, this.transitDie);
             return setup;
         }
         static transitDefault(_machine) {
-            // 
+            console.log("Transit to", _machine.stateNext);
         }
         static async actDefault(_machine) {
-            // console.log(_machine.stateCurrent);
+            console.log(JOB[_machine.stateCurrent]);
+            let terrainInfo = Script.meshTerrain.getTerrainInfo(_machine.node.mtxWorld.translation, Script.mtxTerrain);
+            if (terrainInfo.distance < 0.5)
+                _machine.cmpBody.applyForce(ƒ.Vector3.Y(20));
         }
         static async actIdle(_machine) {
-            _machine.node.mtxLocal.rotateY(10);
+            _machine.node.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("magenta");
+            _machine.cmpBody.applyTorque(ƒ.Vector3.Y(_machine.torqueIdle));
+            StateMachine.actDefault(_machine);
         }
         static async actEscape(_machine) {
+            _machine.node.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("white");
             let difference = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, Script.cart.mtxWorld.translation);
-            difference.normalize(_machine.speedEscape * ƒ.Loop.timeFrameGame / 1000);
-            _machine.node.mtxLocal.translate(difference, false);
+            difference.normalize(_machine.forceEscape);
+            _machine.cmpBody.applyForce(difference);
+            StateMachine.actDefault(_machine);
+        }
+        static async actDie(_machine) {
+            //
+        }
+        static transitDie(_machine) {
+            _machine.cmpBody.applyLinearImpulse(ƒ.Vector3.Y(5));
+            let timer = new ƒ.Timer(ƒ.Time.game, 100, 20, (_event) => {
+                _machine.node.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("black", 1 - _event.count / 20);
+                if (_event.lastCall)
+                    _machine.transit(JOB.RESPAWN);
+            });
+            console.log(timer);
+        }
+        static actRespawn(_machine) {
+            let range = ƒ.Vector3.SCALE(Script.mtxTerrain.scaling, 0.5);
+            _machine.cmpBody.setPosition(ƒ.Random.default.getVector3(range, ƒ.Vector3.SCALE(range, -1)));
+            _machine.transit(JOB.IDLE);
         }
         // Activate the functions of this component as response to events
         hndEvent = (_event) => {
@@ -123,13 +150,19 @@ var Script;
                     ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
                     break;
                 case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                    this.cmpBody = this.node.getComponent(ƒ.ComponentRigidbody);
+                    this.cmpMaterial = this.node.getComponent(ƒ.ComponentMaterial);
+                    this.cmpBody.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, (_event) => {
+                        if (_event.cmpRigidbody.node.name == "Cart")
+                            this.transit(JOB.DIE);
+                    });
                     let trigger = this.node.getChildren()[0].getComponent(ƒ.ComponentRigidbody);
                     trigger.addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, (_event) => {
                         console.log("TriggerEnter", _event.cmpRigidbody.node.name);
-                        this.transit(JOB.ESCAPE);
+                        if (_event.cmpRigidbody.node.name == "Cart" && this.stateCurrent != JOB.DIE)
+                            this.transit(JOB.ESCAPE);
                     });
                     trigger.addEventListener("TriggerLeftCollision" /* TRIGGER_EXIT */, (_event) => {
-                        console.log("TriggerExit", _event.cmpRigidbody.node.name);
                         if (this.stateCurrent == JOB.ESCAPE)
                             this.transit(JOB.IDLE);
                     });
