@@ -831,7 +831,7 @@
                           "pivot": {
                             "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[3.700000286102295, 3.700000286102295, 3.700000286102295]"
+                            "scaling": "[5, 5, 5]"
                           },
                           "Component": {
                             "active": true

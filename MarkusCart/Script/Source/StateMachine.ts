@@ -10,6 +10,7 @@ namespace Script {
   export class StateMachine extends ƒAid.ComponentStateMachine<JOB> {
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(StateMachine);
     private static instructions: ƒAid.StateMachineInstructions<JOB> = StateMachine.get();
+    public speedEscape: number = 3;
 
 
     constructor() {
@@ -31,30 +32,24 @@ namespace Script {
       setup.transitDefault = StateMachine.transitDefault;
       setup.actDefault = StateMachine.actDefault;
       setup.setAction(JOB.IDLE, <ƒ.General>this.actIdle);
-      // setup.setAction(JOB.ESCAPE, <ƒ.General>this.actEscape);
+      setup.setAction(JOB.ESCAPE, <ƒ.General>this.actEscape);
       return setup;
     }
 
     private static transitDefault(_machine: StateMachine): void {
-      // let random: number = Math.floor(Math.random() * Object.keys(JOB).length / 2);
-      // window.setTimeout(() => _machine.transit(random), 1000);
-      // console.log(`${JOB[_machine.stateNext]}`);
+      // 
     }
 
     private static async actDefault(_machine: StateMachine): Promise<void> {
-      //
+      // console.log(_machine.stateCurrent);
     }
 
     private static async actIdle(_machine: StateMachine): Promise<void> {
       _machine.node.mtxLocal.rotateY(10);
-      let radiusDetect: number = 3;
-      let difference: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, cart.mtxWorld.translation);
-      if (difference.magnitude < radiusDetect)
-        _machine.transit(JOB.ESCAPE);
     }
     private static async actEscape(_machine: StateMachine): Promise<void> {
       let difference: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, cart.mtxWorld.translation);
-      difference.normalize(ƒ.Loop.timeFrameGame / 1000);
+      difference.normalize(_machine.speedEscape * ƒ.Loop.timeFrameGame / 1000);
       _machine.node.mtxLocal.translate(difference, false);
     }
 
@@ -72,7 +67,15 @@ namespace Script {
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
           let trigger: ƒ.ComponentRigidbody = this.node.getChildren()[0].getComponent(ƒ.ComponentRigidbody);
-          trigger.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, (_event: ƒ.EventPhysics) => console.log(_event.cmpRigidbody.node.name));
+          trigger.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, (_event: ƒ.EventPhysics) => {
+            console.log("TriggerEnter", _event.cmpRigidbody.node.name);
+            this.transit(JOB.ESCAPE);
+          });
+          trigger.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_EXIT, (_event: ƒ.EventPhysics) => {
+            console.log("TriggerExit", _event.cmpRigidbody.node.name);
+            if (this.stateCurrent == JOB.ESCAPE)
+              this.transit(JOB.IDLE);
+          });
           break;
       }
     }

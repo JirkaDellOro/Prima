@@ -21,7 +21,7 @@ namespace Script {
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     viewport.calculateTransforms();
-    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.PHYSIC_OBJECTS_ONLY;
+    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
 
     let cmpMeshTerrain: ƒ.ComponentMesh = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
     meshTerrain = <ƒ.MeshTerrain>cmpMeshTerrain.mesh;

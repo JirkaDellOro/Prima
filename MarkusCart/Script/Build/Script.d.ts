@@ -15,6 +15,7 @@ declare namespace Script {
     export class StateMachine extends ƒAid.ComponentStateMachine<JOB> {
         static readonly iSubclass: number;
         private static instructions;
+        speedEscape: number;
         constructor();
         static get(): ƒAid.StateMachineInstructions<JOB>;
         private static transitDefault;

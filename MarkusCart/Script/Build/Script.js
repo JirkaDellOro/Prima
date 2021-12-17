@@ -18,7 +18,7 @@ var Script;
     function start(_event) {
         viewport = _event.detail;
         viewport.calculateTransforms();
-        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.PHYSIC_OBJECTS_ONLY;
+        viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         let cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         meshTerrain = cmpMeshTerrain.mesh;
         mtxTerrain = cmpMeshTerrain.mtxWorld;
@@ -76,6 +76,7 @@ var Script;
     class StateMachine extends ƒAid.ComponentStateMachine {
         static iSubclass = ƒ.Component.registerSubclass(StateMachine);
         static instructions = StateMachine.get();
+        speedEscape = 3;
         constructor() {
             super();
             this.instructions = StateMachine.instructions; // setup instructions with the static set
@@ -92,27 +93,21 @@ var Script;
             setup.transitDefault = StateMachine.transitDefault;
             setup.actDefault = StateMachine.actDefault;
             setup.setAction(JOB.IDLE, this.actIdle);
-            // setup.setAction(JOB.ESCAPE, <ƒ.General>this.actEscape);
+            setup.setAction(JOB.ESCAPE, this.actEscape);
             return setup;
         }
         static transitDefault(_machine) {
-            // let random: number = Math.floor(Math.random() * Object.keys(JOB).length / 2);
-            // window.setTimeout(() => _machine.transit(random), 1000);
-            // console.log(`${JOB[_machine.stateNext]}`);
+            // 
         }
         static async actDefault(_machine) {
-            //
+            // console.log(_machine.stateCurrent);
         }
         static async actIdle(_machine) {
             _machine.node.mtxLocal.rotateY(10);
-            let radiusDetect = 3;
-            let difference = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, Script.cart.mtxWorld.translation);
-            if (difference.magnitude < radiusDetect)
-                _machine.transit(JOB.ESCAPE);
         }
         static async actEscape(_machine) {
             let difference = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, Script.cart.mtxWorld.translation);
-            difference.normalize(ƒ.Loop.timeFrameGame / 1000);
+            difference.normalize(_machine.speedEscape * ƒ.Loop.timeFrameGame / 1000);
             _machine.node.mtxLocal.translate(difference, false);
         }
         // Activate the functions of this component as response to events
@@ -129,7 +124,15 @@ var Script;
                     break;
                 case "nodeDeserialized" /* NODE_DESERIALIZED */:
                     let trigger = this.node.getChildren()[0].getComponent(ƒ.ComponentRigidbody);
-                    trigger.addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, (_event) => console.log(_event.cmpRigidbody.node.name));
+                    trigger.addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, (_event) => {
+                        console.log("TriggerEnter", _event.cmpRigidbody.node.name);
+                        this.transit(JOB.ESCAPE);
+                    });
+                    trigger.addEventListener("TriggerLeftCollision" /* TRIGGER_EXIT */, (_event) => {
+                        console.log("TriggerExit", _event.cmpRigidbody.node.name);
+                        if (this.stateCurrent == JOB.ESCAPE)
+                            this.transit(JOB.IDLE);
+                    });
                     break;
             }
         };
