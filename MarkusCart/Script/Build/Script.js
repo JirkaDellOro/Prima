@@ -109,12 +109,12 @@ var Script;
                 _machine.cmpBody.applyForce(ƒ.Vector3.Y(20));
         }
         static async actIdle(_machine) {
-            _machine.node.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("magenta");
+            _machine.cmpMaterial.clrPrimary = ƒ.Color.CSS("magenta");
             _machine.cmpBody.applyTorque(ƒ.Vector3.Y(_machine.torqueIdle));
             StateMachine.actDefault(_machine);
         }
         static async actEscape(_machine) {
-            _machine.node.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("white");
+            _machine.cmpMaterial.clrPrimary = ƒ.Color.CSS("white");
             let difference = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, Script.cart.mtxWorld.translation);
             difference.normalize(_machine.forceEscape);
             _machine.cmpBody.applyForce(difference);
@@ -126,7 +126,7 @@ var Script;
         static transitDie(_machine) {
             _machine.cmpBody.applyLinearImpulse(ƒ.Vector3.Y(5));
             let timer = new ƒ.Timer(ƒ.Time.game, 100, 20, (_event) => {
-                _machine.node.getComponent(ƒ.ComponentMaterial).clrPrimary = ƒ.Color.CSS("black", 1 - _event.count / 20);
+                _machine.cmpMaterial.clrPrimary = ƒ.Color.CSS("black", 1 - _event.count / 20);
                 if (_event.lastCall)
                     _machine.transit(JOB.RESPAWN);
             });
