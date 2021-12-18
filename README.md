@@ -3,6 +3,10 @@ Repository for the module "Prototyping interactive media-applications and games"
 
 [Pages-Version](https://jirkadelloro.github.io/Prima/)
 
+In this course, students learn fundamentals of game engines and development environments for prototyping. They learn basic development patterns used in highly interactive applications such as animation, transformation, object relationships and event control. We analyse concepts for complex applications or simple games, plan the realisation of core features and create executable prototypes for demonstration. In the end, students design their own piece of art and produce it themselves.
+
+The environment we work with is [FUDGE](https://jirkadelloro.github.io/FUDGE), the Furtwangen University Didactic Game Engine/Editor, which allows for optimized tuition and collaboration, while demonstrating the fundamentals of popular engines like Unreal or Unity. Students acquainted to FUDGE can easily shift over to these mighty tools later on. Coding language is [TypeScript](https://typescriptlang.org)
+
 ## Examples
 See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes. Usually, we examine one 2d and one 3d application.  
 
