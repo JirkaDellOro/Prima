@@ -67,7 +67,7 @@ var FudgeNet;
         iceServers: [
             // { urls: "stun:stun2.1.google.com:19302" }
             // { urls: "stun:stun.example.com" }
-            // { urls: "stun:stun.l.google.com:19302" }
+            { urls: "stun:stun.l.google.com:19302" }
             // { urls: "turn:0.peerjs.com:3478", username: "peerjs", credential: "peerjsp" }
             // {
             //   urls: "turn:192.158.29.39:3478?transport=udp",
@@ -85,14 +85,14 @@ var FudgeNet;
             //   credential: "webrtc",
             //   username: "webrtc"
             // }
-            {
-                urls: "stun:stun.stunprotocol.org"
-            },
-            {
-                urls: "turn:numb.viagenie.ca",
-                credential: "muazkh",
-                username: "webrtc@live.com"
-            }
+            // {
+            //   urls: "stun:stun.stunprotocol.org"
+            // }
+            // {
+            //   urls: "turn:numb.viagenie.ca",
+            //   credential: "muazkh",
+            //   username: "webrtc@live.com"
+            // }
         ]
     };
     /**
@@ -114,11 +114,11 @@ var FudgeNet;
         }
         setupDataChannel = (_client, _idRemote) => {
             let newDataChannel = this.createDataChannel(_client.id + "->" + _idRemote /* , { negotiated: true, id: 0 } */);
-            console.log("Created data channel", newDataChannel.id);
+            console.warn("Created data channel");
             this.addDataChannel(_client, newDataChannel);
         };
         addDataChannel = (_client, _dataChannel) => {
-            console.error("AddDataChannel, must only be called once for each connection");
+            console.warn("AddDataChannel", _dataChannel.id, _dataChannel.label);
             this.dataChannel = _dataChannel;
             this.dataChannel.addEventListener(EVENT.CONNECTION_OPENED, dispatchRtcEvent);
             this.dataChannel.addEventListener(EVENT.CONNECTION_CLOSED, dispatchRtcEvent);
@@ -380,18 +380,20 @@ var FudgeNet;
         cRstartNegotiation = async (_idRemote) => {
             let rtc = new FudgeNet.Rtc();
             this.peers[_idRemote] = rtc;
-            rtc.addEventListener("negotiationneeded", async (_event) => this.cRsendOffer(_idRemote, _event));
+            rtc.addEventListener("negotiationneeded", async (_event) => this.cRsendOffer(_idRemote));
             rtc.addEventListener("icecandidate", (_event) => this.cRsendIceCandidates(_event, _idRemote));
             rtc.addEventListener("icegatheringstatechange", (_event) => {
                 console.log("ICE-state", rtc.iceGatheringState);
             });
             // fires the negotiationneeded-event
             rtc.setupDataChannel(this, _idRemote);
+            // this.cRsendOffer(_idRemote);
+            // rtc.restartIce();
         };
         /**
          * Start negotiation by sending an offer with the local description of the connection via the signalling server
          */
-        cRsendOffer = async (_idRemote, _event) => {
+        cRsendOffer = async (_idRemote) => {
             let rtc = this.peers[_idRemote];
             let localDescription = await rtc.createOffer({ iceRestart: true });
             await rtc.setLocalDescription(localDescription);
@@ -408,11 +410,11 @@ var FudgeNet;
          */
         cEreceiveOffer = async (_message) => {
             console.info("Callee: offer received, create connection", _message);
-            // TODO: see if reusing connection is preferable
-            let rtc = this.peers[_message.idSource] || (this.peers[_message.idSource] = new FudgeNet.Rtc());
+            let rtc = (this.peers[_message.idSource] = new FudgeNet.Rtc());
             rtc.addEventListener("datachannel", (_event) => this.cEestablishConnection(_event, this.peers[_message.idSource]));
             await rtc.setRemoteDescription(new RTCSessionDescription(_message.content?.offer));
             await rtc.setLocalDescription();
+            // rtc.setupDataChannel(this, _message.idSource!);
             const answerMessage = {
                 route: FudgeNet.ROUTE.SERVER, command: FudgeNet.COMMAND.RTC_ANSWER, idTarget: _message.idSource, content: { answer: rtc.localDescription }
             };
@@ -425,17 +427,21 @@ var FudgeNet;
          */
         cRreceiveAnswer = async (_message) => {
             console.info("Caller: received answer, create data channel ", _message);
-            await this.peers[_message.idSource].setRemoteDescription(_message.content?.answer);
+            let rtc = this.peers[_message.idSource];
+            await rtc.setRemoteDescription(_message.content?.answer);
+            // if (!rtc.dataChannel)
+            //   rtc.setupDataChannel(this, _message.idSource!);
+            // else
+            // console.warn("Datachannel reuse: ", rtc.dataChannel!.id, rtc.dataChannel!.label);
         };
         /**
          * Caller starts collecting ICE-candidates and calls this function for each candidate found,
          * which sends the candidate info to callee via the server
          */
         cRsendIceCandidates = async (_event, _idRemote) => {
-            let pc = _event.currentTarget;
-            if (_event.candidate == null || pc.iceGatheringState != "gathering")
+            if (!_event.candidate)
                 return;
-            await this.delay(2000);
+            let pc = _event.currentTarget;
             console.info("Caller: send ICECandidates to server", _event.candidate);
             let message = {
                 route: FudgeNet.ROUTE.SERVER, command: FudgeNet.COMMAND.ICE_CANDIDATE, idTarget: _idRemote, content: { candidate: _event.candidate, states: [pc.connectionState, pc.iceConnectionState, pc.iceGatheringState] }
@@ -458,11 +464,6 @@ var FudgeNet;
                 console.error("Unexpected Error: RemoteDatachannel");
             }
         };
-        async delay(_milisec) {
-            return new Promise(resolve => {
-                setTimeout(() => { resolve(); }, _milisec);
-            });
-        }
     }
     FudgeNet.FudgeClient = FudgeClient;
 })(FudgeNet || (FudgeNet = {}));
