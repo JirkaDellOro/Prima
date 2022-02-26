@@ -1,3 +1,5 @@
+/// <reference types="../../../FudgeCore/FudgeCore" />
+/// <reference types="../../../FudgeUserInterface/FudgeUserInterface" />
 declare namespace LaserLeague {
     import ƒ = FudgeCore;
     class Agent extends ƒ.Node {

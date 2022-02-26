@@ -32,7 +32,7 @@
     "ƒ.Material": {
       "name": "mtrTexFlat",
       "idResource": "Material|2021-11-21T17:22:53.935Z|12710",
-      "shader": "ShaderTextureFlat",
+      "shader": "ShaderFlatTextured",
       "coat": {
         "ƒ.CoatTextured": {
           "color": "[1, 1, 1, 1]",
@@ -71,18 +71,23 @@
       }
     }
   },
+  "MeshQuad|2022-02-26T13:36:22.363Z|33062": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2022-02-26T13:36:22.363Z|33062",
+      "name": "MeshQuad"
+    }
+  },
   "MeshQuad|2021-11-25T10:11:51.585Z|48448": {
     "ƒ.MeshQuad": {
       "idResource": "MeshQuad|2021-11-25T10:11:51.585Z|48448",
-      "name": "MeshQuad",
-      "type": "MeshQuad"
+      "name": "MeshQuad"
     }
   },
   "Material|2021-11-25T10:12:31.856Z|64067": {
     "ƒ.Material": {
       "name": "mtrSkybox",
       "idResource": "Material|2021-11-25T10:12:31.856Z|64067",
-      "shader": "ShaderTexture",
+      "shader": "ShaderFlatTextured",
       "coat": {
         "ƒ.CoatTextured": {
           "color": "[1, 1, 1, 1]",
@@ -106,7 +111,7 @@
     "ƒ.Material": {
       "name": "mtrUni",
       "idResource": "Material|2021-11-18T14:36:26.426Z|05338",
-      "shader": "ShaderUniColor",
+      "shader": "ShaderLit",
       "coat": {
         "ƒ.CoatColored": {
           "color": "[1, 1, 1, 1]"
@@ -175,6 +180,9 @@
                       "ƒ.LightAmbient": {
                         "color": "[0.25882352941176473, 0.25882352941176473, 0.25882352941176473, 1]"
                       }
+                    },
+                    "Component": {
+                      "active": "true"
                     }
                   }
                 },
@@ -189,6 +197,9 @@
                       "ƒ.LightDirectional": {
                         "color": "[0.7803921568627451, 0.7803921568627451, 0.7803921568627451, 1]"
                       }
+                    },
+                    "Component": {
+                      "active": "true"
                     }
                   }
                 }
@@ -495,7 +506,7 @@
                           "Component": {
                             "active": true
                           },
-                          "idMaterial": "Material|2021-11-25T10:12:31.856Z|64067"
+                          "idMaterial": "Material|2022-02-26T14:08:57.530Z|99922"
                         }
                       }
                     ]
@@ -536,7 +547,7 @@
                           "Component": {
                             "active": true
                           },
-                          "idMaterial": "Material|2021-11-25T10:12:31.856Z|64067"
+                          "idMaterial": "Material|2022-02-26T14:08:57.530Z|99922"
                         }
                       }
                     ]
@@ -577,7 +588,7 @@
                           "Component": {
                             "active": true
                           },
-                          "idMaterial": "Material|2021-11-25T10:12:31.856Z|64067"
+                          "idMaterial": "Material|2022-02-26T14:08:57.530Z|99922"
                         }
                       }
                     ]
@@ -618,7 +629,7 @@
                           "Component": {
                             "active": true
                           },
-                          "idMaterial": "Material|2021-11-25T10:12:31.856Z|64067"
+                          "idMaterial": "Material|2022-02-26T14:08:57.530Z|99922"
                         }
                       }
                     ]
@@ -652,14 +663,14 @@
                           "clrPrimary": "[1, 1, 1, 1]",
                           "clrSecondary": "[1, 1, 1, 1]",
                           "pivot": {
-                            "translation": "[0.2500000596046448, 0]",
-                            "rotation": 0,
-                            "scaling": "[0.2499999701976776, 0.3329998552799225]"
+                            "translation": "[0.5, 0.32999998331069946]",
+                            "rotation": 90,
+                            "scaling": "[0.3299998939037323, 0.25]"
                           },
                           "Component": {
                             "active": true
                           },
-                          "idMaterial": "Material|2021-11-25T10:12:31.856Z|64067"
+                          "idMaterial": "Material|2022-02-26T14:08:57.530Z|99922"
                         }
                       }
                     ]
@@ -693,14 +704,14 @@
                           "clrPrimary": "[1, 1, 1, 1]",
                           "clrSecondary": "[1, 1, 1, 1]",
                           "pivot": {
-                            "translation": "[0.2500000596046448, 0.6660000085830688]",
-                            "rotation": 0,
-                            "scaling": "[0.2499999701976776, 0.3329998552799225]"
+                            "translation": "[0.2500000298023224, 0.6599999666213989]",
+                            "rotation": -90,
+                            "scaling": "[0.3299998939037323, 0.2499999701976776]"
                           },
                           "Component": {
                             "active": true
                           },
-                          "idMaterial": "Material|2021-11-25T10:12:31.856Z|64067"
+                          "idMaterial": "Material|2022-02-26T14:08:57.530Z|99922"
                         }
                       }
                     ]
@@ -866,8 +877,20 @@
           "[0, -0.5]"
         ]
       },
-      "fitTexture": true,
-      "sectors": 12
+      "longitudes": 0
+    }
+  },
+  "Material|2022-02-26T14:08:57.530Z|99922": {
+    "ƒ.Material": {
+      "name": "ShaderLitTextured",
+      "idResource": "Material|2022-02-26T14:08:57.530Z|99922",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2021-11-25T10:11:33.378Z|29666"
+        }
+      }
     }
   }
 }

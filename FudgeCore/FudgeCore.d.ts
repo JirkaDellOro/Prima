@@ -449,14 +449,17 @@ declare namespace FudgeCore {
     interface RenderBuffers {
         vertices: WebGLBuffer;
         indices: WebGLBuffer;
-        nIndices: number;
         textureUVs: WebGLBuffer;
-        normalsFace: WebGLBuffer;
+        normalsVertex: WebGLBuffer;
+        verticesFlat: WebGLBuffer;
+        indicesFlat: WebGLBuffer;
+        normalsFlat: WebGLBuffer;
+        textureUVsFlat: WebGLBuffer;
     }
     class RenderInjectorMesh {
         static decorate(_constructor: Function): void;
         protected static createRenderBuffers(this: Mesh): void;
-        protected static useRenderBuffers(this: Mesh, _shader: typeof Shader, _mtxWorld: Matrix4x4, _mtxProjection: Matrix4x4, _id?: number): void;
+        protected static useRenderBuffers(this: Mesh, _shader: typeof Shader, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4, _id?: number): number;
         protected static deleteRenderBuffers(_renderBuffers: RenderBuffers): void;
     }
 }
@@ -837,7 +840,7 @@ declare namespace FudgeCore {
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          */
-        protected static drawMesh(_cmpMesh: ComponentMesh, cmpMaterial: ComponentMaterial, _mtxMeshToWorld: Matrix4x4, _mtxWorldToView: Matrix4x4): void;
+        protected static drawMesh(_cmpMesh: ComponentMesh, cmpMaterial: ComponentMaterial, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4): void;
     }
 }
 declare namespace FudgeCore {
@@ -2480,7 +2483,8 @@ declare namespace FudgeCore {
      */
     class CoatColored extends Coat {
         color: Color;
-        constructor(_color?: Color);
+        shininess: number;
+        constructor(_color?: Color, _shininess?: number);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
     }
@@ -2947,6 +2951,8 @@ declare namespace FudgeCore {
          * The rotation is appended to already applied transforms, thus multiplied from the right. Set _fromLeft to true to switch and put it in front.
          */
         rotate(_by: Vector3, _fromLeft?: boolean): void;
+        transpose(): Matrix4x4;
+        inverse(): Matrix4x4;
         /**
          * Adds a rotation around the x-axis to this matrix
          */
@@ -3223,7 +3229,7 @@ declare namespace FudgeCore {
      *            /
      *          +z
      * ```
-     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
+     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019-2022
      */
     class Vector3 extends Mutable implements Recycable {
         private data;
@@ -3399,10 +3405,26 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     /**
+     * Describes a face of a {@link Mesh} by referencing three {@link Vertices} with their indizes
+     * and calculates face normals.
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     */
+    class Face {
+        indices: number[];
+        normalUnscaled: Vector3;
+        normal: Vector3;
+        private vertices;
+        constructor(_vertices: Vertices, _index0: number, _index1: number, _index2: number);
+        calculateNormals(): void;
+        getPosition(_index: number): Vector3;
+    }
+}
+declare namespace FudgeCore {
+    /**
      * Abstract base class for all meshes.
      * Meshes provide indexed vertices, the order of indices to create trigons and normals, and texture coordinates
      *
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2019
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2019/22
      */
     abstract class Mesh extends Mutable implements SerializableResource {
         /** refers back to this class from any subclass e.g. in order to find compatible other resources*/
@@ -3412,67 +3434,73 @@ declare namespace FudgeCore {
         idResource: string;
         name: string;
         renderBuffers: RenderBuffers;
+        protected cloud: Vertices;
+        protected faces: Face[];
+        /** vertices of the actual point cloud, some points might be in the same location in order to refer to different texels */
         protected ƒvertices: Float32Array;
+        /** indices to create faces from the vertices, rotation determines direction of face-normal */
         protected ƒindices: Uint16Array;
+        /** texture coordinates associated with the vertices by the position in the array */
         protected ƒtextureUVs: Float32Array;
-        protected ƒnormalsFace: Float32Array;
-        protected ƒnormals: Float32Array;
+        /** normals of the faces, not used for rendering but computation of flat- and vertex-normals */
+        protected ƒnormalsFaceUnscaled: Float32Array;
+        /** vertex normals for smooth shading, interpolated between vertices during rendering */
+        protected ƒnormalsVertex: Float32Array;
+        /** flat-shading: normalized face normals, every third entry is used only */
+        protected ƒnormalsFlat: Float32Array;
+        /** flat-shading: extra vertex array, since using vertices with multiple faces is rarely possible due to the limitation above */
+        protected ƒverticesFlat: Float32Array;
+        /** flat-shading: therefore an extra indices-array is needed */
+        protected ƒindicesFlat: Uint16Array;
+        /** flat-shading: and an extra textureUV-array */
+        protected ƒtextureUVsFlat: Float32Array;
+        /** bounding box AABB */
         protected ƒbox: Box;
+        /** bounding radius */
         protected ƒradius: number;
         constructor(_name?: string);
         static getBufferSpecification(): BufferSpecification;
         protected static registerSubclass(_subClass: typeof Mesh): number;
-        /**
-         * Takes an array of four indices for a quad and returns an array of six indices for two trigons cutting that quad.
-         * If the quad is planar (default), the trigons end on the same index, allowing a single normal for both faces on the referenced vertex
-         */
-        protected static getTrigonsFromQuad(_quad: number[], _even?: boolean): number[];
-        protected static deleteInvalidIndices(_indices: number[], _vertices: Vector3[]): void;
         get type(): string;
         get vertices(): Float32Array;
         get indices(): Uint16Array;
-        get normalsFace(): Float32Array;
+        get normalsVertex(): Float32Array;
         get textureUVs(): Float32Array;
+        get verticesFlat(): Float32Array;
+        get indicesFlat(): Uint16Array;
+        get normalsFlat(): Float32Array;
+        get textureUVsFlat(): Float32Array;
         get boundingBox(): Box;
         get radius(): number;
-        useRenderBuffers(_shader: typeof Shader, _mtxWorld: Matrix4x4, _mtxProjection: Matrix4x4, _id?: number): void;
+        useRenderBuffers(_shader: typeof Shader, _mtxWorld: Matrix4x4, _mtxProjection: Matrix4x4, _id?: number): number;
         createRenderBuffers(): void;
         deleteRenderBuffers(_shader: typeof Shader): void;
-        getVertexCount(): number;
-        getIndexCount(): number;
         clear(): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
-        /**Flip the Normals of a Mesh to render opposite side of each polygon*/
-        flipNormals(): void;
-        protected createVertices(): Float32Array;
-        protected createTextureUVs(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createNormals(): Float32Array;
-        protected createFaceNormals(): Float32Array;
+        protected reduceMutator(_mutator: Mutator): void;
+        protected createVerticesFlat(): Float32Array;
+        protected createNormalsFlat(): Float32Array;
+        protected createTextureUVsFlat(): Float32Array;
+        protected calculateFaceCrossProducts(): Float32Array;
         protected createRadius(): number;
         protected createBoundingBox(): Box;
-        protected reduceMutator(_mutator: Mutator): void;
     }
 }
 declare namespace FudgeCore {
     /**
      * Generate a simple cube with edges of length 1, each face consisting of two trigons
      * ```plaintext
-     *            4____7
-     *           0/__3/|
-     *            ||5_||6
-     *           1|/_2|/
+     *       (12) 4____7  (11)
+     *       (8) 0/__3/| (10)
+     *       (15) ||5_||6 (14)
+     *       (9) 1|/_2|/ (13)
      * ```
      * @authors Jirka Dell'Oro-Friedl, HFU, 2019
      */
     class MeshCube extends Mesh {
         static readonly iSubclass: number;
         constructor(_name?: string);
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
-        protected createFaceNormals(): Float32Array;
     }
 }
 declare namespace FudgeCore {
@@ -3485,11 +3513,11 @@ declare namespace FudgeCore {
      *            ╲|_╲╱
      *            2   3
      * ```
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2021
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2021-2022
      */
     class MeshPolygon extends Mesh {
         static readonly iSubclass: number;
-        protected static verticesDefault: Vector2[];
+        protected static shapeDefault: Vector2[];
         protected shape: MutableArray<Vector2>;
         protected fitTexture: boolean;
         constructor(_name?: string, _shape?: Vector2[], _fitTexture?: boolean);
@@ -3499,7 +3527,6 @@ declare namespace FudgeCore {
         deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
         protected reduceMutator(_mutator: Mutator): void;
-        protected createIndices(): Uint16Array;
     }
 }
 declare namespace FudgeCore {
@@ -3507,12 +3534,12 @@ declare namespace FudgeCore {
      * Generates an extrusion of a polygon by a series of transformations
      * ```plaintext
      *                      ____
-     * Polygon         ____╱╲   ╲
-     * Transform 0  → ╱ ╲__╲_╲___╲ ← Transform 2
-     *                ╲_╱__╱ ╱   ╱
-     *     Transform 1  →  ╲╱___╱
+     * Polygon         ____╱╲   ╲                             y
+     * Transform 0  → ╱ ╲__╲_╲___╲ ← Transform 2          z __│
+     * (base)         ╲_╱__╱ ╱   ╱   (lid)                     ╲
+     *     Transform 1  →  ╲╱___╱                               x
      * ```
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2021
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2021-2022
      */
     class MeshExtrusion extends MeshPolygon {
         static readonly iSubclass: number;
@@ -3537,32 +3564,23 @@ declare namespace FudgeCore {
         protected createVertices(): Float32Array;
         protected createTextureUVs(): Float32Array;
         protected createIndices(): Uint16Array;
-        protected createFaceNormals(): Float32Array;
+        protected createFlatNormals(): Float32Array;
     }
 }
 declare namespace FudgeCore {
-    /**Simple Wavefront OBJ import. Takes a wavefront obj string. To Load from a file url, use the
-     * static LOAD Method. Currently only works with triangulated Meshes
-     * (activate 'Geomentry → Triangulate Faces' in Blenders obj exporter)
-     * @todo UVs, Load Materials, Support Quads
-     * @authors Simon Storl-Schulke 2021 */
     class MeshObj extends Mesh {
-        protected verts: number[];
-        protected uvs: number[];
-        protected inds: number[];
-        protected facenormals: number[];
-        constructor(objString: string);
-        /** Loads an obj file from the given source url and a returns a complete Node from it.
-        * Multiple Objects are treated as a single Mesh. If no material is given, uses a default flat white material. */
-        static LOAD(src: string, name?: string, material?: Material): Node;
-        /** Creates three Vertices from each face. Although inefficient, this has to be done for now - see Issue 244 */
-        protected splitVertices(): void;
+        static readonly iSubclass: number;
+        url: RequestInfo;
+        constructor(_name?: string, _url?: RequestInfo);
+        /**
+             * Asynchronously loads the image from the given url
+             */
+        load(_url: RequestInfo): Promise<void>;
         /** Splits up the obj string into separate arrays for each datatype */
-        protected parseObj(data: string): void;
-        protected createVertices(): Float32Array;
-        protected createTextureUVs(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createFaceNormals(): Float32Array;
+        parseObj(data: string): void;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        mutate(_mutator: Mutator): Promise<void>;
     }
 }
 declare namespace FudgeCore {
@@ -3579,9 +3597,6 @@ declare namespace FudgeCore {
     class MeshPyramid extends Mesh {
         static readonly iSubclass: number;
         constructor(_name?: string);
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
     }
 }
 declare namespace FudgeCore {
@@ -3589,18 +3604,18 @@ declare namespace FudgeCore {
      * Generate a simple quad with edges of length 1, the face consisting of two trigons
      * ```plaintext
      *        0 __ 3
-     *         |__|
+     *         |_\|
      *        1    2
      * ```
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2019
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2019-2022
      */
-    class MeshQuad extends Mesh {
+    class MeshQuad extends MeshPolygon {
         static readonly iSubclass: number;
+        protected static shape: Vector2[];
         constructor(_name?: string);
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
-        protected createFaceNormals(): Float32Array;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        protected reduceMutator(_mutator: Mutator): void;
     }
 }
 declare namespace FudgeCore {
@@ -3608,7 +3623,7 @@ declare namespace FudgeCore {
      * This function type takes x and z as Parameters and returns a number between -1 and 1 to be used as a heightmap.
      * x * z * 2 represent the amout of faces which are created. As a result you get 1 vertex more in each direction (x and z axis)
      * The y-component of the resulting mesh may be moved to values between 0 and a maximum height.
-     * @authors Simon Storl-Schulke, HFU, 2020 | Jirka Dell'Oro-Friedl, HFU, 2021
+     * @authors Simon Storl-Schulke, HFU, 2020 | Jirka Dell'Oro-Friedl, HFU, 2021-2022
      */
     type HeightMapFunction = (x: number, z: number) => number;
     class TerrainInfo {
@@ -3623,7 +3638,8 @@ declare namespace FudgeCore {
     }
     /**
      * Generates a planar grid and applies a heightmap-function to it.
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2021 | Simon Storl-Schulke, HFU, 2020 | Moritz Beaugrand, HFU, 2021
+     * Standard function is the simplex noise implemented with FUDGE, but another function can be given.
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2021-2022 | Simon Storl-Schulke, HFU, 2020 | Moritz Beaugrand, HFU, 2021
      */
     class MeshTerrain extends Mesh {
         static readonly iSubclass: number;
@@ -3637,10 +3653,8 @@ declare namespace FudgeCore {
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
         private calculateHeight;
+        private findNearestFaceNew;
         private findNearestFace;
     }
 }
@@ -3660,27 +3674,33 @@ declare namespace FudgeCore {
         deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
         protected reduceMutator(_mutator: Mutator): void;
-        protected createVertices(): Float32Array;
     }
 }
 declare namespace FudgeCore {
     /**
      * Generates a rotation of a polygon around the y-axis
      * ```plaintext
+     *                     y
+     *                  _  ↑ 0_1
+     *                 │   │→x │2
+     *                  ╲  │  ╱3
+     *                  ╱  │  ╲
+     *                 ╱___│___╲4
+     *                      5
      * ```
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2021
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2021-2022
      */
-    class MeshRotation extends MeshPolygon {
+    class MeshRotation extends Mesh {
         static readonly iSubclass: number;
         protected static verticesDefault: Vector2[];
-        private sectors;
-        constructor(_name?: string, _vertices?: Vector2[], _sectors?: number, _fitTexture?: boolean);
+        protected shape: MutableArray<Vector2>;
+        protected longitudes: number;
+        constructor(_name?: string, _shape?: Vector2[], _longitudes?: number);
         protected get minVertices(): number;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
-        protected reduceMutator(_mutator: Mutator): void;
-        private rotate;
+        protected rotate(_shape: Vector2[], _longitudes: number): void;
     }
 }
 declare namespace FudgeCore {
@@ -3689,16 +3709,15 @@ declare namespace FudgeCore {
      * Implementation based on http://www.songho.ca/opengl/gl_sphere.html
      * @authors Simon Storl-Schulke, HFU, 2020 | Jirka Dell'Oro-Friedl, HFU, 2020
      */
-    class MeshSphere extends Mesh {
+    class MeshSphere extends MeshRotation {
         static readonly iSubclass: number;
-        private sectors;
-        private stacks;
-        constructor(_name?: string, _sectors?: number, _stacks?: number);
-        create(_sectors?: number, _stacks?: number): void;
+        private latitudes;
+        constructor(_name?: string, _longitudes?: number, _latitudes?: number);
+        create(_longitudes?: number, _latitudes?: number): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
-        protected createIndices(): Uint16Array;
+        protected reduceMutator(_mutator: Mutator): void;
     }
 }
 declare namespace FudgeCore {
@@ -3714,10 +3733,8 @@ declare namespace FudgeCore {
     class MeshSprite extends Mesh {
         static readonly iSubclass: number;
         constructor(_name?: string);
-        protected createVertices(): Float32Array;
-        protected createIndices(): Uint16Array;
-        protected createTextureUVs(): Float32Array;
-        protected createFaceNormals(): Float32Array;
+        get verticesFlat(): Float32Array;
+        get indicesFlat(): Uint16Array;
     }
 }
 declare namespace FudgeCore {
@@ -3725,15 +3742,78 @@ declare namespace FudgeCore {
      * Generate a Torus with a given thickness and the number of major- and minor segments
      * @authors Simon Storl-Schulke, HFU, 2020 | Jirka Dell'Oro-Friedl, HFU, 2020
      */
-    class MeshTorus extends Mesh {
+    class MeshTorus extends MeshRotation {
         static readonly iSubclass: number;
-        private thickness;
-        private majorSegments;
-        private minorSegments;
-        constructor(_name?: string, _thickness?: number, _majorSegments?: number, _minorSegments?: number);
-        create(_thickness?: number, _majorSegments?: number, _minorSegments?: number): void;
+        private size;
+        private latitudes;
+        constructor(_name?: string, _size?: number, _longitudes?: number, _latitudes?: number);
+        private static getShape;
+        create(_size?: number, _longitudes?: number, _latitudes?: number): void;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
         mutate(_mutator: Mutator): Promise<void>;
-        protected createIndices(): Uint16Array;
+        protected reduceMutator(_mutator: Mutator): void;
+    }
+}
+declare namespace FudgeCore {
+    enum QUADSPLIT {
+        PLANAR = 0,
+        AT_0 = 1,
+        AT_1 = 2
+    }
+    /**
+     * A surface created with four vertices which immediately creates none, one or two {@link Face}s depending on vertices at identical positions.
+     * ```plaintext
+     * QUADSPLIT:  PLANAR                  AT_0                     AT_1
+     *             0 _ 3                   0 _ 3                    0 _ 3
+     *              |\|                     |\|                      |/|
+     *             1 ‾ 2                   1 ‾ 2                    1 ‾ 2
+     *  shared last vertex 2      last vertices 2 + 3      last vertices 3 + 0
+     *
+     * ```
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     */
+    class Quad {
+        #private;
+        faces: Face[];
+        constructor(_vertices: Vertices, _index0: number, _index1: number, _index2: number, _index3: number, _split?: QUADSPLIT);
+        get split(): QUADSPLIT;
+    }
+}
+declare namespace FudgeCore {
+    class Vertex {
+        position: Vector3;
+        uv: Vector2;
+        normal: Vector3;
+        referTo: number;
+        /**
+         * Represents a vertex of a mesh with extended information such as the uv coordinates and the vertex normal.
+         * It may refer to another vertex via an index into some array, in which case the position and the normal are stored there.
+         * This way, vertex position and normal is a 1:1 association, vertex to texture coordinates a 1:n association.
+       * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+         */
+        constructor(_positionOrIndex: Vector3 | number, _uv?: Vector2, _normal?: Vector3);
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Array with extended functionality to serve as a {@link Vertex}-cloud.
+     * Accessors yield position or normal also for vertices referencing other vertices
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     */
+    class Vertices extends Array<Vertex> {
+        /**
+         * returns the position associated with the vertex addressed, resolving references between vertices
+         */
+        position(_index: number): Vector3;
+        /**
+         * returns the normal associated with the vertex addressed, resolving references between vertices
+         */
+        normal(_index: number): Vector3;
+        /**
+         * returns the uv-coordinates associated with the vertex addressed
+         */
+        uv(_index: number): Vector2;
     }
 }
 declare namespace FudgeCore {
@@ -5223,6 +5303,8 @@ declare namespace FudgeCore {
         static readonly baseClass: typeof Shader;
         /** list of all the subclasses derived from this class, if they registered properly*/
         static readonly subclasses: typeof Shader[];
+        static vertexShaderSource: string;
+        static fragmentShaderSource: string;
         static program: WebGLProgram;
         static attributes: {
             [name: string]: number;
@@ -5241,10 +5323,7 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    /**
-     * Single color shading
-     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
-     */
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderFlat extends Shader {
         static readonly iSubclass: number;
         static getCoat(): typeof Coat;
@@ -5253,44 +5332,8 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    /**
-     * Matcap (Material Capture) shading. The texture provided by the coat is used as a matcap material.
-     * Implementation based on https://www.clicktorelease.com/blog/creating-spherical-environment-mapping-shader/
-     * @authors Simon Storl-Schulke, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
-     */
-    abstract class ShaderMatCap extends Shader {
-        static readonly iSubclass: number;
-        static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
-    }
-}
-declare namespace FudgeCore {
-    /**
-     * Renders for Raycasting
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2019
-     */
-    abstract class ShaderPick extends Shader {
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
-    }
-}
-declare namespace FudgeCore {
-    /**
-     * Renders for Raycasting
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2019
-     */
-    abstract class ShaderPickTextured extends Shader {
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
-    }
-}
-declare namespace FudgeCore {
-    /**
-     * Textured shading
-     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
-     */
-    abstract class ShaderTexture extends Shader {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderFlatTextured extends Shader {
         static readonly iSubclass: number;
         static getCoat(): typeof Coat;
         static getVertexShaderSource(): string;
@@ -5299,7 +5342,7 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
-    abstract class ShaderTextureFlat extends Shader {
+    abstract class ShaderGouraud extends Shader {
         static readonly iSubclass: number;
         static getCoat(): typeof Coat;
         static getVertexShaderSource(): string;
@@ -5307,13 +5350,60 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    /**
-     * Single color shading
-     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
-     */
-    abstract class ShaderUniColor extends Shader {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderGouraudTextured extends Shader {
         static readonly iSubclass: number;
         static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderLit extends Shader {
+        static readonly iSubclass: number;
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderLitTextured extends Shader {
+        static readonly iSubclass: number;
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderMatCap extends Shader {
+        static readonly iSubclass: number;
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderPhong extends Shader {
+        static readonly iSubclass: number;
+        static getCoat(): typeof Coat;
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderPick extends Shader {
+        static getVertexShaderSource(): string;
+        static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderPickTextured extends Shader {
         static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;
     }

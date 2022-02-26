@@ -10,7 +10,7 @@
     "ƒ.Material": {
       "name": "mtrWhite",
       "idResource": "Material|2021-10-07T13:16:02.331Z|82787",
-      "shader": "ShaderUniColor",
+      "shader": "ShaderLit",
       "coat": {
         "ƒ.CoatColored": {
           "color": "[1, 1, 1, 1]"
