@@ -36,6 +36,8 @@ var Script;
         for (let forceNode of forceNodes) {
             let posForce = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
             let terrainInfo = Script.meshTerrain.getTerrainInfo(posForce, Script.mtxTerrain);
+            if (!terrainInfo)
+                break;
             if (terrainInfo.distance < maxHeight) {
                 body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - terrainInfo.distance) / (maxHeight - minHeight)), posForce);
                 isGrounded = true;

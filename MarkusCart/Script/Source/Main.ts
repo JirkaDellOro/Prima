@@ -45,6 +45,8 @@ namespace Script {
     for (let forceNode of forceNodes) {
       let posForce: ƒ.Vector3 = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
       let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(posForce, mtxTerrain);
+      if (!terrainInfo)
+        break;
 
       if (terrainInfo.distance < maxHeight) {
         body.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - terrainInfo.distance) / (maxHeight - minHeight)), posForce);
