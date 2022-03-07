@@ -32,7 +32,7 @@
     "ƒ.Material": {
       "name": "mtrTexFlat",
       "idResource": "Material|2021-11-21T17:22:53.935Z|12710",
-      "shader": "ShaderFlatTextured",
+      "shader": "ShaderGouraudTextured",
       "coat": {
         "ƒ.CoatTextured": {
           "color": "[1, 1, 1, 1]",
