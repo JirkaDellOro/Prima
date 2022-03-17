@@ -33,7 +33,7 @@
                 function init(_event) {
                     dialog = document.querySelector("dialog");
                     dialog.querySelector("h1").textContent = document.title;
-                    dialog.addEventListener("click", function (_event) {
+                    dialog.addEventListener("pointerup", function (_event) {
                         // @ts-ignore until HTMLDialog is implemented by all browsers and available in dom.d.ts
                         dialog.close();
                         startInteractiveViewport();
