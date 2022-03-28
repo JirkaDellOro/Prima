@@ -42,6 +42,7 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let pacman;
+    let speed = ƒ.Vector3.ZERO();
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
@@ -53,7 +54,19 @@ var Script;
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
-        pacman.mtxLocal.translate(new ƒ.Vector3(1, 1, 0));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]) && (pacman.mtxLocal.translation.y + 0.025) % 1 < 0.05) {
+            speed.set(1 / 60, 0, 0);
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]) && (pacman.mtxLocal.translation.y + 0.025) % 1 < 0.05) {
+            speed.set(-1 / 60, 0, 0);
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]) && (pacman.mtxLocal.translation.x + 0.025) % 1 < 0.05) {
+            speed.set(0, 1 / 60, 0);
+        }
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]) && (pacman.mtxLocal.translation.x + 0.025) % 1 < 0.05) {
+            speed.set(0, -1 / 60, 0);
+        }
+        pacman.mtxLocal.translate(speed);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }

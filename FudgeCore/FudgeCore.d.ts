@@ -1934,8 +1934,7 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     /**
-     * Filters synchronization between a graph instance and the graph it is connected to. If active, no synchronization occurs.
-     * Maybe more finegrained in the future...
+     * Synchronizes the graph instance this component is attached to with the graph and vice versa
      * @authors Jirka Dell'Oro-Friedl, HFU, 2022
      * @link https://github.com/JirkaDellOro/FUDGE/wiki/Component
      */
@@ -2641,7 +2640,7 @@ declare namespace FudgeCore {
         reset(): Promise<void>;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
-        connectToGraph(): Promise<void>;
+        connectToGraph(): void;
         /**
          * Set this node to be a recreation of the {@link Graph} given
          */
@@ -5452,7 +5451,7 @@ declare namespace FudgeCore {
         static registerAsGraph(_node: Node, _replaceWithInstance?: boolean): Promise<Graph>;
         static createGraphInstance(_graph: Graph): Promise<GraphInstance>;
         static registerGraphInstanceForResync(_instance: GraphInstance): void;
-        static resyncGraphInstances(_graph: Graph): Promise<void>;
+        static resyncGraphInstances(_graph: Graph): void;
         static registerScriptNamespace(_namespace: Object): void;
         static getComponentScripts(): ComponentScripts;
         static loadScript(_url: RequestInfo): Promise<void>;
