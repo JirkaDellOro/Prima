@@ -46,6 +46,7 @@ var Script;
     let direction = ƒ.Vector2.ZERO();
     let speed = 0.05;
     let waka;
+    let ghost;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
@@ -58,6 +59,8 @@ var Script;
         pacman = graph.getChildrenByName("Pacman")[0];
         grid = graph.getChildrenByName("Grid")[0];
         console.log(pacman);
+        ghost = createGhost();
+        graph.addChild(ghost);
         ƒ.AudioManager.default.listenTo(graph);
         waka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -101,6 +104,21 @@ var Script;
     function blocked(_posCheck) {
         let check = grid.getChild(_posCheck.y)?.getChild(_posCheck.x)?.getChild(0);
         return (!check || check.name == "Wall");
+    }
+    function createGhost() {
+        let node = new ƒ.Node("Ghost");
+        let mesh = new ƒ.MeshSphere();
+        let material = new ƒ.Material("MaterialGhost", ƒ.ShaderLit, new ƒ.CoatColored());
+        let cmpTransfrom = new ƒ.ComponentTransform();
+        let cmpMesh = new ƒ.ComponentMesh(mesh);
+        let cmpMaterial = new ƒ.ComponentMaterial(material);
+        cmpMaterial.clrPrimary = ƒ.Color.CSS("red");
+        node.addComponent(cmpMaterial);
+        node.addComponent(cmpMesh);
+        node.addComponent(cmpTransfrom);
+        node.mtxLocal.translateX(2);
+        cmpTransfrom.mtxLocal.translateY(1);
+        return node;
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

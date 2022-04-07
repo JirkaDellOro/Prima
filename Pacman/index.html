@@ -71,7 +71,7 @@
                     // FudgeCore.AudioManager.default.listenTo(graph);
                     // FudgeCore.Debug.log("Audio:", FudgeCore.AudioManager.default);
                     // draw viewport once for immediate feedback
-                    viewport.draw();
+                    // viewport.draw();
                     canvas.dispatchEvent(new CustomEvent("interactiveViewportStarted", { bubbles: true, detail: viewport }));
                 }
             })(document.head.querySelector("meta[autoView]").getAttribute("autoView"));

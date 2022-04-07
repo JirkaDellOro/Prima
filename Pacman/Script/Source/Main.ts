@@ -8,12 +8,12 @@ namespace Script {
   let direction: ƒ.Vector2 = ƒ.Vector2.ZERO();
   let speed: number = 0.05;
   let waka: ƒ.ComponentAudio;
+  let ghost: ƒ.Node;
 
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
-
 
     console.log(viewport.camera);
     viewport.camera.mtxPivot.translateZ(10);
@@ -26,6 +26,9 @@ namespace Script {
     pacman = graph.getChildrenByName("Pacman")[0];
     grid = graph.getChildrenByName("Grid")[0];
     console.log(pacman);
+
+    ghost = createGhost();
+    graph.addChild(ghost);
 
     ƒ.AudioManager.default.listenTo(graph);
     waka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
@@ -81,4 +84,27 @@ namespace Script {
     let check: ƒ.Node = grid.getChild(_posCheck.y)?.getChild(_posCheck.x)?.getChild(0);
     return (!check || check.name == "Wall");
   }
+
+  function createGhost(): ƒ.Node {
+    let node: ƒ.Node = new ƒ.Node("Ghost");
+
+    let mesh: ƒ.MeshSphere = new ƒ.MeshSphere();
+    let material: ƒ.Material = new ƒ.Material("MaterialGhost", ƒ.ShaderLit, new ƒ.CoatColored());
+
+    let cmpTransfrom: ƒ.ComponentTransform = new ƒ.ComponentTransform();
+    let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
+    let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(material);
+
+    cmpMaterial.clrPrimary = ƒ.Color.CSS("red");
+
+    node.addComponent(cmpMaterial);
+    node.addComponent(cmpMesh);
+    node.addComponent(cmpTransfrom);
+
+    node.mtxLocal.translateX(2);
+    cmpTransfrom.mtxLocal.translateY(1);
+
+    return node;
+  }
 }
+
