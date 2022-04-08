@@ -48,6 +48,7 @@ var Script;
     let speed = 0.05;
     let waka;
     let ghost;
+    let sprite;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         viewport = _event.detail;
@@ -59,7 +60,8 @@ var Script;
         let graph = viewport.getBranch();
         grid = graph.getChildrenByName("Grid")[0];
         pacman = graph.getChildrenByName("Pacman")[0];
-        pacman.addChild(await createSprite());
+        sprite = await createSprite();
+        pacman.addChild(sprite);
         pacman.getComponent(ƒ.ComponentMaterial).activate(false);
         ghost = createGhost();
         graph.addChild(ghost);
@@ -94,17 +96,20 @@ var Script;
                 }
             if (!direction.equals(directionOld) || direction.magnitudeSquared == 0)
                 pacman.mtxLocal.translation = nearestGridPoint.toVector3();
-            if (direction.magnitudeSquared == 0)
+            if (direction.magnitudeSquared == 0) {
                 waka.play(false);
-            else if (!waka.isPlaying)
+                sprite.setFrameDirection(0);
+            }
+            else if (!waka.isPlaying) {
                 waka.play(true);
+                sprite.setFrameDirection(3);
+            }
         }
         pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, speed).toVector3());
         if (direction.magnitudeSquared != 0) {
-            let mtxInner = pacman.getChild(0).mtxLocal;
-            mtxInner.set(ƒ.Matrix4x4.IDENTITY());
-            mtxInner.scaleX(direction.x < 0 ? -1 : 1);
-            mtxInner.rotateZ(direction.y * 90);
+            sprite.mtxLocal.set(ƒ.Matrix4x4.IDENTITY());
+            sprite.mtxLocal.scaleX(direction.x < 0 ? -1 : 1);
+            sprite.mtxLocal.rotateZ(direction.y * 90);
         }
         viewport.draw();
         // ƒ.AudioManager.default.update();
