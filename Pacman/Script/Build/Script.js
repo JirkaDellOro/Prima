@@ -39,6 +39,7 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    var ƒAid = FudgeAid;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let pacman;
@@ -48,7 +49,7 @@ var Script;
     let waka;
     let ghost;
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
         console.log(viewport.camera);
         viewport.camera.mtxPivot.translateZ(10);
@@ -56,9 +57,10 @@ var Script;
         viewport.camera.mtxPivot.translateX(-2);
         viewport.camera.mtxPivot.translateY(2);
         let graph = viewport.getBranch();
-        pacman = graph.getChildrenByName("Pacman")[0];
         grid = graph.getChildrenByName("Grid")[0];
-        console.log(pacman);
+        pacman = graph.getChildrenByName("Pacman")[0];
+        pacman.addChild(await createSprite());
+        pacman.getComponent(ƒ.ComponentMaterial).activate(false);
         ghost = createGhost();
         graph.addChild(ghost);
         ƒ.AudioManager.default.listenTo(graph);
@@ -90,14 +92,20 @@ var Script;
                     else
                         direction = directionOld; // don't turn but continue ahead
                 }
-            if (!direction.equals(directionOld) || direction.equals(ƒ.Vector2.ZERO()))
+            if (!direction.equals(directionOld) || direction.magnitudeSquared == 0)
                 pacman.mtxLocal.translation = nearestGridPoint.toVector3();
-            if (direction.equals(ƒ.Vector2.ZERO()))
+            if (direction.magnitudeSquared == 0)
                 waka.play(false);
             else if (!waka.isPlaying)
                 waka.play(true);
         }
         pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, speed).toVector3());
+        if (direction.magnitudeSquared != 0) {
+            let mtxInner = pacman.getChild(0).mtxLocal;
+            mtxInner.set(ƒ.Matrix4x4.IDENTITY());
+            mtxInner.scaleX(direction.x < 0 ? -1 : 1);
+            mtxInner.rotateZ(direction.y * 90);
+        }
         viewport.draw();
         // ƒ.AudioManager.default.update();
     }
@@ -119,6 +127,20 @@ var Script;
         node.mtxLocal.translateX(2);
         cmpTransfrom.mtxLocal.translateY(1);
         return node;
+    }
+    async function createSprite() {
+        let imgSpriteSheet = new ƒ.TextureImage();
+        await imgSpriteSheet.load("Image/texture.png");
+        let coat = new ƒ.CoatTextured(undefined, imgSpriteSheet);
+        let animation = new ƒAid.SpriteSheetAnimation("Pacman", coat);
+        animation.generateByGrid(ƒ.Rectangle.GET(0, 0, 64, 64), 8, 70, ƒ.ORIGIN2D.CENTER, ƒ.Vector2.X(64));
+        let sprite = new ƒAid.NodeSprite("Sprite");
+        sprite.setAnimation(animation);
+        sprite.setFrameDirection(1);
+        sprite.framerate = 15;
+        let cmpTransfrom = new ƒ.ComponentTransform();
+        sprite.addComponent(cmpTransfrom);
+        return sprite;
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
