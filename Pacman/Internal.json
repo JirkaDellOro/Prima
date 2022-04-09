@@ -64,9 +64,9 @@
           {
             "ƒ.ComponentLight": {
               "pivot": {
-                "translation": "[2.0000011920928955, 2.000000476837158, 1.5000015497207642]",
-                "rotation": "[0, 0, -2192]",
-                "scaling": "[1.3000000715255737, 33, 13]"
+                "translation": "[0, 0, 1.0000014305114746]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[5.000000476837158, 5, 5]"
               },
               "light": {
                 "ƒ.LightSpot": {
@@ -74,7 +74,7 @@
                 }
               },
               "Component": {
-                "active": true
+                "active": false
               }
             }
           }
@@ -126,6 +126,25 @@
                       "translation": "[0, 0, 0]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentLight": [
+                {
+                  "ƒ.ComponentLight": {
+                    "pivot": {
+                      "translation": "[0, 0, 1]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[5, 5, 5]"
+                    },
+                    "light": {
+                      "ƒ.LightPoint": {
+                        "color": "[1, 1, 1, 1]"
+                      }
                     },
                     "Component": {
                       "active": true
