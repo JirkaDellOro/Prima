@@ -78,15 +78,17 @@ namespace Script {
         sprite.setFrameDirection(0);
       }
       else if (!waka.isPlaying) {
-        waka.play(true);
+        waka.play(true);  
         sprite.setFrameDirection(3);
       }
     }
 
     pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, speed).toVector3());
 
-    if (direction.magnitudeSquared != 0)
+    if (direction.magnitudeSquared != 0) {
+      sprite.mtxLocal.reset();
       sprite.mtxLocal.rotation = new ƒ.Vector3(0, direction.x < 0 ? 180 : 0, direction.y * 90);
+    }
 
     viewport.draw();
     // ƒ.AudioManager.default.update();

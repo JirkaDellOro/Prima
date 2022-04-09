@@ -59,7 +59,27 @@
     "ƒ.Graph": {
       "name": "Game",
       "active": true,
-      "components": {},
+      "components": {
+        "ComponentLight": [
+          {
+            "ƒ.ComponentLight": {
+              "pivot": {
+                "translation": "[2.0000011920928955, 2.000000476837158, 1.5000015497207642]",
+                "rotation": "[0, 0, -2192]",
+                "scaling": "[1.3000000715255737, 33, 13]"
+              },
+              "light": {
+                "ƒ.LightSpot": {
+                  "color": "[1, 1, 1, 1]"
+                }
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ]
+      },
       "children": [
         {
           "ƒ.Node": {
@@ -1334,6 +1354,34 @@
       "type": "Graph"
     }
   },
+  "Material|2022-04-09T16:54:21.957Z|34909": {
+    "ƒ.Material": {
+      "name": "ShaderGouraud",
+      "idResource": "Material|2022-04-09T16:54:21.957Z|34909",
+      "shader": "ShaderGouraud",
+      "coat": {
+        "ƒ.CoatRemissive": {
+          "color": "[1, 1, 1, 1]",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "Material|2022-04-09T18:59:55.440Z|75805": {
+    "ƒ.Material": {
+      "name": "ShaderFlat",
+      "idResource": "Material|2022-04-09T18:59:55.440Z|75805",
+      "shader": "ShaderFlat",
+      "coat": {
+        "ƒ.CoatRemissive": {
+          "color": "[1, 1, 1, 1]",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
   "Graph|2022-03-28T17:46:30.116Z|19332": {
     "ƒ.Graph": {
       "name": "Wall",
@@ -1368,11 +1416,10 @@
               "Component": {
                 "active": true
               },
-              "idMaterial": "Material|2022-03-17T14:07:58.164Z|38987"
+              "idMaterial": "Material|2022-04-09T16:54:21.957Z|34909"
             }
           }
-        ],
-        "ComponentFaceCamera": []
+        ]
       },
       "children": [],
       "idResource": "Graph|2022-03-28T17:46:30.116Z|19332",

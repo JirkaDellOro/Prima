@@ -147,8 +147,12 @@ declare namespace FudgeCore {
         CHILD_APPEND = "childAppend",
         /** dispatched to a child {@link Node} and its ancestors just before its being removed from its parent */
         CHILD_REMOVE = "childRemove",
-        /** dispatched to a {@link Mutable} when its being mutated */
+        /** dispatched to a {@link Mutable} when it mutates */
         MUTATE = "mutate",
+        /** dispatched to a {@link GraphInstance} when the graph it connects to mutates */
+        MUTATE_GRAPH = "mutateGraph",
+        /** dispatched to a {@link GraphInstance} after {@link MUTATE_GRAPH} to signal that all instances were informed*/
+        MUTATE_GRAPH_DONE = "mutateGraphDone",
         /** dispatched to {@link Viewport} when it gets the focus to receive keyboard input */
         FOCUS_IN = "focusin",
         /** dispatched to {@link Viewport} when it loses the focus to receive keyboard input */
@@ -168,7 +172,9 @@ declare namespace FudgeCore {
         /** dispatched to {@link Node} when recalculating transforms for render */
         RENDER_PREPARE = "renderPrepare",
         RENDER_PREPARE_START = "renderPrepareStart",
-        RENDER_PREPARE_END = "renderPrepareEnd"
+        RENDER_PREPARE_END = "renderPrepareEnd",
+        /** dispatched to Joint-Components in order to disconnect */
+        DISCONNECT_JOINT = "disconnectJoint"
     }
     type EventListenerƒ = ((_event: EventPointer) => void) | ((_event: EventDragDrop) => void) | ((_event: EventWheel) => void) | ((_event: EventKeyboard) => void) | ((_event: Eventƒ) => void) | ((_event: EventPhysics) => void) | ((_event: CustomEvent) => void) | EventListenerOrEventListenerObject;
     type Eventƒ = EventPointer | EventDragDrop | EventWheel | EventKeyboard | Event | EventPhysics | CustomEvent;
@@ -840,7 +846,7 @@ declare namespace FudgeCore {
         * A cameraprojection with extremely narrow focus is used, so each pixel of the buffer would hold the same information from the node,
         * but the fragment shader renders only 1 pixel for each node into the render buffer, 1st node to 1st pixel, 2nd node to second pixel etc.
         */
-        protected static pick(_node: Node, _mtxMeshToWorld: Matrix4x4, _mtxWorldToView: Matrix4x4): void;
+        protected static pick(_node: Node, _mtxMeshToWorld: Matrix4x4, _cmpCamera: ComponentCamera): void;
         /**
          * Set light data in shaders
          */
@@ -848,7 +854,9 @@ declare namespace FudgeCore {
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          */
-        protected static drawMesh(_cmpMesh: ComponentMesh, cmpMaterial: ComponentMaterial, _cmpCamera: ComponentCamera): void;
+        protected static drawNode(_node: Node, _cmpCamera: ComponentCamera): void;
+        private static calcMeshToView;
+        private static getRenderBuffers;
     }
 }
 declare namespace FudgeCore {
@@ -1241,6 +1249,7 @@ declare namespace FudgeCore {
         protected constructJoint(..._configParams: Object[]): void;
         protected configureJoint(): void;
         protected deleteFromMutator(_mutator: Mutator, _delete: Mutator): void;
+        private hndEvent;
     }
 }
 declare namespace FudgeCore {
@@ -1930,6 +1939,34 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    /**
+     * Makes the node face the camera when rendering, respecting restrictions for rotation around specific axis
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Component
+     */
+    class ComponentFaceCamera extends Component {
+        static readonly iSubclass: number;
+        upLocal: boolean;
+        up: Vector3;
+        restrict: boolean;
+        constructor();
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Filters synchronization between a graph instance and the graph it is connected to. If active, no synchronization occurs.
+     * Maybe more finegrained in the future...
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Component
+     */
+    class ComponentGraphFilter extends Component {
+        static readonly iSubclass: number;
+        constructor();
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+    }
+}
+declare namespace FudgeCore {
     type TypeOfLight = new () => Light;
     /**
      * Baseclass for different kinds of lights.
@@ -1973,7 +2010,6 @@ declare namespace FudgeCore {
      * ```
      */
     class LightPoint extends Light {
-        range: number;
     }
     /**
      * Spot light emitting within a specified angle from its position, illuminating objects depending on their position and distance with its color
@@ -2084,21 +2120,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    /**
-     * Synchronizes the graph instance this component is attached to with the graph and vice versa
-     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
-     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Component
-     */
-    class ComponentSyncGraph extends Component {
-        static readonly iSubclass: number;
-        constructor();
-        serialize(): Serialization;
-        deserialize(_serialization: Serialization): Promise<Serializable>;
-        private hndEvent;
-        private hndMutation;
-    }
-}
-declare namespace FudgeCore {
     enum BASE {
         SELF = 0,
         PARENT = 1,
@@ -2113,16 +2134,6 @@ declare namespace FudgeCore {
         static readonly iSubclass: number;
         mtxLocal: Matrix4x4;
         constructor(_mtxInit?: Matrix4x4);
-        /**
-         * Adjusts the rotation to point the z-axis directly at the given target point in world space and tilts it to accord with the given up vector,
-         * respectively calculating yaw and pitch. If no up vector is given, the previous up-vector is used.
-         */
-        lookAt(_targetWorld: Vector3, _up?: Vector3): void;
-        /**
-         * Adjusts the rotation to match its y-axis with the given up-vector and facing its z-axis toward the given target at minimal angle,
-         * respectively calculating yaw only. If no up vector is given, the previous up-vector is used.
-         */
-        showTo(_targetWorld: Vector3, _up?: Vector3): void;
         /**
          * recalculates this local matrix to yield the identical world matrix based on the given node.
          * Use rebase before appending the container of this component to another node while preserving its transformation in the world.
@@ -2613,32 +2624,29 @@ declare namespace FudgeCore {
     class Graph extends Node implements SerializableResource {
         idResource: string;
         type: string;
+        constructor(_name?: string);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
+        private hndMutate;
     }
 }
 declare namespace FudgeCore {
-    /**
-     * An instance of a {@link Graph}.
-     * This node keeps a reference to its resource an can thus optimize serialization
-     * @author Jirka Dell'Oro-Friedl, HFU, 2019
-     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Resource
-     */
     class GraphInstance extends Node {
-        /** id of the resource that instance was created from */
-        private idSource;
+        #private;
         /**
          * This constructor allone will not create a reconstruction, but only save the id.
          * To create an instance of the graph, call reset on this or set with a graph as parameter.
          * Prefer Project.createGraphInstance(_graph).
          */
         constructor(_graph?: Graph);
+        get idSource(): string;
         /**
          * Recreate this node from the {@link Graph} referenced
          */
         reset(): Promise<void>;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
+        connectToGraph(): Promise<void>;
         /**
          * Set this node to be a recreation of the {@link Graph} given
          */
@@ -2647,6 +2655,16 @@ declare namespace FudgeCore {
          * Retrieve the graph this instances refers to
          */
         get(): Graph;
+        /**
+         * Source graph mutated, reflect mutation in this instance
+         */
+        private hndMutationGraph;
+        /**
+         * This instance mutated, reflect mutation in source graph
+         */
+        private hndMutationInstance;
+        private reflectMutation;
+        private isFiltered;
     }
 }
 declare namespace FudgeCore {
@@ -2955,7 +2973,14 @@ declare namespace FudgeCore {
          * Return a copy of this
          */
         get clone(): Matrix3x3;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache. Used by the recycler to reset.
+         */
         recycle(): void;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache.
+         */
+        reset(): void;
         /**
          * Add a translation by the given {@link Vector2} to this matrix
          */
@@ -3064,12 +3089,11 @@ declare namespace FudgeCore {
          * Computes and returns a matrix with the given translation, its z-axis pointing directly at the given target,
          * and a minimal angle between its y-axis and the given up-{@link Vector3}, respetively calculating yaw and pitch.
          */
-        static LOOK_AT(_translation: Vector3, _target: Vector3, _up?: Vector3): Matrix4x4;
+        static LOOK_AT(_translation: Vector3, _target: Vector3, _up?: Vector3, _restrict?: boolean): Matrix4x4;
         /**
          * Computes and returns a matrix with the given translation, its y-axis matching the given up-{@link Vector3}
          * and its z-axis facing towards the given target at a minimal angle, respetively calculating yaw only.
          */
-        static SHOW_TO(_translation: Vector3, _target: Vector3, _up?: Vector3): Matrix4x4;
         /**
          * Returns a matrix that translates coordinates along the x-, y- and z-axis according to the given {@link Vector3}.
          */
@@ -3144,7 +3168,14 @@ declare namespace FudgeCore {
          * Return a copy of this
          */
         get clone(): Matrix4x4;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache. Used by the recycler to reset.
+         */
         recycle(): void;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache.
+         */
+        reset(): void;
         /**
          * Rotate this matrix by given {@link Vector3} in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
          * The rotation is appended to already applied transforms, thus multiplied from the right. Set _fromLeft to true to switch and put it in front.
@@ -3169,17 +3200,15 @@ declare namespace FudgeCore {
          * respectively calculating yaw and pitch. If no up-{@link Vector3} is given, the previous up-{@link Vector3} is used.
          * When _preserveScaling is false, a rotated identity matrix is the result.
          */
-        lookAt(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
+        lookAt(_target: Vector3, _up?: Vector3, _restrict?: boolean): void;
         /**
          * Same as {@link Matrix4x4.lookAt}, but optimized and needs testing
          */
-        lookAtRotate(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
         /**
          * Adjusts the rotation of this matrix to match its y-axis with the given up-{@link Vector3} and facing its z-axis toward the given target at minimal angle,
          * respectively calculating yaw only. If no up-{@link Vector3} is given, the previous up-{@link Vector3} is used.
          * When _preserveScaling is false, a rotated identity matrix is the result.
          */
-        showTo(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
         /**
          * Add a translation by the given {@link Vector3} to this matrix.
          * If _local is true, translation occurs according to the current rotation and scaling of this matrix,
@@ -3218,11 +3247,11 @@ declare namespace FudgeCore {
          * Multiply this matrix with the given matrix
          */
         multiply(_matrix: Matrix4x4, _fromLeft?: boolean): void;
+        getEulerAngles(): Vector3;
         /**
          * Calculates and returns the euler-angles representing the current rotation of this matrix.
-         * **Caution!** Use immediately and readonly, since the vector is going to be reused by Recycler. Create a clone to keep longer and manipulate.
          */
-        getEulerAngles(): Vector3;
+        getEulerAnglesX(): Vector3;
         /**
          * Sets the elements of this matrix to the values of the given matrix
          */
@@ -3648,7 +3677,7 @@ declare namespace FudgeCore {
         get type(): string;
         get boundingBox(): Box;
         get radius(): number;
-        useRenderBuffers(_shader: typeof Shader, _mtxWorld: Matrix4x4, _mtxProjection: Matrix4x4, _id?: number): RenderBuffers;
+        useRenderBuffers(_shader: typeof Shader, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4, _id?: number): RenderBuffers;
         getRenderBuffers(_shader: typeof Shader): RenderBuffers;
         deleteRenderBuffers(_shader: typeof Shader): void;
         clear(): void;
@@ -4847,7 +4876,6 @@ declare namespace FudgeCore {
         private bodyList;
         private jointList;
         constructor();
-        getOimoWorld(): OIMO.World;
         /**
          * Define the currently active Physics instance
          */
@@ -4919,6 +4947,7 @@ declare namespace FudgeCore {
         private static getRayEndPoint;
         /** Internal function to get the distance in which a ray hit by subtracting points from each other and get the square root of the squared product of each component. */
         private static getRayDistance;
+        getOimoWorld(): OIMO.World;
     }
 }
 declare namespace FudgeCore {
@@ -5078,7 +5107,7 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    type MapLightTypeToLightList = Map<TypeOfLight, ComponentLight[]>;
+    type MapLightTypeToLightList = Map<TypeOfLight, RecycableArray<ComponentLight>>;
     interface RenderPrepareOptions {
         ignorePhysics?: boolean;
     }
@@ -5090,6 +5119,7 @@ declare namespace FudgeCore {
         static pickBuffer: Int32Array;
         static nodesPhysics: RecycableArray<Node>;
         static componentsPick: RecycableArray<ComponentPick>;
+        static lights: MapLightTypeToLightList;
         private static nodesSimple;
         private static nodesAlpha;
         private static timestampUpdate;
@@ -5098,7 +5128,7 @@ declare namespace FudgeCore {
          * collects all lights and feeds all shaders used in the graph with these lights. Sorts nodes for different
          * render passes.
          */
-        static prepare(_branch: Node, _options?: RenderPrepareOptions, _mtxWorld?: Matrix4x4, _lights?: MapLightTypeToLightList, _shadersUsed?: (typeof Shader)[]): void;
+        static prepare(_branch: Node, _options?: RenderPrepareOptions, _mtxWorld?: Matrix4x4, _shadersUsed?: (typeof Shader)[]): void;
         /**
          * Used with a {@link Picker}-camera, this method renders one pixel with picking information
          * for each node in the line of sight and return that as an unsorted {@link Pick}-array
@@ -5372,38 +5402,42 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    enum MODE {
+    export enum MODE {
         EDITOR = 0,
         RUNTIME = 1
     }
-    interface SerializableResource extends Serializable {
+    export interface SerializableResource extends Serializable {
         name: string;
         type: string;
         idResource: string;
     }
-    interface Resources {
+    export interface Resources {
         [idResource: string]: SerializableResource;
     }
-    interface SerializationOfResources {
+    export interface SerializationOfResources {
         [idResource: string]: Serialization;
     }
-    interface ScriptNamespaces {
+    export interface ScriptNamespaces {
         [name: string]: Object;
     }
-    interface ComponentScripts {
+    export interface ComponentScripts {
         [namespace: string]: ComponentScript[];
+    }
+    interface GraphInstancesToResync {
+        [idResource: string]: GraphInstance[];
     }
     /**
      * Static class handling the resources used with the current FUDGE-instance.
      * Keeps a list of the resources and generates ids to retrieve them.
      * Resources are objects referenced multiple times but supposed to be stored only once
      */
-    abstract class Project {
+    export abstract class Project {
         static resources: Resources;
         static serialization: SerializationOfResources;
         static scriptNamespaces: ScriptNamespaces;
         static baseURL: URL;
         static mode: MODE;
+        static graphInstancesToResync: GraphInstancesToResync;
         /**
          * Registers the resource and generates an id for it by default.
          * If the resource already has an id, thus having been registered, its deleted from the list and registered anew.
@@ -5433,7 +5467,13 @@ declare namespace FudgeCore {
          * @param _replaceWithInstance if true (default), the node used as origin is replaced by a {@link GraphInstance} of the {@link Graph} created
          */
         static registerAsGraph(_node: Node, _replaceWithInstance?: boolean): Promise<Graph>;
+        /**
+         * Creates and returns a {@link GraphInstance} of the given {@link Graph}
+         * and connects it to the graph for synchronisation of mutation.
+         */
         static createGraphInstance(_graph: Graph): Promise<GraphInstance>;
+        static registerGraphInstanceForResync(_instance: GraphInstance): void;
+        static resyncGraphInstances(_graph: Graph): Promise<void>;
         static registerScriptNamespace(_namespace: Object): void;
         static getComponentScripts(): ComponentScripts;
         static loadScript(_url: RequestInfo): Promise<void>;
@@ -5450,6 +5490,7 @@ declare namespace FudgeCore {
         static deserialize(_serialization: SerializationOfResources): Promise<Resources>;
         private static deserializeResource;
     }
+    export {};
 }
 declare namespace GLTF {
     type GlTfId = number;
@@ -6572,7 +6613,7 @@ declare namespace FudgeCore {
         private idTimerAddedLast;
         constructor();
         /**
-         * Returns the game-time-object which starts automatically and serves as base for various internal operations.
+         * Returns representions of the time given in milliseconds in various formats defined in {@link TimeUnits}
          */
         static getUnits(_milliseconds: number): TimeUnits;
         /**
