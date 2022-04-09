@@ -85,11 +85,8 @@ namespace Script {
 
     pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, speed).toVector3());
 
-    if (direction.magnitudeSquared != 0) {
-      sprite.mtxLocal.set(ƒ.Matrix4x4.IDENTITY());
-      sprite.mtxLocal.scaleX(direction.x < 0 ? -1 : 1);
-      sprite.mtxLocal.rotateZ(direction.y * 90);
-    }
+    if (direction.magnitudeSquared != 0)
+      sprite.mtxLocal.rotation = new ƒ.Vector3(0, direction.x < 0 ? 180 : 0, direction.y * 90);
 
     viewport.draw();
     // ƒ.AudioManager.default.update();
