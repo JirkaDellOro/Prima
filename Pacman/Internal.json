@@ -1078,7 +1078,7 @@
                   "ƒ.ComponentAudio": {
                     "active": true,
                     "idResource": "Audio|2022-03-31T12:46:38.472Z|99496",
-                    "playing": true,
+                    "playing": false,
                     "loop": false,
                     "volume": 1
                   }
@@ -1371,7 +1371,8 @@
               "idMaterial": "Material|2022-03-17T14:07:58.164Z|38987"
             }
           }
-        ]
+        ],
+        "ComponentFaceCamera": []
       },
       "children": [],
       "idResource": "Graph|2022-03-28T17:46:30.116Z|19332",
