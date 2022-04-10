@@ -64,9 +64,9 @@
           {
             "ƒ.ComponentLight": {
               "pivot": {
-                "translation": "[0, 0, 1.0000014305114746]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[5.000000476837158, 5, 5]"
+                "translation": "[2, 2, 8]",
+                "rotation": "[0, 180, 0]",
+                "scaling": "[5, 5, 100]"
               },
               "light": {
                 "ƒ.LightSpot": {
@@ -74,7 +74,7 @@
                 }
               },
               "Component": {
-                "active": false
+                "active": true
               }
             }
           }
@@ -138,7 +138,7 @@
                   "ƒ.ComponentLight": {
                     "pivot": {
                       "translation": "[0, 0, 1]",
-                      "rotation": "[0, 0, 0]",
+                      "rotation": "[0, 120, 0]",
                       "scaling": "[5, 5, 5]"
                     },
                     "light": {
