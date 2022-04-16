@@ -2,12 +2,47 @@
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    ƒ.Debug.info("Main Program Template running!");
+    let viewport;
+    let speedRotY = 0.5;
+    let cntWalk = new ƒ.Control("ControlWalk", 1.5, 0 /* PROPORTIONAL */);
+    let rotationX = 0;
+    document.addEventListener("interactiveViewportStarted", start);
+    function start(_event) {
+        viewport = _event.detail;
+        Script.avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
+        viewport.camera = Script.avatar.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+        document.addEventListener("pointermove", hndPointer);
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    }
+    function update(_event) {
+        // ƒ.Physics.simulate();  // if physics is included and used
+        control();
+        viewport.draw();
+        ƒ.AudioManager.default.update();
+    }
+    function control() {
+        let input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+        cntWalk.setInput(input);
+        Script.avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    }
+    function hndPointer(_event) {
+        Script.avatar.mtxLocal.rotateY(-speedRotY * _event.movementX);
+        rotationX = Math.max(Math.min(rotationX + _event.movementY, 60), -60);
+        Script.avatar.getChildrenByName("Camera")[0].mtxLocal.rotation = ƒ.Vector3.X(rotationX);
+    }
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    class CustomComponentScript extends ƒ.ComponentScript {
+    class Slenderman extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
-        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
+        static iSubclass = ƒ.Component.registerSubclass(Slenderman);
         // Properties may be mutated by users in the editor via the automatically created user interface
-        message = "CustomComponentScript added to ";
+        // public message: string = "CustomComponentScript added to ";
+        speed = 1;
         constructor() {
             super();
             // Don't start when running in editor
@@ -22,7 +57,8 @@ var Script;
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
+                    // ƒ.Debug.log(this.message, this.node);
+                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -33,39 +69,13 @@ var Script;
                     break;
             }
         };
+        update = (_event) => {
+            let diff = ƒ.Vector3.DIFFERENCE(Script.avatar.mtxLocal.translation, this.node.mtxLocal.translation);
+            diff.normalize(this.speed * ƒ.Loop.timeFrameGame / 1000);
+            this.node.mtxLocal.translate(diff);
+            console.log(Script.avatar.mtxLocal.translation.toString());
+        };
     }
-    Script.CustomComponentScript = CustomComponentScript;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
-    var ƒ = FudgeCore;
-    ƒ.Debug.info("Main Program Template running!");
-    let viewport;
-    let avatar;
-    let speedRotY = 0.5;
-    let cntWalk = new ƒ.Control("ControlWalk", 6, 0 /* PROPORTIONAL */);
-    document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
-        viewport = _event.detail;
-        avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
-        viewport.camera = avatar.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
-        document.addEventListener("pointermove", hndPointer);
-        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-    }
-    function update(_event) {
-        // ƒ.Physics.simulate();  // if physics is included and used
-        control();
-        viewport.draw();
-        ƒ.AudioManager.default.update();
-    }
-    function control() {
-        let input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-        cntWalk.setInput(input);
-        avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
-    }
-    function hndPointer(_event) {
-        avatar.mtxLocal.rotateY(speedRotY * _event.movementX);
-    }
+    Script.Slenderman = Slenderman;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
