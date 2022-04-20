@@ -16,6 +16,9 @@ namespace Script {
     avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
     viewport.camera = avatar.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
 
+
+    // ƒ.Viewport.expandCameraToInteractiveOrbit(viewport);
+
     document.addEventListener("pointermove", hndPointer);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);

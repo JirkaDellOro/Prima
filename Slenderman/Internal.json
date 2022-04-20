@@ -178,10 +178,65 @@
             "components": {},
             "children": [
               {
-                "ƒ.GraphInstance": {
-                  "deserializeFromSource": true,
-                  "name": "Slendeman",
-                  "idSource": "Graph|2022-04-16T08:59:34.633Z|29609"
+                "ƒ.Node": {
+                  "name": "Transform",
+                  "active": true,
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 10]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": [
+                    {
+                      "ƒ.GraphInstance": {
+                        "deserializeFromSource": true,
+                        "name": "Slendeman",
+                        "idSource": "Graph|2022-04-16T08:59:34.633Z|29609"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Transform",
+                  "active": true,
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[3, 0, 10]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": [
+                    {
+                      "ƒ.GraphInstance": {
+                        "deserializeFromSource": true,
+                        "name": "Slendeman",
+                        "idSource": "Graph|2022-04-16T08:59:34.633Z|29609"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -256,20 +311,6 @@
             "Script.Slenderman": {
               "active": true,
               "speed": 1
-            }
-          }
-        ],
-        "ComponentTransform": [
-          {
-            "ƒ.ComponentTransform": {
-              "local": {
-                "translation": "[0, 0, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
             }
           }
         ]

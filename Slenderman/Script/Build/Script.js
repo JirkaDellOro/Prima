@@ -12,6 +12,7 @@ var Script;
         viewport = _event.detail;
         Script.avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
         viewport.camera = Script.avatar.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+        // ƒ.Viewport.expandCameraToInteractiveOrbit(viewport);
         document.addEventListener("pointermove", hndPointer);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -58,7 +59,8 @@ var Script;
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
                     // ƒ.Debug.log(this.message, this.node);
-                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                    // ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -70,10 +72,9 @@ var Script;
             }
         };
         update = (_event) => {
-            let diff = ƒ.Vector3.DIFFERENCE(Script.avatar.mtxLocal.translation, this.node.mtxLocal.translation);
+            let diff = ƒ.Vector3.DIFFERENCE(Script.avatar.mtxLocal.translation, this.node.getParent().mtxLocal.translation);
             diff.normalize(this.speed * ƒ.Loop.timeFrameGame / 1000);
-            this.node.mtxLocal.translate(diff);
-            console.log(Script.avatar.mtxLocal.translation.toString());
+            this.node.getParent().mtxLocal.translate(diff);
         };
     }
     Script.Slenderman = Slenderman;

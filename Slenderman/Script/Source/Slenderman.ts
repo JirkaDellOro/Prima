@@ -28,7 +28,8 @@ namespace Script {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           // ƒ.Debug.log(this.message, this.node);
-          ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+          // ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+          this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update);
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
@@ -41,10 +42,9 @@ namespace Script {
     }
 
     private update = (_event: Event): void => {
-      let diff: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(avatar.mtxLocal.translation, this.node.mtxLocal.translation);
+      let diff: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(avatar.mtxLocal.translation, this.node.getParent().mtxLocal.translation);
       diff.normalize(this.speed * ƒ.Loop.timeFrameGame / 1000);
-      this.node.mtxLocal.translate(diff);
-      console.log(avatar.mtxLocal.translation.toString());
+      this.node.getParent().mtxLocal.translate(diff);
     }
 
     // protected reduceMutator(_mutator: ƒ.Mutator): void {
