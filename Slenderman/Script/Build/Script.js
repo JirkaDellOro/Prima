@@ -42,20 +42,37 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let avatar;
+    let cmpCamera;
+    let speedRotY = -0.1;
+    let speedRotX = 0.2;
+    let rotationX = 0;
+    let cntWalk = new ƒ.Control("cntWalk", 6, 0 /* PROPORTIONAL */);
+    cntWalk.setDelay(500);
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
-        console.log(avatar);
-        viewport.camera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
-        console.log(viewport.camera);
+        viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
+        viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
+        controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function controlWalk() {
+        let input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+        cntWalk.setInput(input);
+        avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    }
+    function hndPointerMove(_event) {
+        avatar.mtxLocal.rotateY(_event.movementX * speedRotY);
+        rotationX += _event.movementY * speedRotX;
+        rotationX = Math.min(60, Math.max(-60, rotationX));
+        cmpCamera.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
