@@ -5,7 +5,7 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let speedRotY = 0.5;
-    let cntWalk = new ƒ.Control("ControlWalk", 1.5, 0 /* PROPORTIONAL */);
+    let cntWalk = new ƒ.Control("ControlWalk", 1.5, 0 /* PROPORTIONAL */, 500);
     let rotationX = 0;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
@@ -26,6 +26,7 @@ var Script;
     function control() {
         let input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
         cntWalk.setInput(input);
+        console.log(cntWalk.getOutput());
         Script.avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
     }
     function hndPointer(_event) {
