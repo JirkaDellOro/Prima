@@ -8,9 +8,8 @@ namespace Script {
   let speedRotY: number = -0.1;
   let speedRotX: number = 0.2;
   let rotationX: number = 0;
-  let cntWalk: ƒ.Control = new ƒ.Control("cntWalk", 6, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  cntWalk.setDelay(500);
-  
+  let cntWalk: ƒ.Control = new ƒ.Control("cntWalk", 6, ƒ.CONTROL_TYPE.PROPORTIONAL, 500);
+
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   function start(_event: CustomEvent): void {

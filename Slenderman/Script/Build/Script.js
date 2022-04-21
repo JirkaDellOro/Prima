@@ -46,8 +46,7 @@ var Script;
     let speedRotY = -0.1;
     let speedRotX = 0.2;
     let rotationX = 0;
-    let cntWalk = new ƒ.Control("cntWalk", 6, 0 /* PROPORTIONAL */);
-    cntWalk.setDelay(500);
+    let cntWalk = new ƒ.Control("cntWalk", 6, 0 /* PROPORTIONAL */, 500);
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
