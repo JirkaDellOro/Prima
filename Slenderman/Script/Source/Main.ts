@@ -3,13 +3,20 @@ namespace Script {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
+  let avatar: ƒ.Node;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
+    console.log(avatar);
+    
+    viewport.camera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
+    console.log(viewport.camera);
+
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {

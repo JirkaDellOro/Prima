@@ -1,4 +1,36 @@
 {
+  "MeshQuad|2022-04-14T13:07:02.565Z|78168": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2022-04-14T13:07:02.565Z|78168",
+      "name": "MeshQuad"
+    }
+  },
+  "Material|2022-04-14T13:08:13.285Z|01902": {
+    "ƒ.Material": {
+      "name": "ShaderGouraudTextured",
+      "idResource": "Material|2022-04-14T13:08:13.285Z|01902",
+      "shader": "ShaderGouraudTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-04-14T13:10:37.869Z|26295",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2022-04-14T13:10:37.869Z|26295": {
+    "ƒ.TextureImage": {
+      "url": "Image\\Grass001_1K_Color.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-04-14T13:10:37.869Z|26295",
+        "name": "Image\\Grass001_1K_Color.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2022-04-14T13:06:10.990Z|08163": {
     "ƒ.Graph": {
       "name": "Game",
@@ -71,7 +103,22 @@
           "ƒ.Node": {
             "name": "Avatar",
             "active": true,
-            "components": {},
+            "components": {
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
             "children": [
               {
                 "ƒ.Node": {
@@ -127,38 +174,6 @@
       ],
       "idResource": "Graph|2022-04-14T13:06:10.990Z|08163",
       "type": "Graph"
-    }
-  },
-  "MeshQuad|2022-04-14T13:07:02.565Z|78168": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2022-04-14T13:07:02.565Z|78168",
-      "name": "MeshQuad"
-    }
-  },
-  "Material|2022-04-14T13:08:13.285Z|01902": {
-    "ƒ.Material": {
-      "name": "ShaderGouraudTextured",
-      "idResource": "Material|2022-04-14T13:08:13.285Z|01902",
-      "shader": "ShaderGouraudTextured",
-      "coat": {
-        "ƒ.CoatRemissiveTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-04-14T13:10:37.869Z|26295",
-          "diffuse": 1,
-          "specular": 0
-        }
-      }
-    }
-  },
-  "TextureImage|2022-04-14T13:10:37.869Z|26295": {
-    "ƒ.TextureImage": {
-      "url": "Image\\Grass001_1K_Color.jpg",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2022-04-14T13:10:37.869Z|26295",
-        "name": "Image\\Grass001_1K_Color.jpg",
-        "mipmap": "CRISP"
-      }
     }
   }
 }
