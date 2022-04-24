@@ -1,5 +1,14 @@
 declare namespace Script {
     import ƒ = FudgeCore;
+    class Forest extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        amount: number;
+        constructor();
+        hndEvent: (_event: Event) => Promise<void>;
+    }
+}
+declare namespace Script {
+    import ƒ = FudgeCore;
     let avatar: ƒ.Node;
 }
 declare namespace Script {

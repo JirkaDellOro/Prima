@@ -2,10 +2,48 @@
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class Forest extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(Forest);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        // public message: string = "CustomComponentScript added to ";
+        amount = 10;
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = async (_event) => {
+            switch (_event.type) {
+                case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                    this.node.addEventListener("attachBranch" /* ATTACH_BRANCH */, this.hndEvent);
+                    break;
+                case "attachBranch" /* ATTACH_BRANCH */:
+                    console.log("Forest generation");
+                    let tree = ƒ.Project.getResourcesByName("Tree")[0];
+                    let instance = await ƒ.Project.createGraphInstance(tree);
+                    this.node.appendChild(instance);
+                    instance.addComponent(new ƒ.ComponentTransform());
+                    instance.mtxLocal.rotateX(29);
+                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                    break;
+            }
+        };
+    }
+    Script.Forest = Forest;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let speedRotY = 0.5;
     let cntWalk = new ƒ.Control("ControlWalk", 1.5, 0 /* PROPORTIONAL */, 500);
+    let cntStrafe = new ƒ.Control("ControlStrafe", 1.5, 0 /* PROPORTIONAL */, 500);
     let rotationX = 0;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
@@ -24,10 +62,13 @@ var Script;
         ƒ.AudioManager.default.update();
     }
     function control() {
-        let input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+        let input;
+        input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
         cntWalk.setInput(input);
-        console.log(cntWalk.getOutput());
         Script.avatar.mtxLocal.translateZ(cntWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
+        cntStrafe.setInput(input);
+        Script.avatar.mtxLocal.translateX(cntStrafe.getOutput() * ƒ.Loop.timeFrameGame / 1000);
     }
     function hndPointer(_event) {
         Script.avatar.mtxLocal.rotateY(-speedRotY * _event.movementX);

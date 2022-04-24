@@ -38,6 +38,52 @@
       "type": "MeshCube"
     }
   },
+  "MeshTerrain|2022-04-24T10:39:14.175Z|89547": {
+    "ƒ.MeshTerrain": {
+      "idResource": "MeshTerrain|2022-04-24T10:39:14.175Z|89547",
+      "name": "MeshTerrain",
+      "type": "MeshTerrain",
+      "seed": 0,
+      "scale": "[1, 1]",
+      "resolution": "[60, 60]"
+    }
+  },
+  "MeshSphere|2022-04-24T10:44:26.742Z|75228": {
+    "ƒ.MeshSphere": {
+      "idResource": "MeshSphere|2022-04-24T10:44:26.742Z|75228",
+      "name": "MeshSphere",
+      "type": "MeshSphere",
+      "shape": {
+        "ƒ.Vector2": [
+          "[0, 0.5]",
+          "[0.19134171307086945, 0.4619397521018982]",
+          "[0.3535533845424652, 0.3535533845424652]",
+          "[0.4619397521018982, 0.19134171307086945]",
+          "[0.5, 0]",
+          "[0.4619397521018982, -0.19134171307086945]",
+          "[0.3535533845424652, -0.3535533845424652]",
+          "[0.19134171307086945, -0.4619397521018982]",
+          "[0, -0.5]"
+        ]
+      },
+      "longitudes": 8,
+      "latitudes": 8
+    }
+  },
+  "Material|2022-04-24T10:45:30.189Z|02682": {
+    "ƒ.Material": {
+      "name": "Shiny",
+      "idResource": "Material|2022-04-24T10:45:30.189Z|02682",
+      "shader": "ShaderGouraud",
+      "coat": {
+        "ƒ.CoatRemissive": {
+          "color": "[1, 1, 1, 1]",
+          "diffuse": 0.2,
+          "specular": 0.7
+        }
+      }
+    }
+  },
   "Graph|2022-04-14T13:06:10.990Z|08163": {
     "ƒ.Graph": {
       "name": "Game",
@@ -59,6 +105,31 @@
               "Component": {
                 "active": true
               }
+            }
+          },
+          {
+            "ƒ.ComponentLight": {
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "light": {
+                "ƒ.LightAmbient": {
+                  "color": "[0.5019607843137255, 0.5019607843137255, 0.5019607843137255, 1]"
+                }
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "Forest": [
+          {
+            "Script.Forest": {
+              "active": true,
+              "amount": 10
             }
           }
         ]
@@ -101,7 +172,8 @@
                     "idMaterial": "Material|2022-04-14T13:08:13.285Z|01902"
                   }
                 }
-              ]
+              ],
+              "Forest": []
             },
             "children": []
           }
@@ -529,52 +601,6 @@
       ],
       "idResource": "Graph|2022-04-24T10:20:15.120Z|93426",
       "type": "Graph"
-    }
-  },
-  "MeshTerrain|2022-04-24T10:39:14.175Z|89547": {
-    "ƒ.MeshTerrain": {
-      "idResource": "MeshTerrain|2022-04-24T10:39:14.175Z|89547",
-      "name": "MeshTerrain",
-      "type": "MeshTerrain",
-      "seed": 0,
-      "scale": "[1, 1]",
-      "resolution": "[60, 60]"
-    }
-  },
-  "MeshSphere|2022-04-24T10:44:26.742Z|75228": {
-    "ƒ.MeshSphere": {
-      "idResource": "MeshSphere|2022-04-24T10:44:26.742Z|75228",
-      "name": "MeshSphere",
-      "type": "MeshSphere",
-      "shape": {
-        "ƒ.Vector2": [
-          "[0, 0.5]",
-          "[0.19134171307086945, 0.4619397521018982]",
-          "[0.3535533845424652, 0.3535533845424652]",
-          "[0.4619397521018982, 0.19134171307086945]",
-          "[0.5, 0]",
-          "[0.4619397521018982, -0.19134171307086945]",
-          "[0.3535533845424652, -0.3535533845424652]",
-          "[0.19134171307086945, -0.4619397521018982]",
-          "[0, -0.5]"
-        ]
-      },
-      "longitudes": 8,
-      "latitudes": 8
-    }
-  },
-  "Material|2022-04-24T10:45:30.189Z|02682": {
-    "ƒ.Material": {
-      "name": "Shiny",
-      "idResource": "Material|2022-04-24T10:45:30.189Z|02682",
-      "shader": "ShaderGouraud",
-      "coat": {
-        "ƒ.CoatRemissive": {
-          "color": "[1, 1, 1, 1]",
-          "diffuse": 0.2,
-          "specular": 0.7
-        }
-      }
     }
   }
 }
