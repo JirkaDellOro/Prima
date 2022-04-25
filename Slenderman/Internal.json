@@ -7,7 +7,7 @@
   },
   "Material|2022-04-14T13:08:13.285Z|01902": {
     "ƒ.Material": {
-      "name": "ShaderGouraudTextured",
+      "name": "Grass",
       "idResource": "Material|2022-04-14T13:08:13.285Z|01902",
       "shader": "ShaderGouraudTextured",
       "coat": {
@@ -84,6 +84,18 @@
       }
     }
   },
+  "Material|2022-04-25T08:31:21.189Z|95763": {
+    "ƒ.Material": {
+      "name": "Lit",
+      "idResource": "Material|2022-04-25T08:31:21.189Z|95763",
+      "shader": "ShaderLit",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
   "Graph|2022-04-14T13:06:10.990Z|08163": {
     "ƒ.Graph": {
       "name": "Game",
@@ -99,7 +111,7 @@
               },
               "light": {
                 "ƒ.LightDirectional": {
-                  "color": "[0.1568627450980392, 0.12941176470588237, 0.3686274509803922, 1]"
+                  "color": "[0.13333333333333333, 0.1803921568627451, 0.403921568627451, 1]"
                 }
               },
               "Component": {
@@ -116,11 +128,28 @@
               },
               "light": {
                 "ƒ.LightAmbient": {
-                  "color": "[0.5019607843137255, 0.5019607843137255, 0.5019607843137255, 1]"
+                  "color": "[0.11764705882352941, 0.1411764705882353, 0.1843137254901961, 1]"
                 }
               },
               "Component": {
                 "active": true
+              }
+            }
+          },
+          {
+            "ƒ.ComponentLight": {
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[40, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "light": {
+                "ƒ.LightDirectional": {
+                  "color": "[1, 1, 1, 1]"
+                }
+              },
+              "Component": {
+                "active": false
               }
             }
           }
@@ -129,7 +158,7 @@
           {
             "Script.Forest": {
               "active": true,
-              "amount": 10
+              "amount": 50
             }
           }
         ]
@@ -172,8 +201,7 @@
                     "idMaterial": "Material|2022-04-14T13:08:13.285Z|01902"
                   }
                 }
-              ],
-              "Forest": []
+              ]
             },
             "children": []
           }
@@ -187,9 +215,9 @@
                 {
                   "ƒ.ComponentTransform": {
                     "local": {
-                      "translation": "[0, 0, 5]",
-                      "rotation": "[0, 180, 0]",
-                      "scaling": "[1, 1, 1]"
+                      "translation": "[1.214367389678955, 0, 4.792709827423096]",
+                      "rotation": "[0, 169.99989318847656, 0]",
+                      "scaling": "[0.9999990463256836, 1, 0.9999990463256836]"
                     },
                     "Component": {
                       "active": true
@@ -242,6 +270,39 @@
                           }
                         }
                       }
+                    ],
+                    "ComponentMesh": [
+                      {
+                        "ƒ.ComponentMesh": {
+                          "idMesh": "MeshSphere|2022-04-24T10:44:26.742Z|75228",
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[0.19999992847442627, 0.19999992847442627, 0.19999992847442627]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentMaterial": [
+                      {
+                        "ƒ.ComponentMaterial": {
+                          "sortForAlpha": false,
+                          "clrPrimary": "[1, 0, 0, 1]",
+                          "clrSecondary": "[1, 1, 1, 1]",
+                          "pivot": {
+                            "translation": "[0, 0]",
+                            "rotation": 0,
+                            "scaling": "[1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          },
+                          "idMaterial": "Material|2022-04-25T08:31:21.189Z|95763"
+                        }
+                      }
                     ]
                   },
                   "children": []
@@ -256,9 +317,9 @@
                       {
                         "ƒ.ComponentLight": {
                           "pivot": {
-                            "translation": "[0, 1.2000000476837158, 0]",
+                            "translation": "[0, 1.2000001668930054, 0]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[8, 8, 30]"
+                            "scaling": "[15, 15, 30]"
                           },
                           "light": {
                             "ƒ.LightSpot": {
@@ -429,7 +490,7 @@
   },
   "Material|2022-04-16T09:00:30.887Z|11973": {
     "ƒ.Material": {
-      "name": "ShaderGouraud",
+      "name": "Diffuse",
       "idResource": "Material|2022-04-16T09:00:30.887Z|11973",
       "shader": "ShaderGouraud",
       "coat": {

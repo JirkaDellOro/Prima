@@ -8,27 +8,28 @@ var Script;
         static iSubclass = ƒ.Component.registerSubclass(Forest);
         // Properties may be mutated by users in the editor via the automatically created user interface
         // public message: string = "CustomComponentScript added to ";
-        amount = 10;
+        amount = 50;
         constructor() {
             super();
             // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
-            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+            ƒ.Project.addEventListener("resourcesLoaded" /* RESOURCES_LOADED */, this.hndEvent);
         }
         // Activate the functions of this component as response to events
         hndEvent = async (_event) => {
             switch (_event.type) {
-                case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    this.node.addEventListener("attachBranch" /* ATTACH_BRANCH */, this.hndEvent);
-                    break;
-                case "attachBranch" /* ATTACH_BRANCH */:
+                case "resourcesLoaded" /* RESOURCES_LOADED */:
                     console.log("Forest generation");
                     let tree = ƒ.Project.getResourcesByName("Tree")[0];
-                    let instance = await ƒ.Project.createGraphInstance(tree);
-                    this.node.appendChild(instance);
-                    instance.addComponent(new ƒ.ComponentTransform());
-                    instance.mtxLocal.rotateX(29);
+                    for (let i = 0; i < this.amount; i++) {
+                        let instance = await ƒ.Project.createGraphInstance(tree);
+                        this.node.appendChild(instance);
+                        instance.addComponent(new ƒ.ComponentTransform());
+                        // instance.mtxLocal.rotateX();
+                        let offset = ƒ.Random.default.getVector3(new ƒ.Vector3(-30, 0, -30), new ƒ.Vector3(30, 0, 30));
+                        instance.mtxLocal.translate(offset);
+                    }
                     // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     break;
             }

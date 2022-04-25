@@ -7,7 +7,7 @@ namespace Script {
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(Forest);
     // Properties may be mutated by users in the editor via the automatically created user interface
     // public message: string = "CustomComponentScript added to ";
-    public amount: number = 10;
+    public amount: number = 50;
 
 
     constructor() {
@@ -17,22 +17,23 @@ namespace Script {
       if (ƒ.Project.mode == ƒ.MODE.EDITOR)
         return;
 
-      this.addEventListener(ƒ.EVENT.NODE_DESERIALIZED, this.hndEvent);
+      ƒ.Project.addEventListener(ƒ.EVENT.RESOURCES_LOADED, this.hndEvent);
     }
 
     // Activate the functions of this component as response to events
     public hndEvent = async (_event: Event): Promise<void> => {
       switch (_event.type) {
-        case ƒ.EVENT.NODE_DESERIALIZED:
-          this.node.addEventListener(ƒ.EVENT.ATTACH_BRANCH, this.hndEvent);
-          break;
-        case ƒ.EVENT.ATTACH_BRANCH:
+        case ƒ.EVENT.RESOURCES_LOADED:
           console.log("Forest generation");
           let tree: ƒ.Graph = <ƒ.Graph>ƒ.Project.getResourcesByName("Tree")[0];
-          let instance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(tree);
-          this.node.appendChild(instance);
-          instance.addComponent(new ƒ.ComponentTransform());
-          instance.mtxLocal.rotateX(29);
+          for (let i: number = 0; i < this.amount; i++) {
+            let instance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(tree);
+            this.node.appendChild(instance);
+            instance.addComponent(new ƒ.ComponentTransform());
+            // instance.mtxLocal.rotateX();
+            let offset: ƒ.Vector3 = ƒ.Random.default.getVector3(new ƒ.Vector3(-30, 0, -30), new ƒ.Vector3(30, 0, 30));
+            instance.mtxLocal.translate(offset);
+          }
           // if deserialized the node is now fully reconstructed and access to all its components and children is possible
           break;
       }
