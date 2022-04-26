@@ -3,11 +3,10 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    class CustomComponentScript extends ƒ.ComponentScript {
+    class DropToGroundInitial extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
-        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
+        static iSubclass = ƒ.Component.registerSubclass(DropToGroundInitial);
         // Properties may be mutated by users in the editor via the automatically created user interface
-        message = "CustomComponentScript added to ";
         constructor() {
             super();
             // Don't start when running in editor
@@ -22,7 +21,7 @@ var Script;
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
+                    this.node.mtxLocal.translateY(-8);
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -34,7 +33,7 @@ var Script;
             }
         };
     }
-    Script.CustomComponentScript = CustomComponentScript;
+    Script.DropToGroundInitial = DropToGroundInitial;
 })(Script || (Script = {}));
 var Script;
 (function (Script) {
