@@ -56,7 +56,7 @@
               },
               "light": {
                 "ƒ.LightDirectional": {
-                  "color": "[1, 1, 1, 1]"
+                  "color": "[0.3333333333333333, 0.3254901960784314, 0.3254901960784314, 1]"
                 }
               },
               "Component": {
@@ -131,7 +131,13 @@
               "Slenderman": [
                 {
                   "Script.Slenderman": {
-                    "active": true
+                    "active": true,
+                    "timeToChange": 0,
+                    "direction": {
+                      "x": 0,
+                      "y": 0,
+                      "z": 0
+                    }
                   }
                 }
               ]
@@ -174,6 +180,34 @@
                             "translation": "[0, 1.7000001668930054, 0]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Torch",
+                  "active": true,
+                  "components": {
+                    "ComponentLight": [
+                      {
+                        "ƒ.ComponentLight": {
+                          "pivot": {
+                            "translation": "[0, 1.2000000476837158, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[10, 12, 90.00020599365234]"
+                          },
+                          "light": {
+                            "ƒ.LightSpot": {
+                              "color": "[1, 1, 1, 1]"
+                            }
                           },
                           "Component": {
                             "active": true
