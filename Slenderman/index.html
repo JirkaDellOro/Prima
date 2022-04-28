@@ -60,8 +60,6 @@
                     viewport.initialize("InteractiveViewport", graph, cmpCamera, canvas);
                     FudgeCore.Debug.log("Viewport:", viewport);
                     // hide the cursor when interacting, also suppressing right-click menu
-                    canvas.addEventListener("mousedown", canvas.requestPointerLock);
-                    canvas.addEventListener("mouseup", function () { document.exitPointerLock(); });
                     // make the camera interactive (complex method in FudgeAid)
                     // FudgeAid.Viewport.expandCameraToInteractiveOrbit(viewport);
                     // setup audio
@@ -86,6 +84,7 @@
 <!--Canvas for FUDGE to render to-->
 <canvas class="fullscreen">
 </canvas>
+
 
 
 

@@ -8,3 +8,14 @@ declare namespace Script {
 }
 declare namespace Script {
 }
+declare namespace Script {
+    import ƒ = FudgeCore;
+    class Slenderman extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        private timeToChange;
+        private direction;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        private move;
+    }
+}

@@ -127,6 +127,13 @@
                     }
                   }
                 }
+              ],
+              "Slenderman": [
+                {
+                  "Script.Slenderman": {
+                    "active": true
+                  }
+                }
               ]
             },
             "children": [

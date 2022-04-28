@@ -51,7 +51,9 @@ var Script;
         viewport = _event.detail;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
         viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
-        viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
+        let canvas = viewport.getCanvas();
+        canvas.addEventListener("pointermove", hndPointerMove);
+        canvas.requestPointerLock();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -72,5 +74,41 @@ var Script;
         rotationX = Math.min(60, Math.max(-60, rotationX));
         cmpCamera.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
     }
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class Slenderman extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(Slenderman);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        timeToChange = 0;
+        direction = ƒ.Vector3.ZERO();
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.move);
+                    break;
+            }
+        };
+        move = (_event) => {
+            this.node.mtxLocal.translate(ƒ.Vector3.SCALE(this.direction, ƒ.Loop.timeFrameGame / 1000));
+            if (this.timeToChange > ƒ.Time.game.get())
+                return;
+            this.timeToChange = ƒ.Time.game.get() + 1000;
+            this.direction = ƒ.Random.default.getVector3(new ƒ.Vector3(-1, 0, -1), new ƒ.Vector3(1, 0, 1));
+        };
+    }
+    Script.Slenderman = Slenderman;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
