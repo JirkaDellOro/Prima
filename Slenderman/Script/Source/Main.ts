@@ -9,6 +9,7 @@ namespace Script {
   let speedRotX: number = 0.2;
   let rotationX: number = 0;
   let cntWalk: ƒ.Control = new ƒ.Control("cntWalk", 6, ƒ.CONTROL_TYPE.PROPORTIONAL, 500);
+  let gameState: GameState;
 
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
@@ -16,6 +17,8 @@ namespace Script {
     viewport = _event.detail;
     avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
     viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
+
+    gameState = new GameState();
 
     let canvas: HTMLCanvasElement = viewport.getCanvas();
     canvas.addEventListener("pointermove", hndPointerMove);
@@ -30,6 +33,8 @@ namespace Script {
     controlWalk();
     viewport.draw();
     ƒ.AudioManager.default.update();
+    gameState.battery -= 0.001;
+    // document.querySelector("input").value = battery.toFixed(3);
   }
 
   function controlWalk(): void {

@@ -38,6 +38,21 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    var ƒUi = FudgeUserInterface;
+    class GameState extends ƒ.Mutable {
+        battery = 1;
+        constructor() {
+            super();
+            let domVui = document.querySelector("div#vui");
+            console.log(new ƒUi.Controller(this, domVui));
+        }
+        reduceMutator(_mutator) { }
+    }
+    Script.GameState = GameState;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let avatar;
@@ -46,11 +61,13 @@ var Script;
     let speedRotX = 0.2;
     let rotationX = 0;
     let cntWalk = new ƒ.Control("cntWalk", 6, 0 /* PROPORTIONAL */, 500);
+    let gameState;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
         viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
+        gameState = new Script.GameState();
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
@@ -62,6 +79,8 @@ var Script;
         controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
+        gameState.battery -= 0.001;
+        // document.querySelector("input").value = battery.toFixed(3);
     }
     function controlWalk() {
         let input = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
