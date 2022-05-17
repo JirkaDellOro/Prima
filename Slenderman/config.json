@@ -1,0 +1,8 @@
+{
+  "drain": 0.0001,
+  "xyz": "abc",
+  "subconfig": {
+    "health": 1,
+    "money": 100
+  }
+}

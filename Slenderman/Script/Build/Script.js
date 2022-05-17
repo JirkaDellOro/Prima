@@ -62,24 +62,40 @@ var Script;
     let rotationX = 0;
     let cntWalk = new ƒ.Control("cntWalk", 6, 0 /* PROPORTIONAL */, 500);
     let gameState;
+    let config;
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
         viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
+        viewport.getBranch().addEventListener("toggleTorch", hndToggleTorch);
         gameState = new Script.GameState();
+        let response = await fetch("config.json");
+        config = await response.json();
+        console.log(config);
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
+        document.addEventListener("keydown", hndKeydown);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    }
+    function hndToggleTorch(_event) {
+        console.log(_event);
+    }
+    function hndKeydown(_event) {
+        if (_event.code != ƒ.KEYBOARD_CODE.SPACE)
+            return;
+        let torch = avatar.getChildrenByName("Torch")[0];
+        torch.activate(!torch.isActive);
+        torch.dispatchEvent(new Event("toggleTorch", { bubbles: true }));
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
         controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
-        gameState.battery -= 0.001;
+        gameState.battery -= config["drain"];
         // document.querySelector("input").value = battery.toFixed(3);
     }
     function controlWalk() {
