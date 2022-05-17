@@ -69,6 +69,7 @@ var Script;
         avatar = viewport.getBranch().getChildrenByName("Avatar")[0];
         viewport.camera = cmpCamera = avatar.getChild(0).getComponent(ƒ.ComponentCamera);
         viewport.getBranch().addEventListener("toggleTorch", hndToggleTorch);
+        animateDoor(viewport.getBranch().getChildrenByName("Door")[0].getChildrenByName("Board")[0]);
         gameState = new Script.GameState();
         let response = await fetch("config.json");
         config = await response.json();
@@ -108,6 +109,31 @@ var Script;
         rotationX += _event.movementY * speedRotX;
         rotationX = Math.min(60, Math.max(-60, rotationX));
         cmpCamera.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
+    }
+    function animateDoor(_door) {
+        console.log(_door);
+        let animseq = new ƒ.AnimationSequence();
+        animseq.addKey(new ƒ.AnimationKey(0, 0));
+        animseq.addKey(new ƒ.AnimationKey(1000, -1));
+        let animStructure = {
+            components: {
+                ComponentTransform: [
+                    {
+                        "ƒ.ComponentTransform": {
+                            mtxLocal: {
+                                translation: {
+                                    x: animseq
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        };
+        let animation = new ƒ.Animation("animDoor", animStructure);
+        let cmpAnimator = new ƒ.ComponentAnimator(animation, ƒ.ANIMATION_PLAYMODE.LOOP);
+        _door.addComponent(cmpAnimator);
+        cmpAnimator.activate(true);
     }
 })(Script || (Script = {}));
 var Script;
