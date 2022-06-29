@@ -144,6 +144,7 @@ var Script;
         sprite.framerate = 15;
         let cmpTransfrom = new ƒ.ComponentTransform();
         sprite.addComponent(cmpTransfrom);
+        sprite.getComponent(ƒ.ComponentMaterial).clrPrimary.a = 0.5;
         return sprite;
     }
 })(Script || (Script = {}));

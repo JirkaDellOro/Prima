@@ -136,6 +136,7 @@ namespace Script {
 
     let cmpTransfrom: ƒ.ComponentTransform = new ƒ.ComponentTransform();
     sprite.addComponent(cmpTransfrom);
+    sprite.getComponent(ƒ.ComponentMaterial).clrPrimary.a = 0.5;
 
     return sprite;
   }
