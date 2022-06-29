@@ -8,11 +8,11 @@ In this course, students learn fundamentals of game engines and development envi
 The environment we work with is [FUDGE](https://jirkadelloro.github.io/FUDGE), the Furtwangen University Didactic Game Engine/Editor, which allows for optimized tuition and collaboration, while demonstrating the fundamentals of popular engines like Unreal or Unity. Students acquainted to FUDGE can easily shift over to these mighty tools later on. Coding language is [TypeScript](https://typescriptlang.org)
 
 ## Examples
-See the results created by the docents during the PRIMA-lectures. This is experimental material showing some core functionalities the course was working on, not fully functional prototypes. Usually, we examine one 2d and one 3d application.  
+This is **experimental** material created by the docents during the PRIMA-lectures while explaining some core functionalities the course was working on. Usually, we examine one 2d and one 3d application. **These are not fully functional prototypes**. 
 
 | Semester | 2D                                                                                             | 3D                                                                                       |
 |---------:|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-|      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/LaserLeague)                                | [MarkusCart](https://jirkadelloro.github.io/Prima/MarkusCart)                            |
+|      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/W21/LaserLeague)                                | [MarkusCart](https://jirkadelloro.github.io/Prima/W21/MarkusCart)                            |
 |      S21 | [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html) | [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html) |
 |      W20 | [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)              | [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)                   |
 |      S20 | [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)                  | [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)  |
