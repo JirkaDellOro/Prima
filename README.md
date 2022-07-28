@@ -27,7 +27,7 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 |  2 | Hierarchy           | Explain the setup of the graphs and the advantages you gain by it.                                                  |
 |  3 | Editor              | Use the visual editor and explain which parts are better done by coding and why.                                    |
 |  4 | Scriptcomponents    | Use scriptcomponents and explain if they were useful in your context or not and why.                                |
-|  5 | Extend              | Derive classes from FudgeCore and explain if that was useful in your context or not and why.                        |
+|  5 | Extend              | Derive classes from FudgeCore other than ScriptComponent and explain if that was useful in your context or not and why.                        |
 |  6 | Sound               | Use sounds and explain your choice of sounds and placement in respect to the user's perception.                     |
 |  7 | VUI                 | Create a virtual user interface using the interface controller and mutables. Explain the interface.                 |
 |  8 | Event-System        | Use the event system to send messages through graphs and explain if that was useful in your context or not and why. |
