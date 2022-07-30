@@ -30,7 +30,7 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 |  5 | Extend              | Derive classes from FudgeCore other than ScriptComponent and explain if that was useful in your context or not and why.                        |
 |  6 | Sound               | Use sounds and explain your choice of sounds and placement in respect to the user's perception.                     |
 |  7 | VUI                 | Create a virtual user interface using the interface controller and mutables. Explain the interface.                 |
-|  8 | Event-System        | Use custom events to send information through graphs and explain if that was useful in your context or not and why. |
+|  8 | Event-System        | Use custom events to send information that propagates along the graphs hierarchy and explain if that was useful in your context or not and why. |
 |  9 | External Data       | Create a configuration file your application loads and adjusts to the content. Explain your choice of parameters.   |
 |  A | Light               | If light is required, explain your choice of lights in your graphs (1)                                                                  |
 |  B | Physics             | Add rigidbody components and work with collisions (1) and/or forces and torques (1) and/or joints (1)               |
