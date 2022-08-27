@@ -32,7 +32,7 @@ namespace Script {
     config = await response.json();
     console.log(config);
 
-    let canvas: HTMLCanvasElement = viewport.getCanvas();
+    let canvas: HTMLCanvasElement = viewport.canvas;
     canvas.addEventListener("pointermove", hndPointerMove);
     canvas.requestPointerLock();
     document.addEventListener("keydown", hndKeydown);

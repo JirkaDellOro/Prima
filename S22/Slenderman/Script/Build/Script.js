@@ -74,7 +74,7 @@ var Script;
         let response = await fetch("config.json");
         config = await response.json();
         console.log(config);
-        let canvas = viewport.getCanvas();
+        let canvas = viewport.canvas;
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
         document.addEventListener("keydown", hndKeydown);

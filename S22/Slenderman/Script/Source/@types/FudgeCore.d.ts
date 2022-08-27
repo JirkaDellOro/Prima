@@ -123,10 +123,10 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     interface MapEventTypeToListener {
-        [eventType: string]: EventListenerƒ[];
+        [eventType: string]: EventListenerUnified[];
     }
     /**
-     * Types of events specific to Fudge, in addition to the standard DOM/Browser-Types and custom strings
+     * Types of events specific to FUDGE, in addition to the standard DOM/Browser-Types and custom strings
      */
     const enum EVENT {
         /** dispatched to targets registered at {@link Loop}, when requested animation frame starts */
@@ -147,8 +147,12 @@ declare namespace FudgeCore {
         CHILD_APPEND = "childAppend",
         /** dispatched to a child {@link Node} and its ancestors just before its being removed from its parent */
         CHILD_REMOVE = "childRemove",
-        /** dispatched to a {@link Mutable} when its being mutated */
+        /** dispatched to a {@link Mutable} when it mutates */
         MUTATE = "mutate",
+        /** dispatched to a {@link GraphInstance} when the graph it connects to mutates */
+        MUTATE_GRAPH = "mutateGraph",
+        /** dispatched to a {@link GraphInstance} after {@link MUTATE_GRAPH} to signal that all instances were informed*/
+        MUTATE_GRAPH_DONE = "mutateGraphDone",
         /** dispatched to {@link Viewport} when it gets the focus to receive keyboard input */
         FOCUS_IN = "focusin",
         /** dispatched to {@link Viewport} when it loses the focus to receive keyboard input */
@@ -159,6 +163,8 @@ declare namespace FudgeCore {
         NODE_DESERIALIZED = "nodeDeserialized",
         /** dispatched to {@link GraphInstance} when it's content is set according to a serialization of a {@link Graph}  */
         GRAPH_INSTANTIATED = "graphInstantiated",
+        /** dispatched to a {@link Graph} when it's finished deserializing  */
+        GRAPH_DESERIALIZED = "graphDeserialized",
         /** dispatched to {@link Time} when it's scaling changed  */
         TIME_SCALED = "timeScaled",
         /** dispatched to {@link FileIoBrowserLocal} when a list of files has been loaded  */
@@ -167,20 +173,31 @@ declare namespace FudgeCore {
         FILE_SAVED = "fileSaved",
         /** dispatched to {@link Node} when recalculating transforms for render */
         RENDER_PREPARE = "renderPrepare",
+        /** dispatched to {@link Viewport} and {@link Node} when recalculation of the branch to render starts. */
         RENDER_PREPARE_START = "renderPrepareStart",
-        RENDER_PREPARE_END = "renderPrepareEnd"
+        /** dispatched to {@link Viewport} and {@link Node} when recalculation of the branch to render ends. The branch dispatches before the lights are transmitted to the shaders  */
+        RENDER_PREPARE_END = "renderPrepareEnd",
+        /** dispatched to {@link Joint}-Components in order to disconnect */
+        DISCONNECT_JOINT = "disconnectJoint",
+        /** dispatched to {@link Node} when it gets attached to a viewport for rendering */
+        ATTACH_BRANCH = "attachBranch",
+        /** dispatched to {@link Project} when it's done loading resources from a url */
+        RESOURCES_LOADED = "resourcesLoaded"
     }
-    type EventListenerƒ = ((_event: EventPointer) => void) | ((_event: EventDragDrop) => void) | ((_event: EventWheel) => void) | ((_event: EventKeyboard) => void) | ((_event: Eventƒ) => void) | ((_event: EventPhysics) => void) | ((_event: CustomEvent) => void) | EventListenerOrEventListenerObject;
-    type Eventƒ = EventPointer | EventDragDrop | EventWheel | EventKeyboard | Event | EventPhysics | CustomEvent;
-    class EventTargetƒ extends EventTarget {
-        addEventListener(_type: string, _handler: EventListenerƒ, _options?: boolean | AddEventListenerOptions): void;
-        removeEventListener(_type: string, _handler: EventListenerƒ, _options?: boolean | AddEventListenerOptions): void;
-        dispatchEvent(_event: Eventƒ): boolean;
+    /** Union type of other event types serving as annotation for listeners and handlers */
+    type EventUnified = Event | CustomEvent | EventPhysics;
+    /** Unified listener type extending EventListener and EventListenerObject for CustomEvent and others */
+    type EventListenerUnified = ((_event: Event) => void) | ((_event: CustomEvent) => void) | ((_event: EventPhysics) => void) | ((_event: EventTimer) => void) | EventListener | EventListenerOrEventListenerObject;
+    /** Extends EventTarget to work with {@link EventListenerUnified} and {@link EventUnified} */
+    class EventTargetUnified extends EventTarget {
+        addEventListener(_type: string, _handler: EventListenerUnified, _options?: boolean | AddEventListenerOptions): void;
+        removeEventListener(_type: string, _handler: EventListenerUnified, _options?: boolean | AddEventListenerOptions): void;
+        dispatchEvent(_event: EventUnified): boolean;
     }
     /**
-     * Base class for EventTarget singletons, which are fixed entities in the structure of Fudge, such as the core loop
+     * Base class for EventTarget singletons, which are fixed entities in the structure of FUDGE, such as the core loop
      */
-    class EventTargetStatic extends EventTargetƒ {
+    class EventTargetStatic extends EventTargetUnified {
         protected static targetStatic: EventTargetStatic;
         protected constructor();
         static addEventListener(_type: string, _handler: EventListener): void;
@@ -218,10 +235,11 @@ declare namespace FudgeCore {
      * The provided properties of the {@link Mutator} must match public properties or getters/setters of the object.
      * Otherwise, they will be ignored if not handled by an override of the mutate-method in the subclass and throw errors in an automatically generated user-interface for the object.
      */
-    abstract class Mutable extends EventTargetƒ {
+    abstract class Mutable extends EventTargetUnified {
         /**
          * Decorator allows to attach {@link Mutable} functionality to existing classes.
          */
+        static getMutatorFromPath(_mutator: Mutator, _path: string[]): Mutator;
         /**
          * Retrieves the type of this mutable subclass as the name of the runtime class
          * @returns The type of the mutable
@@ -258,10 +276,15 @@ declare namespace FudgeCore {
          */
         updateMutator(_mutator: Mutator): void;
         /**
-         * Updates the attribute values of the instance according to the state of the mutator. Must be protected...!
-         * @param _mutator
+         * Updates the attribute values of the instance according to the state of the mutator.
+         * The mutation may be restricted to a subset of the mutator and the event dispatching suppressed.
+         * Uses mutateBase, but can be overwritten in subclasses
          */
-        mutate(_mutator: Mutator): Promise<void>;
+        mutate(_mutator: Mutator, _selection?: string[], _dispatchMutate?: boolean): Promise<void>;
+        /**
+         * Base method for mutation, always available to subclasses. Do not overwrite in subclasses!
+         */
+        protected mutateBase(_mutator: Mutator, _selection?: string[]): Promise<void>;
         /**
          * Reduces the attributes of the general mutator according to desired options for mutation. To be implemented in subclasses
          * @param _mutator
@@ -372,6 +395,174 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    interface MapClassToComponents {
+        [className: string]: Component[];
+    }
+    /**
+     * Represents a node in the scenetree.
+     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Graph
+     */
+    class Node extends EventTargetUnified implements Serializable {
+        #private;
+        name: string;
+        readonly mtxWorld: Matrix4x4;
+        timestampUpdate: number;
+        /** The number of nodes of the whole branch including this node and all successors */
+        nNodesInBranch: number;
+        /** The radius of the bounding sphere in world dimensions enclosing the geometry of this node and all successors in the branch */
+        radius: number;
+        private parent;
+        private children;
+        private components;
+        private listeners;
+        private captures;
+        private active;
+        /**
+         * Creates a new node with a name and initializes all attributes
+         */
+        constructor(_name: string);
+        get isActive(): boolean;
+        /**
+         * Shortcut to retrieve this nodes {@link ComponentTransform}
+         */
+        get cmpTransform(): ComponentTransform;
+        /**
+         * Shortcut to retrieve the local {@link Matrix4x4} attached to this nodes {@link ComponentTransform}
+         * Fails if no {@link ComponentTransform} is attached
+         */
+        get mtxLocal(): Matrix4x4;
+        get mtxWorldInverse(): Matrix4x4;
+        /**
+         * Returns the number of children attached to this
+         */
+        get nChildren(): number;
+        /**
+         * Generator yielding the node and all decendants in the graph below for iteration
+         * Inactive nodes and their descendants can be filtered
+         */
+        getIterator(_active?: boolean): IterableIterator<Node>;
+        [Symbol.iterator](): IterableIterator<Node>;
+        activate(_on: boolean): void;
+        /**
+         * Returns a reference to this nodes parent node
+         */
+        getParent(): Node | null;
+        /**
+         * Traces back the ancestors of this node and returns the first
+         */
+        getAncestor(): Node | null;
+        /**
+         * Traces the hierarchy upwards to the first ancestor and returns the path through the graph to this node
+         */
+        getPath(): Node[];
+        /**
+         * Returns child at the given index in the list of children
+         */
+        getChild(_index: number): Node;
+        /**
+         * Returns a clone of the list of children
+         */
+        getChildren(): Node[];
+        /**
+         * Returns an array of references to childnodes with the supplied name.
+         */
+        getChildrenByName(_name: string): Node[];
+        /**
+         * Simply calls {@link addChild}. This reference is here solely because appendChild is the equivalent method in DOM.
+         * See and preferably use {@link addChild}
+         */
+        readonly appendChild: (_child: Node) => void;
+        /**
+         * Adds the given reference to a node to the list of children, if not already in
+         * @throws Error when trying to add an ancestor of this
+         */
+        addChild(_child: Node): void;
+        /**
+         * Removes the reference to the give node from the list of children
+         */
+        removeChild(_child: Node): void;
+        /**
+         * Removes all references in the list of children
+         */
+        removeAllChildren(): void;
+        /**
+         * Returns the position of the node in the list of children or -1 if not found
+         */
+        findChild(_search: Node): number;
+        /**
+         * Replaces a child node with another, preserving the position in the list of children
+         */
+        replaceChild(_replace: Node, _with: Node): boolean;
+        isUpdated(_timestampUpdate: number): boolean;
+        isDescendantOf(_ancestor: Node): boolean;
+        /**
+         * Applies a Mutator from {@link Animation} to all its components and transfers it to its children.
+         */
+        applyAnimation(_mutator: Mutator): void;
+        /**
+         * Returns a list of all components attached to this node, independent of type.
+         */
+        getAllComponents(): Component[];
+        /**
+         * Returns a clone of the list of components of the given class attached to this node.
+         */
+        getComponents<T extends Component>(_class: new () => T): T[];
+        /**
+         * Returns the first compontent found of the given class attached this node or null, if list is empty or doesn't exist
+         */
+        getComponent<T extends Component>(_class: new () => T): T;
+        /**
+         * Attach the given component to this node. Identical to {@link addComponent}
+         */
+        attach(_component: Component): void;
+        /**
+         * Attach the given component to this node
+         */
+        addComponent(_component: Component): void;
+        /**
+         * Detach the given component from this node. Identical to {@link removeComponent}
+         */
+        detach(_component: Component): void;
+        /**
+         * Removes the given component from the node, if it was attached, and sets its parent to null.
+         */
+        removeComponent(_component: Component): void;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        /**
+         * Creates a string as representation of this node and its descendants
+         */
+        toHierarchyString(_node?: Node, _level?: number): string;
+        /**
+         * Adds an event listener to the node. The given handler will be called when a matching event is passed to the node.
+         * Deviating from the standard EventTarget, here the _handler must be a function and _capture is the only option.
+         */
+        addEventListener(_type: EVENT | string, _handler: EventListenerUnified, _capture?: boolean): void;
+        /**
+         * Removes an event listener from the node. The signature must match the one used with addEventListener
+         */
+        removeEventListener(_type: EVENT | string, _handler: EventListenerUnified, _capture?: boolean): void;
+        /**
+         * Dispatches a synthetic event to target. This implementation always returns true (standard: return true only if either event's cancelable attribute value is false or its preventDefault() method was not invoked)
+         * The event travels into the hierarchy to this node dispatching the event, invoking matching handlers of the nodes ancestors listening to the capture phase,
+         * than the matching handler of the target node in the target phase, and back out of the hierarchy in the bubbling phase, invoking appropriate handlers of the anvestors
+         */
+        dispatchEvent(_event: Event): boolean;
+        /**
+         * Dispatches a synthetic event to target without travelling through the graph hierarchy neither during capture nor bubbling phase
+         */
+        dispatchEventToTargetOnly(_event: Event): boolean;
+        /**
+         * Broadcasts a synthetic event to this node and from there to all nodes deeper in the hierarchy,
+         * invoking matching handlers of the nodes listening to the capture phase. Watch performance when there are many nodes involved
+         */
+        broadcastEvent(_event: Event): void;
+        private broadcastEventRecursive;
+        private callListeners;
+    }
+}
+declare namespace FudgeCore {
     /**
      * Superclass for all {@link Component}s that can be attached to {@link Node}s.
      * @authors Jirka Dell'Oro-Friedl, HFU, 2020 | Jascha Karagöl, HFU, 2019
@@ -387,6 +578,7 @@ declare namespace FudgeCore {
         static readonly subclasses: typeof Component[];
         protected singleton: boolean;
         protected active: boolean;
+        constructor();
         protected static registerSubclass(_subclass: typeof Component): number;
         get isActive(): boolean;
         /**
@@ -411,6 +603,8 @@ declare namespace FudgeCore {
 declare namespace FudgeCore {
     /**
      * Wraps a regular Javascript Array and offers very limited functionality geared solely towards avoiding garbage colletion.
+     * @author Jirka Dell'Oro-Friedl, HFU, 2021
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Recycler
      */
     class RecycableArray<T> {
         #private;
@@ -419,6 +613,7 @@ declare namespace FudgeCore {
          * Sets the virtual length of the array to zero but keeps the entries beyond.
          */
         reset(): void;
+        recycle(): void;
         push(_entry: T): number;
         pop(): T;
         /**
@@ -445,25 +640,17 @@ declare namespace FudgeCore {
 declare namespace FudgeCore {
     class RenderInjectorCoat extends RenderInjector {
         static decorate(_constructor: Function): void;
-        protected static injectCoatColored(this: Coat, _shader: typeof Shader, _cmpMaterial: ComponentMaterial): void;
-        protected static injectCoatTextured(this: Coat, _shader: typeof Shader, _cmpMaterial: ComponentMaterial): void;
+        protected static injectCoatColored(this: CoatColored, _shader: typeof Shader, _cmpMaterial: ComponentMaterial): void;
+        protected static injectCoatRemissive(this: CoatRemissive, _shader: typeof Shader, _cmpMaterial: ComponentMaterial): void;
+        protected static injectCoatTextured(this: CoatTextured, _shader: typeof Shader, _cmpMaterial: ComponentMaterial): void;
+        protected static injectCoatRemissiveTextured(this: CoatRemissiveTextured, _shader: typeof Shader, _cmpMaterial: ComponentMaterial): void;
     }
 }
 declare namespace FudgeCore {
-    interface RenderBuffers {
-        vertices: WebGLBuffer;
-        indices: WebGLBuffer;
-        textureUVs: WebGLBuffer;
-        normalsVertex: WebGLBuffer;
-        verticesFlat: WebGLBuffer;
-        indicesFlat: WebGLBuffer;
-        normalsFlat: WebGLBuffer;
-        textureUVsFlat: WebGLBuffer;
-    }
     class RenderInjectorMesh {
         static decorate(_constructor: Function): void;
-        protected static createRenderBuffers(this: Mesh): void;
-        protected static useRenderBuffers(this: Mesh, _shader: typeof Shader, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4, _id?: number): number;
+        protected static getRenderBuffers(this: Mesh, _shader: typeof Shader): RenderBuffers;
+        protected static useRenderBuffers(this: Mesh, _shader: typeof Shader, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4, _id?: number): RenderBuffers;
         protected static deleteRenderBuffers(_renderBuffers: RenderBuffers): void;
     }
 }
@@ -473,7 +660,9 @@ declare namespace FudgeCore {
     }
     /**
      * Keeps a depot of objects that have been marked for reuse, sorted by type.
-     * Using {@link Recycler} reduces load on the carbage collector and thus supports smooth performance
+     * Using {@link Recycler} reduces load on the carbage collector and thus supports smooth performance.
+     * @author Jirka Dell'Oro-Friedl, HFU, 2021
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Recycler
      */
     abstract class Recycler {
         private static depot;
@@ -482,7 +671,7 @@ declare namespace FudgeCore {
          * If the depot for that type is empty it returns a new object of the requested type
          * @param _T The class identifier of the desired object
          */
-        static get<T extends Recycable>(_T: new () => T): T;
+        static get<T extends Recycable | RecycableArray<T>>(_T: new () => T): T;
         /**
          * Returns a reference to an object of the requested type in the depot, but does not remove it there.
          * If no object of the requested type was in the depot, one is created, stored and borrowed.
@@ -836,7 +1025,7 @@ declare namespace FudgeCore {
         * A cameraprojection with extremely narrow focus is used, so each pixel of the buffer would hold the same information from the node,
         * but the fragment shader renders only 1 pixel for each node into the render buffer, 1st node to 1st pixel, 2nd node to second pixel etc.
         */
-        protected static pick(_node: Node, _mtxMeshToWorld: Matrix4x4, _mtxWorldToView: Matrix4x4): void;
+        protected static pick(_node: Node, _mtxMeshToWorld: Matrix4x4, _cmpCamera: ComponentCamera): void;
         /**
          * Set light data in shaders
          */
@@ -844,181 +1033,15 @@ declare namespace FudgeCore {
         /**
          * Draw a mesh buffer using the given infos and the complete projection matrix
          */
-        protected static drawMesh(_cmpMesh: ComponentMesh, cmpMaterial: ComponentMaterial, _cmpCamera: ComponentCamera): void;
+        protected static drawNode(_node: Node, _cmpCamera: ComponentCamera): void;
+        private static calcMeshToView;
+        private static getRenderBuffers;
     }
 }
 declare namespace FudgeCore {
     class RenderInjectorTexture extends RenderInjector {
         static decorate(_constructor: Function): void;
         protected static injectTexture(this: Texture): void;
-    }
-}
-declare namespace FudgeCore {
-    interface MapClassToComponents {
-        [className: string]: Component[];
-    }
-    /**
-     * Represents a node in the scenetree.
-     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
-     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Graph
-     */
-    class Node extends EventTargetƒ implements Serializable {
-        #private;
-        name: string;
-        readonly mtxWorld: Matrix4x4;
-        timestampUpdate: number;
-        /** The number of nodes of the whole branch including this node and all successors */
-        nNodesInBranch: number;
-        /** The radius of the bounding sphere in world dimensions enclosing the geometry of this node and all successors in the branch */
-        radius: number;
-        private parent;
-        private children;
-        private components;
-        private listeners;
-        private captures;
-        private active;
-        /**
-         * Creates a new node with a name and initializes all attributes
-         */
-        constructor(_name: string);
-        get isActive(): boolean;
-        /**
-         * Shortcut to retrieve this nodes {@link ComponentTransform}
-         */
-        get cmpTransform(): ComponentTransform;
-        /**
-         * Shortcut to retrieve the local {@link Matrix4x4} attached to this nodes {@link ComponentTransform}
-         * Fails if no {@link ComponentTransform} is attached
-         */
-        get mtxLocal(): Matrix4x4;
-        get mtxWorldInverse(): Matrix4x4;
-        /**
-         * Returns the number of children attached to this
-         */
-        get nChildren(): number;
-        /**
-         * Generator yielding the node and all decendants in the graph below for iteration
-         * Inactive nodes and their descendants can be filtered
-         */
-        getIterator(_active?: boolean): IterableIterator<Node>;
-        [Symbol.iterator](): IterableIterator<Node>;
-        activate(_on: boolean): void;
-        /**
-         * Returns a reference to this nodes parent node
-         */
-        getParent(): Node | null;
-        /**
-         * Traces back the ancestors of this node and returns the first
-         */
-        getAncestor(): Node | null;
-        /**
-         * Traces the hierarchy upwards to the first ancestor and returns the path through the graph to this node
-         */
-        getPath(): Node[];
-        /**
-         * Returns child at the given index in the list of children
-         */
-        getChild(_index: number): Node;
-        /**
-         * Returns a clone of the list of children
-         */
-        getChildren(): Node[];
-        /**
-         * Returns an array of references to childnodes with the supplied name.
-         */
-        getChildrenByName(_name: string): Node[];
-        /**
-         * Simply calls {@link addChild}. This reference is here solely because appendChild is the equivalent method in DOM.
-         * See and preferably use {@link addChild}
-         */
-        readonly appendChild: (_child: Node) => void;
-        /**
-         * Adds the given reference to a node to the list of children, if not already in
-         * @throws Error when trying to add an ancestor of this
-         */
-        addChild(_child: Node): void;
-        /**
-         * Removes the reference to the give node from the list of children
-         */
-        removeChild(_child: Node): void;
-        /**
-         * Removes all references in the list of children
-         */
-        removeAllChildren(): void;
-        /**
-         * Returns the position of the node in the list of children or -1 if not found
-         */
-        findChild(_search: Node): number;
-        /**
-         * Replaces a child node with another, preserving the position in the list of children
-         */
-        replaceChild(_replace: Node, _with: Node): boolean;
-        isUpdated(_timestampUpdate: number): boolean;
-        isDescendantOf(_ancestor: Node): boolean;
-        /**
-         * Applies a Mutator from {@link Animation} to all its components and transfers it to its children.
-         */
-        applyAnimation(_mutator: Mutator): void;
-        /**
-         * Returns a list of all components attached to this node, independent of type.
-         */
-        getAllComponents(): Component[];
-        /**
-         * Returns a clone of the list of components of the given class attached to this node.
-         */
-        getComponents<T extends Component>(_class: new () => T): T[];
-        /**
-         * Returns the first compontent found of the given class attached this node or null, if list is empty or doesn't exist
-         */
-        getComponent<T extends Component>(_class: new () => T): T;
-        /**
-         * Attach the given component to this node. Identical to {@link addComponent}
-         */
-        attach(_component: Component): void;
-        /**
-         * Attach the given component to this node
-         */
-        addComponent(_component: Component): void;
-        /**
-         * Detach the given component from this node. Identical to {@link removeComponent}
-         */
-        detach(_component: Component): void;
-        /**
-         * Removes the given component from the node, if it was attached, and sets its parent to null.
-         */
-        removeComponent(_component: Component): void;
-        serialize(): Serialization;
-        deserialize(_serialization: Serialization): Promise<Serializable>;
-        /**
-         * Creates a string as representation of this node and its descendants
-         */
-        toHierarchyString(_node?: Node, _level?: number): string;
-        /**
-         * Adds an event listener to the node. The given handler will be called when a matching event is passed to the node.
-         * Deviating from the standard EventTarget, here the _handler must be a function and _capture is the only option.
-         */
-        addEventListener(_type: EVENT | string, _handler: EventListenerƒ, _capture?: boolean): void;
-        /**
-         * Removes an event listener from the node. The signature must match the one used with addEventListener
-         */
-        removeEventListener(_type: EVENT | string, _handler: EventListenerƒ, _capture?: boolean): void;
-        /**
-         * Dispatches a synthetic event to target. This implementation always returns true (standard: return true only if either event's cancelable attribute value is false or its preventDefault() method was not invoked)
-         * The event travels into the hierarchy to this node dispatching the event, invoking matching handlers of the nodes ancestors listening to the capture phase,
-         * than the matching handler of the target node in the target phase, and back out of the hierarchy in the bubbling phase, invoking appropriate handlers of the anvestors
-         */
-        dispatchEvent(_event: Event): boolean;
-        /**
-         * Dispatches a synthetic event to target without travelling through the graph hierarchy neither during capture nor bubbling phase
-         */
-        dispatchEventToTargetOnly(_event: Event): boolean;
-        /**
-         * Broadcasts a synthetic event to this node and from there to all nodes deeper in the hierarchy,
-         * invoking matching handlers of the nodes listening to the capture phase. Watch performance when there are many nodes involved
-         */
-        broadcastEvent(_event: Event): void;
-        private broadcastEventRecursive;
-        private callListeners;
     }
 }
 declare namespace FudgeCore {
@@ -1104,8 +1127,8 @@ declare namespace FudgeCore {
         hitPoint: Vector3;
         rigidbodyComponent: ComponentRigidbody;
         hitNormal: Vector3;
-        rayOrigin: Vector3;
         rayEnd: Vector3;
+        rayOrigin: Vector3;
         constructor();
         recycle(): void;
     }
@@ -1148,6 +1171,12 @@ declare namespace FudgeCore {
          *  Default 0 = Baumgarte (fast but less correct induces some energy errors), 1 = Split-Impulse (fast and no engery errors, but more inaccurate for joints), 2 = Non-linear Gauss Seidel (slowest but most accurate)*/
         get defaultCorrectionAlgorithm(): number;
         set defaultCorrectionAlgorithm(_value: number);
+        /** The precision of the simulation in form of number of iterations the simulations runs through until it accepts the result.
+         *  10 Default - Higher means more precision but results in a performance decrease. This helps especially with joints,
+         * but also the general stability of the simulation due to simulation steps being rechecked multiple times before being set.
+         */
+        get solverIterations(): number;
+        set solverIterations(_value: number);
     }
 }
 declare namespace FudgeCore {
@@ -1216,7 +1245,7 @@ declare namespace FudgeCore {
         disconnect(): void;
         /**
          * Returns the original Joint used by the physics engine. Used internally no user interaction needed.
-         * Only to be used when functionality that is not added within Fudge is needed.
+         * Only to be used when functionality that is not added within FUDGE is needed.
         */
         getOimoJoint(): OIMO.Joint;
         serialize(): Serialization;
@@ -1231,6 +1260,7 @@ declare namespace FudgeCore {
         protected constructJoint(..._configParams: Object[]): void;
         protected configureJoint(): void;
         protected deleteFromMutator(_mutator: Mutator, _delete: Mutator): void;
+        private hndEvent;
     }
 }
 declare namespace FudgeCore {
@@ -1808,7 +1838,6 @@ declare namespace FudgeCore {
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         getMutator(): Mutator;
-        mutate(_mutator: Mutator): Promise<void>;
         protected reduceMutator(_mutator: Mutator): void;
         private hndAudioReady;
         private hndAudioEnded;
@@ -1847,9 +1876,9 @@ declare namespace FudgeCore {
 }
 declare namespace FudgeCore {
     enum FIELD_OF_VIEW {
-        HORIZONTAL = 0,
-        VERTICAL = 1,
-        DIAGONAL = 2
+        HORIZONTAL = "horizontal",
+        VERTICAL = "vertical",
+        DIAGONAL = "diagonal"
     }
     /**
      * Defines identifiers for the various projections a camera can provide.
@@ -1884,6 +1913,7 @@ declare namespace FudgeCore {
          * yielding the worldspace to viewspace matrix
          */
         get mtxWorldToView(): Matrix4x4;
+        get mtxCameraInverse(): Matrix4x4;
         resetWorldToView(): void;
         getProjection(): PROJECTION;
         getBackgroundEnabled(): boolean;
@@ -1900,11 +1930,11 @@ declare namespace FudgeCore {
          */
         projectCentral(_aspect?: number, _fieldOfView?: number, _direction?: FIELD_OF_VIEW, _near?: number, _far?: number): void;
         /**
-         * Set the camera to orthographic projection. The origin is in the top left corner of the canvas.
-         * @param _left The positionvalue of the projectionspace's left border. (Default = 0)
-         * @param _right The positionvalue of the projectionspace's right border. (Default = canvas.clientWidth)
-         * @param _bottom The positionvalue of the projectionspace's bottom border.(Default = canvas.clientHeight)
-         * @param _top The positionvalue of the projectionspace's top border.(Default = 0)
+         * Set the camera to orthographic projection. Default values are derived the canvas client dimensions
+         * @param _left The positionvalue of the projectionspace's left border.
+         * @param _right The positionvalue of the projectionspace's right border.
+         * @param _bottom The positionvalue of the projectionspace's bottom border.
+         * @param _top The positionvalue of the projectionspace's top border.
          */
         projectOrthographic(_left?: number, _right?: number, _bottom?: number, _top?: number): void;
         /**
@@ -1918,6 +1948,34 @@ declare namespace FudgeCore {
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
         mutate(_mutator: Mutator): Promise<void>;
         protected reduceMutator(_mutator: Mutator): void;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Makes the node face the camera when rendering, respecting restrictions for rotation around specific axis
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Component
+     */
+    class ComponentFaceCamera extends Component {
+        static readonly iSubclass: number;
+        upLocal: boolean;
+        up: Vector3;
+        restrict: boolean;
+        constructor();
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Filters synchronization between a graph instance and the graph it is connected to. If active, no synchronization occurs.
+     * Maybe more finegrained in the future...
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Component
+     */
+    class ComponentGraphFilter extends Component {
+        static readonly iSubclass: number;
+        constructor();
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
     }
 }
 declare namespace FudgeCore {
@@ -1936,16 +1994,17 @@ declare namespace FudgeCore {
     }
     /**
      * Ambient light, coming from all directions, illuminating everything with its color independent of position and orientation (like a foggy day or in the shades)
+     * Attached to a node by {@link ComponentLight}, the pivot matrix is ignored.
      * ```plaintext
      * ~ ~ ~
      *  ~ ~ ~
      * ```
      */
     class LightAmbient extends Light {
-        constructor(_color?: Color);
     }
     /**
      * Directional light, illuminating everything from a specified direction with its color (like standing in bright sunlight)
+     * Attached to a node by {@link ComponentLight}, the pivot matrix specifies the direction of the light only.
      * ```plaintext
      * --->
      * --->
@@ -1953,10 +2012,12 @@ declare namespace FudgeCore {
      * ```
      */
     class LightDirectional extends Light {
-        constructor(_color?: Color);
     }
     /**
      * Omnidirectional light emitting from its position, illuminating objects depending on their position and distance with its color (like a colored light bulb)
+     * Attached to a node by {@link ComponentLight}, the pivot matrix specifies the position of the light, it's shape and rotation.
+     * So with uneven scaling, other shapes than a perfect sphere, such as an oval or a disc, are possible, which creates a visible effect of the rotation too.
+     * The intensity of the light drops linearly from 1 in the center to 0 at the perimeter of the shape.
      * ```plaintext
      *         .\|/.
      *        -- o --
@@ -1964,10 +2025,11 @@ declare namespace FudgeCore {
      * ```
      */
     class LightPoint extends Light {
-        range: number;
     }
     /**
      * Spot light emitting within a specified angle from its position, illuminating objects depending on their position and distance with its color
+     * Attached to a node by {@link ComponentLight}, the pivot matrix specifies the position of the light, the direction and the size and angles of the cone.
+     * The intensity of the light drops linearly from 1 in the center to 0 at the outer limits of the cone.
      * ```plaintext
      *          o
      *         /|\
@@ -1989,6 +2051,7 @@ declare namespace FudgeCore {
     }
     /**
       * Attaches a {@link Light} to the node
+      * The pivot matrix has different effects depending on the type of the {@link Light}. See there for details.
       * @authors Jirka Dell'Oro-Friedl, HFU, 2019
       */
     class ComponentLight extends Component {
@@ -2027,15 +2090,37 @@ declare namespace FudgeCore {
      * @authors Jirka Dell'Oro-Friedl, HFU, 2019
      */
     class ComponentMesh extends Component {
+        #private;
         static readonly iSubclass: number;
         mtxPivot: Matrix4x4;
         readonly mtxWorld: Matrix4x4;
         mesh: Mesh;
-        constructor(_mesh?: Mesh);
+        constructor(_mesh?: Mesh, _skeleton?: SkeletonInstance);
         get radius(): number;
+        get skeleton(): SkeletonInstance;
+        bindSkeleton(_skeleton: SkeletonInstance): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         getMutatorForUserInterface(): MutatorForUserInterface;
+    }
+}
+declare namespace FudgeCore {
+    enum PICK {
+        RADIUS = "radius",
+        CAMERA = "camera",
+        PHYSICS = "physics"
+    }
+    /**
+     * Attaches picking functionality to the node
+     * @authors Jirka Dell'Oro-Friedl, HFU, 2022
+     */
+    class ComponentPick extends Component {
+        static readonly iSubclass: number;
+        pick: PICK;
+        pickAndDispatch(_ray: Ray, _event: PointerEvent): void;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
     }
 }
 declare namespace FudgeCore {
@@ -2059,23 +2144,13 @@ declare namespace FudgeCore {
         NODE = 3
     }
     /**
-     * Attaches a transform-[[Matrix4x4} to the node, moving, scaling and rotating it in space relative to its parent.
+     * Attaches a transform-{@link Matrix4x4} to the node, moving, scaling and rotating it in space relative to its parent.
      * @authors Jirka Dell'Oro-Friedl, HFU, 2019
      */
     class ComponentTransform extends Component {
         static readonly iSubclass: number;
         mtxLocal: Matrix4x4;
         constructor(_mtxInit?: Matrix4x4);
-        /**
-         * Adjusts the rotation to point the z-axis directly at the given target point in world space and tilts it to accord with the given up vector,
-         * respectively calculating yaw and pitch. If no up vector is given, the previous up-vector is used.
-         */
-        lookAt(_targetWorld: Vector3, _up?: Vector3): void;
-        /**
-         * Adjusts the rotation to match its y-axis with the given up-vector and facing its z-axis toward the given target at minimal angle,
-         * respectively calculating yaw only. If no up vector is given, the previous up-vector is used.
-         */
-        showTo(_targetWorld: Vector3, _up?: Vector3): void;
         /**
          * recalculates this local matrix to yield the identical world matrix based on the given node.
          * Use rebase before appending the container of this component to another node while preserving its transformation in the world.
@@ -2129,7 +2204,7 @@ declare namespace FudgeCore {
         protected timeValueDelay: number;
         protected timeOutputTargetSet: number;
         protected idTimer: number;
-        constructor(_name: string, _factor?: number, _type?: CONTROL_TYPE, _active?: boolean);
+        constructor(_name: string, _factor?: number, _type?: CONTROL_TYPE, _delay?: number);
         /**
          * Set the time-object to be used when calculating the output in {@link CONTROL_TYPE.INTEGRAL}
          */
@@ -2285,41 +2360,6 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    const enum EVENT_DRAGDROP {
-        DRAG = "\u0192drag",
-        DROP = "\u0192drop",
-        START = "\u0192dragstart",
-        END = "\u0192dragend",
-        OVER = "\u0192dragover"
-    }
-    /**
-     * a subclass of DragEvent .A event that represents a drag and drop interaction
-     */
-    class EventDragDrop extends DragEvent {
-        pointerX: number;
-        pointerY: number;
-        canvasX: number;
-        canvasY: number;
-        clientRect: ClientRect;
-        constructor(type: string, _event: EventDragDrop);
-    }
-}
-declare namespace FudgeCore {
-    /**
-     * a subclass of KeyboardEvent. EventKeyboard objects describe a user interaction with the keyboard
-     * each event describes a single interaction between the user and a key (or combination of a key with modifier keys) on the keyboard.
-     */
-    class EventKeyboard extends KeyboardEvent {
-        constructor(type: string, _event: EventKeyboard);
-    }
-    /**
-     * Mappings of standard DOM/Browser-Events as passed from a canvas to the viewport
-     */
-    const enum EVENT_KEYBOARD {
-        UP = "\u0192keyup",
-        DOWN = "\u0192keydown",
-        PRESS = "\u0192keypress"
-    }
     /**
      * The codes sent from a standard english keyboard layout
      */
@@ -2505,37 +2545,12 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    const enum EVENT_POINTER {
-        UP = "\u0192pointerup",
-        DOWN = "\u0192pointerdown",
-        MOVE = "\u0192pointermove",
-        OVER = "\u0192pointerover",
-        ENTER = "\u0192pointerenter",
-        CANCEL = "\u0192pointercancel",
-        OUT = "\u0192pointerout",
-        LEAVE = "\u0192pointerleave",
-        GOTCAPTURE = "\u0192gotpointercapture",
-        LOSTCAPTURE = "\u0192lostpointercapture"
-    }
-    /**
-     * a subclass of PointerEvent. The state of a DOM event produced by a pointer such as the geometry of the contact point
-     * */
-    class EventPointer extends PointerEvent {
-        pointerX: number;
-        pointerY: number;
-        canvasX: number;
-        canvasY: number;
-        clientRect: ClientRect;
-        constructor(type: string, _event: EventPointer);
-    }
-}
-declare namespace FudgeCore {
     const enum EVENT_TIMER {
         CALL = "\u0192lapse"
     }
     /**
-     * An event that represents a call from a Timer
-     * */
+     * An event that represents a call from a {@link Timer}
+     */
     class EventTimer {
         type: EVENT_TIMER;
         target: Timer;
@@ -2547,14 +2562,59 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    const enum EVENT_WHEEL {
-        WHEEL = "\u0192wheel"
+    /**
+     * Custom touch events
+     */
+    enum EVENT_TOUCH {
+        /** custom event fired in addition to the standard touchmove, details offset to starting touch */
+        MOVE = "touchMove",
+        /** custom event fired when the touches haven't moved outside of the tap radius */
+        TAP = "touchTap",
+        /** custom event fired when the touches have moved outside of the notch radius, details offset and cardinal direction */
+        NOTCH = "touchNotch",
+        /** custom event fired when the touches haven't moved outside of the tap radius for some time */
+        LONG = "touchLong",
+        /** custom event fired when two taps were detected in short succession */
+        DOUBLE = "touchDouble",
+        /** custom event fired when the distance between the only two touches changes beyond a tolerance */
+        PINCH = "touchPinch",
+        /** custom event not implemented yet */
+        ROTATE = "touchRotate"
+    }
+    /** Details for CustomTouchEvents, use as generic CustomEvent<EventTouchDetail> */
+    interface EventTouchDetail {
+        position: Vector2;
+        touches: TouchList;
+        offset?: Vector2;
+        movement?: Vector2;
+        cardinal?: Vector2;
+        pinch?: Vector2;
+        pinchDelta?: number;
     }
     /**
-     * A supclass of WheelEvent. Events that occur due to the user moving a mouse wheel or similar input device.
-     * */
-    class EventWheel extends WheelEvent {
-        constructor(type: string, _event: EventWheel);
+     * Dispatches CustomTouchEvents to the EventTarget given with the constructor.
+     * @author Jirka Dell'Oro-Friedl, HFU, 2022
+     */
+    class TouchEventDispatcher {
+        posStart: Vector2;
+        posNotch: Vector2;
+        radiusTap: number;
+        radiusNotch: number;
+        private target;
+        private posPrev;
+        private moved;
+        private timerDouble;
+        private timerLong;
+        private timeDouble;
+        private timeLong;
+        private time;
+        private pinchDistance;
+        private pinchTolerance;
+        constructor(_target: EventTarget, _radiusTap?: number, _radiusNotch?: number, _timeDouble?: number, _timerLong?: number);
+        hndEvent: (_event: TouchEvent) => void;
+        private detectPinch;
+        private startGesture;
+        private calcAveragePosition;
     }
 }
 declare namespace FudgeCore {
@@ -2566,36 +2626,47 @@ declare namespace FudgeCore {
     class Graph extends Node implements SerializableResource {
         idResource: string;
         type: string;
+        constructor(_name?: string);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
+        private hndMutate;
     }
 }
 declare namespace FudgeCore {
-    /**
-     * An instance of a {@link Graph}.
-     * This node keeps a reference to its resource an can thus optimize serialization
-     * @author Jirka Dell'Oro-Friedl, HFU, 2019
-     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Resource
-     */
     class GraphInstance extends Node {
-        /** id of the resource that instance was created from */
-        private idSource;
+        #private;
         /**
          * This constructor allone will not create a reconstruction, but only save the id.
          * To create an instance of the graph, call reset on this or set with a graph as parameter.
          * Prefer Project.createGraphInstance(_graph).
          */
         constructor(_graph?: Graph);
+        get idSource(): string;
         /**
          * Recreate this node from the {@link Graph} referenced
          */
         reset(): Promise<void>;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
+        connectToGraph(): Promise<void>;
         /**
          * Set this node to be a recreation of the {@link Graph} given
          */
         set(_graph: Graph): Promise<void>;
+        /**
+         * Retrieve the graph this instances refers to
+         */
+        get(): Graph;
+        /**
+         * Source graph mutated, reflect mutation in this instance
+         */
+        private hndMutationGraph;
+        /**
+         * This instance mutated, reflect mutation in source graph
+         */
+        private hndMutationInstance;
+        private reflectMutation;
+        private isFiltered;
     }
 }
 declare namespace FudgeCore {
@@ -2613,19 +2684,29 @@ declare namespace FudgeCore {
         deserialize(_serialization: Serialization): Promise<Serializable>;
         protected reduceMutator(_mutator: Mutator): void;
     }
+}
+declare namespace FudgeCore {
     /**
      * The simplest {@link Coat} providing just a color
      */
     class CoatColored extends Coat {
         color: Color;
-        shininess: number;
-        constructor(_color?: Color, _shininess?: number);
+        constructor(_color?: Color);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
     }
+}
+declare namespace FudgeCore {
     /**
-     * A {@link Coat} to be used by the MatCap Shader providing a texture, a tint color (0.5 grey is neutral). Set shadeSmooth to 1 for smooth shading.
+     * The simplest {@link Coat} providing just a color
      */
+    class CoatRemissive extends CoatColored {
+        specular: number;
+        diffuse: number;
+        constructor(_color?: Color, _diffuse?: number, _specular?: number);
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+    }
 }
 declare namespace FudgeCore {
     /**
@@ -2634,6 +2715,18 @@ declare namespace FudgeCore {
     class CoatTextured extends CoatColored {
         texture: Texture;
         constructor(_color?: Color, _texture?: Texture);
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * A {@link Coat} providing a texture and additional data for texturing
+     */
+    class CoatRemissiveTextured extends CoatTextured {
+        specular: number;
+        diffuse: number;
+        constructor(_color?: Color, _texture?: Texture, _diffuse?: number, _specular?: number);
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
     }
@@ -2705,8 +2798,22 @@ declare namespace FudgeCore {
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         getMutator(): Mutator;
-        mutate(_mutator: Mutator): Promise<void>;
         protected reduceMutator(_mutator: Mutator): void;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Abstract class supporting various arithmetical helper functions
+     */
+    abstract class Calc {
+        /** factor multiplied with angle in degrees yields the angle in radian */
+        static readonly deg2rad: number;
+        /** factor multiplied with angle in radian yields the angle in degrees */
+        static readonly rad2deg: number;
+        /**
+         * Returns one of the values passed in, either _value if within _min and _max or the boundary being exceeded by _value
+         */
+        static clamp<T>(_value: T, _min: T, _max: T, _isSmaller?: (_value1: T, _value2: T) => boolean): T;
     }
 }
 declare namespace FudgeCore {
@@ -2838,7 +2945,6 @@ declare namespace FudgeCore {
      * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2020
      */
     class Matrix3x3 extends Mutable implements Serializable, Recycable {
-        private static deg2rad;
         private data;
         private mutator;
         private vectors;
@@ -2883,7 +2989,14 @@ declare namespace FudgeCore {
          * Return a copy of this
          */
         get clone(): Matrix3x3;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache. Used by the recycler to reset.
+         */
         recycle(): void;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache.
+         */
+        reset(): void;
         /**
          * Add a translation by the given {@link Vector2} to this matrix
          */
@@ -2960,7 +3073,6 @@ declare namespace FudgeCore {
      */
     export class Matrix4x4 extends Mutable implements Serializable, Recycable {
         #private;
-        private static deg2rad;
         private data;
         private mutator;
         private vectors;
@@ -2991,13 +3103,13 @@ declare namespace FudgeCore {
         /**
          * Computes and returns a matrix with the given translation, its z-axis pointing directly at the given target,
          * and a minimal angle between its y-axis and the given up-{@link Vector3}, respetively calculating yaw and pitch.
+         * The pitch may be restricted to the up-vector to only calculate yaw.
          */
-        static LOOK_AT(_translation: Vector3, _target: Vector3, _up?: Vector3): Matrix4x4;
+        static LOOK_AT(_translation: Vector3, _target: Vector3, _up?: Vector3, _restrict?: boolean): Matrix4x4;
         /**
          * Computes and returns a matrix with the given translation, its y-axis matching the given up-{@link Vector3}
          * and its z-axis facing towards the given target at a minimal angle, respetively calculating yaw only.
          */
-        static SHOW_TO(_translation: Vector3, _target: Vector3, _up?: Vector3): Matrix4x4;
         /**
          * Returns a matrix that translates coordinates along the x-, y- and z-axis according to the given {@link Vector3}.
          */
@@ -3072,7 +3184,14 @@ declare namespace FudgeCore {
          * Return a copy of this
          */
         get clone(): Matrix4x4;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache. Used by the recycler to reset.
+         */
         recycle(): void;
+        /**
+         * Resets the matrix to the identity-matrix and clears cache.
+         */
+        reset(): void;
         /**
          * Rotate this matrix by given {@link Vector3} in the order Z, Y, X. Right hand rotation is used, thumb points in axis direction, fingers curling indicate rotation
          * The rotation is appended to already applied transforms, thus multiplied from the right. Set _fromLeft to true to switch and put it in front.
@@ -3095,19 +3214,12 @@ declare namespace FudgeCore {
         /**
          * Adjusts the rotation of this matrix to point the z-axis directly at the given target and tilts it to accord with the given up-{@link Vector3},
          * respectively calculating yaw and pitch. If no up-{@link Vector3} is given, the previous up-{@link Vector3} is used.
-         * When _preserveScaling is false, a rotated identity matrix is the result.
+         * The pitch may be restricted to the up-vector to only calculate yaw.
          */
-        lookAt(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
+        lookAt(_target: Vector3, _up?: Vector3, _restrict?: boolean): void;
         /**
          * Same as {@link Matrix4x4.lookAt}, but optimized and needs testing
          */
-        lookAtRotate(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
-        /**
-         * Adjusts the rotation of this matrix to match its y-axis with the given up-{@link Vector3} and facing its z-axis toward the given target at minimal angle,
-         * respectively calculating yaw only. If no up-{@link Vector3} is given, the previous up-{@link Vector3} is used.
-         * When _preserveScaling is false, a rotated identity matrix is the result.
-         */
-        showTo(_target: Vector3, _up?: Vector3, _preserveScaling?: boolean): void;
         /**
          * Add a translation by the given {@link Vector3} to this matrix.
          * If _local is true, translation occurs according to the current rotation and scaling of this matrix,
@@ -3148,7 +3260,6 @@ declare namespace FudgeCore {
         multiply(_matrix: Matrix4x4, _fromLeft?: boolean): void;
         /**
          * Calculates and returns the euler-angles representing the current rotation of this matrix.
-         * **Caution!** Use immediately and readonly, since the vector is going to be reused by Recycler. Create a clone to keep longer and manipulate.
          */
         getEulerAngles(): Vector3;
         /**
@@ -3564,27 +3675,9 @@ declare namespace FudgeCore {
         static readonly subclasses: typeof Mesh[];
         idResource: string;
         name: string;
-        renderBuffers: RenderBuffers;
-        protected cloud: Vertices;
-        protected faces: Face[];
-        /** vertices of the actual point cloud, some points might be in the same location in order to refer to different texels */
-        protected ƒvertices: Float32Array;
-        /** indices to create faces from the vertices, rotation determines direction of face-normal */
-        protected ƒindices: Uint16Array;
-        /** texture coordinates associated with the vertices by the position in the array */
-        protected ƒtextureUVs: Float32Array;
-        /** normals of the faces, not used for rendering but computation of flat- and vertex-normals */
-        protected ƒnormalsFaceUnscaled: Float32Array;
-        /** vertex normals for smooth shading, interpolated between vertices during rendering */
-        protected ƒnormalsVertex: Float32Array;
-        /** flat-shading: normalized face normals, every third entry is used only */
-        protected ƒnormalsFlat: Float32Array;
-        /** flat-shading: extra vertex array, since using vertices with multiple faces is rarely possible due to the limitation above */
-        protected ƒverticesFlat: Float32Array;
-        /** flat-shading: therefore an extra indices-array is needed */
-        protected ƒindicesFlat: Uint16Array;
-        /** flat-shading: and an extra textureUV-array */
-        protected ƒtextureUVsFlat: Float32Array;
+        vertices: Vertices;
+        faces: Face[];
+        protected renderMesh: RenderMesh;
         /** bounding box AABB */
         protected ƒbox: Box;
         /** bounding radius */
@@ -3592,27 +3685,15 @@ declare namespace FudgeCore {
         constructor(_name?: string);
         protected static registerSubclass(_subClass: typeof Mesh): number;
         get type(): string;
-        get vertices(): Float32Array;
-        get indices(): Uint16Array;
-        get normalsVertex(): Float32Array;
-        get textureUVs(): Float32Array;
-        get verticesFlat(): Float32Array;
-        get indicesFlat(): Uint16Array;
-        get normalsFlat(): Float32Array;
-        get textureUVsFlat(): Float32Array;
         get boundingBox(): Box;
         get radius(): number;
-        useRenderBuffers(_shader: typeof Shader, _mtxWorld: Matrix4x4, _mtxProjection: Matrix4x4, _id?: number): number;
-        createRenderBuffers(): void;
+        useRenderBuffers(_shader: typeof Shader, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4, _id?: number): RenderBuffers;
+        getRenderBuffers(_shader: typeof Shader): RenderBuffers;
         deleteRenderBuffers(_shader: typeof Shader): void;
         clear(): void;
         serialize(): Serialization;
         deserialize(_serialization: Serialization): Promise<Serializable>;
         protected reduceMutator(_mutator: Mutator): void;
-        protected createVerticesFlat(): Float32Array;
-        protected createNormalsFlat(): Float32Array;
-        protected createTextureUVsFlat(): Float32Array;
-        protected calculateFaceCrossProducts(): Float32Array;
         protected createRadius(): number;
         protected createBoundingBox(): Box;
     }
@@ -3695,6 +3776,18 @@ declare namespace FudgeCore {
         protected createTextureUVs(): Float32Array;
         protected createIndices(): Uint16Array;
         protected createFlatNormals(): Float32Array;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Mesh loaded from a GLTF-file
+     * @author Matthias Roming, HFU, 2022
+     */
+    class MeshGLTF extends Mesh {
+        private uriGLTF;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        load(_loader: GLTFLoader, _iMesh: number): Promise<MeshGLTF>;
     }
 }
 declare namespace FudgeCore {
@@ -3843,6 +3936,25 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    class RenderInjectorMeshSkin extends RenderInjectorMesh {
+        static decorate(_constructor: Function): void;
+        protected static getRenderBuffers(this: MeshSkin, _shader: typeof Shader): RenderBuffers;
+        protected static useRenderBuffers(this: MeshSkin, _shader: typeof Shader, _mtxMeshToWorld: Matrix4x4, _mtxMeshToView: Matrix4x4, _id?: number, _mtxBones?: Matrix4x4[]): RenderBuffers;
+        protected static deleteRenderBuffers(_renderBuffers: RenderBuffers): void;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Mesh influenced by a skeleton
+     * @author Matthias Roming, HFU, 2022
+     */
+    class MeshSkin extends MeshGLTF {
+        load(_loader: GLTFLoader, _iMesh: number): Promise<MeshSkin>;
+        useRenderBuffers(_shader: typeof Shader, _mtxWorld: Matrix4x4, _mtxProjection: Matrix4x4, _id?: number, _mtxBones?: Matrix4x4[]): RenderBuffers;
+        protected reduceMutator(_mutator: Mutator): void;
+    }
+}
+declare namespace FudgeCore {
     /**
      * Generate a UV Sphere with a given number of sectors and stacks (clamped at 128*128)
      * Implementation based on http://www.songho.ca/opengl/gl_sphere.html
@@ -3920,11 +4032,16 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
+    interface Bone {
+        index: number;
+        weight: number;
+    }
     class Vertex {
         position: Vector3;
         uv: Vector2;
         normal: Vector3;
         referTo: number;
+        bones: Bone[];
         /**
          * Represents a vertex of a mesh with extended information such as the uv coordinates and the vertex normal.
          * It may refer to another vertex via an index into some array, in which case the position and the normal are stored there.
@@ -3942,6 +4059,10 @@ declare namespace FudgeCore {
      */
     class Vertices extends Array<Vertex> {
         /**
+         * Returns the subset of vertices that do not refer to other vertices
+         */
+        get originals(): Array<Vertex>;
+        /**
          * returns the position associated with the vertex addressed, resolving references between vertices
          */
         position(_index: number): Vector3;
@@ -3953,6 +4074,10 @@ declare namespace FudgeCore {
          * returns the uv-coordinates associated with the vertex addressed
          */
         uv(_index: number): Vector2;
+        /**
+         * returns the position associated with the vertex addressed, resolving references between vertices
+         */
+        bones(_index: number): Bone[];
     }
 }
 declare namespace FudgeCore {
@@ -3969,7 +4094,7 @@ declare namespace FudgeCore {
     }
     /**
        * Acts as the physical representation of the {@link Node} it's attached to.
-       * It's the connection between the Fudge rendered world and the Physics world.
+       * It's the connection between the FUDGE rendered world and the Physics world.
        * For the physics to correctly get the transformations rotations need to be applied with from left = true.
        * Or rotations need to happen before scaling.
        * @author Marko Fehrenbach, HFU, 2020 | Jirka Dell'Oro-Friedl, HFU, 2021
@@ -4169,7 +4294,7 @@ declare namespace FudgeCore {
         getMutatorAttributeTypes(_mutator: Mutator): MutatorAttributeTypes;
         reduceMutator(_mutator: Mutator): void;
         private create;
-        /** Creates the actual OimoPhysics Rigidbody out of informations the Fudge Component has. */
+        /** Creates the actual OimoPhysics Rigidbody out of informations the FUDGE Component has. */
         private createRigidbody;
         /** Creates a collider a shape that represents the object in the physical world.  */
         private createCollider;
@@ -4185,13 +4310,13 @@ declare namespace FudgeCore {
         /**
         * Trigger EnteringEvent Callback, automatically called by OIMO Physics within their calculations.
         * Since the event does not know which body is the trigger iniator, the event can be listened to
-        * on either the trigger or the triggered. (This is only possible with the Fudge OIMO Fork!)
+        * on either the trigger or the triggered. (This is only possible with the FUDGE OIMO Fork!)
         */
         private triggerEnter;
         /**
         * Trigger LeavingEvent Callback, automatically called by OIMO Physics within their calculations.
         * Since the event does not know which body is the trigger iniator, the event can be listened to
-        * on either the trigger or the triggered. (This is only possible with the Fudge OIMO Fork!)
+        * on either the trigger or the triggered. (This is only possible with the FUDGE OIMO Fork!)
         */
         private triggerExit;
     }
@@ -4243,7 +4368,7 @@ declare namespace FudgeCore {
         vertexShader: WebGLShader;
         fragmentShader: WebGLShader;
         uniformLocationMap: Map<string, WebGLUniformLocation>;
-        /** Introduce the Fudge Rendering Context to this class, creating a program and vertex/fragment shader in this context */
+        /** Introduce the FUDGE Rendering Context to this class, creating a program and vertex/fragment shader in this context */
         constructor(_renderingContext: WebGL2RenderingContext);
         /** Take glsl shaders as strings and compile them, attaching the compiled shaders to a program thats used by this rendering context. */
         compile(vertexSource: string, fragmentSource: string): void;
@@ -4253,7 +4378,7 @@ declare namespace FudgeCore {
         getUniformLocation(_name: string): WebGLUniformLocation;
         /** Get all indices for every attribute in the shaders of this program */
         getAttribIndices(_attribs: Array<PhysicsDebugVertexAttribute>): Array<number>;
-        /** Tell the Fudge Rendering Context to use this program to draw. */
+        /** Tell the FUDGE Rendering Context to use this program to draw. */
         use(): void;
         /** Compile a shader out of a string and validate it. */
         compileShader(shader: WebGLShader, source: string): void;
@@ -4282,7 +4407,7 @@ declare namespace FudgeCore {
         triData: Array<number>;
         triIboData: Array<number>;
         numTriData: number;
-        /** Creating the debug for physics in Fudge. Tell it to draw only wireframe objects, since Fudge is handling rendering of the objects besides physics.
+        /** Creating the debug for physics in FUDGE. Tell it to draw only wireframe objects, since FUDGE is handling rendering of the objects besides physics.
          * Override OimoPhysics Functions with own rendering. Initialize buffers and connect them with the context for later use. */
         constructor();
         /** Receive the current DebugMode from the physics settings and set the OimoPhysics.DebugDraw booleans to show only certain informations.
@@ -4295,7 +4420,7 @@ declare namespace FudgeCore {
         initializeBuffers(): void;
         /** Before OimoPhysics.world is filling the debug. Make sure the buffers are reset. Also receiving the debugMode from settings and updating the current projection for the vertexShader. */
         clearBuffers(): void;
-        /** After OimoPhysics.world filled the debug. Rendering calls. Setting this program to be used by the Fudge rendering context. And draw each updated buffer and resetting them. */
+        /** After OimoPhysics.world filled the debug. Rendering calls. Setting this program to be used by the FUDGE rendering context. And draw each updated buffer and resetting them. */
         drawBuffers(): void;
         /** Drawing the ray into the debugDraw Call. By using the overwritten line rendering functions and drawing a point (pointSize defined in the shader) at the end of the ray. */
         debugRay(_origin: Vector3, _end: Vector3, _color: Color): void;
@@ -4303,7 +4428,7 @@ declare namespace FudgeCore {
          * Overriding them to receive debugInformations in the format the physic engine provides them but handling the rendering in the fudge context. */
         private initializeOverride;
         /** The source code (string) of the in physicsDebug used very simple vertexShader.
-         *  Handling the projection (which includes, view/world[is always identity in this case]/projection in Fudge). Increasing the size of single points drawn.
+         *  Handling the projection (which includes, view/world[is always identity in this case]/projection in FUDGE). Increasing the size of single points drawn.
          *  And transfer position color to the fragmentShader. */
         private vertexShaderSource;
         /** The source code (string) of the in physicsDebug used super simple fragmentShader. Unlit - only colorizing the drawn pixels, normals/position are given to make it expandable */
@@ -4765,6 +4890,8 @@ declare namespace FudgeCore {
          * Define the currently active Physics instance
          */
         static set activeInstance(_physics: Physics);
+        /** Get the currently active Physics instance */
+        static get activeInstance(): Physics;
         static get debugDraw(): PhysicsDebugDraw;
         static get mainCam(): ComponentCamera;
         /**
@@ -4830,6 +4957,7 @@ declare namespace FudgeCore {
         private static getRayEndPoint;
         /** Internal function to get the distance in which a ray hit by subtracting points from each other and get the square root of the squared product of each component. */
         private static getRayDistance;
+        getOimoWorld(): OIMO.World;
     }
 }
 declare namespace FudgeCore {
@@ -4937,12 +5065,12 @@ declare namespace FudgeCore {
          * Takes a ray plus min and max values for the near and far planes to construct the picker-camera,
          * then renders the pick-texture and returns an unsorted {@link Pick}-array with information about the hits of the ray.
          */
-        static pickRay(_branch: Node, _ray: Ray, _min: number, _max: number): Pick[];
+        static pickRay(_nodes: Node[], _ray: Ray, _min: number, _max: number): Pick[];
         /**
          * Takes a camera and a point on its virtual normed projection plane (distance 1) to construct the picker-camera,
          * then renders the pick-texture and returns an unsorted {@link Pick}-array with information about the hits of the ray.
          */
-        static pickCamera(_branch: Node, _cmpCamera: ComponentCamera, _posProjection: Vector2): Pick[];
+        static pickCamera(_nodes: Node[], _cmpCamera: ComponentCamera, _posProjection: Vector2): Pick[];
         /**
          * Takes the camera of the given viewport and a point the client surface to construct the picker-camera,
          * then renders the pick-texture and returns an unsorted {@link Pick}-array with information about the hits of the ray.
@@ -4989,7 +5117,7 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    type MapLightTypeToLightList = Map<TypeOfLight, ComponentLight[]>;
+    type MapLightTypeToLightList = Map<TypeOfLight, RecycableArray<ComponentLight>>;
     interface RenderPrepareOptions {
         ignorePhysics?: boolean;
     }
@@ -5000,6 +5128,8 @@ declare namespace FudgeCore {
         static rectClip: Rectangle;
         static pickBuffer: Int32Array;
         static nodesPhysics: RecycableArray<Node>;
+        static componentsPick: RecycableArray<ComponentPick>;
+        static lights: MapLightTypeToLightList;
         private static nodesSimple;
         private static nodesAlpha;
         private static timestampUpdate;
@@ -5008,16 +5138,75 @@ declare namespace FudgeCore {
          * collects all lights and feeds all shaders used in the graph with these lights. Sorts nodes for different
          * render passes.
          */
-        static prepare(_branch: Node, _options?: RenderPrepareOptions, _mtxWorld?: Matrix4x4, _lights?: MapLightTypeToLightList, _shadersUsed?: (typeof Shader)[]): void;
+        static prepare(_branch: Node, _options?: RenderPrepareOptions, _mtxWorld?: Matrix4x4, _shadersUsed?: (typeof Shader)[]): void;
+        static addLights(cmpLights: ComponentLight[]): void;
         /**
          * Used with a {@link Picker}-camera, this method renders one pixel with picking information
          * for each node in the line of sight and return that as an unsorted {@link Pick}-array
          */
-        static pickBranch(_branch: Node, _cmpCamera: ComponentCamera): Pick[];
+        static pickBranch(_nodes: Node[], _cmpCamera: ComponentCamera): Pick[];
         static draw(_cmpCamera: ComponentCamera): void;
         private static drawListAlpha;
         private static drawList;
         private static transformByPhysics;
+    }
+}
+declare namespace FudgeCore {
+    /**
+     * Inserted into a {@link Mesh}, an instance of this class calculates and represents the mesh data in the form needed by the render engine
+     */
+    interface RenderBuffers {
+        vertices?: WebGLBuffer;
+        indices?: WebGLBuffer;
+        textureUVs?: WebGLBuffer;
+        normals?: WebGLBuffer;
+        iBones?: WebGLBuffer;
+        weights?: WebGLBuffer;
+        nIndices?: number;
+    }
+    class RenderMesh {
+        smooth: RenderBuffers;
+        flat: RenderBuffers;
+        mesh: Mesh;
+        /** vertices of the actual point cloud, some points might be in the same location in order to refer to different texels */
+        protected ƒvertices: Float32Array;
+        /** indices to create faces from the vertices, rotation determines direction of face-normal */
+        protected ƒindices: Uint16Array;
+        /** texture coordinates associated with the vertices by the position in the array */
+        protected ƒtextureUVs: Float32Array;
+        /** vertex normals for smooth shading, interpolated between vertices during rendering */
+        protected ƒnormalsVertex: Float32Array;
+        /** bones */
+        protected ƒiBones: Uint8Array;
+        protected ƒweights: Float32Array;
+        /** flat-shading: normalized face normals, every third entry is used only */
+        protected ƒnormalsFlat: Float32Array;
+        /** flat-shading: extra vertex array, since using vertices with multiple faces is rarely possible due to the limitation above */
+        protected ƒverticesFlat: Float32Array;
+        /** flat-shading: therefore an extra indices-array is needed */
+        protected ƒindicesFlat: Uint16Array;
+        /** flat-shading: and an extra textureUV-array */
+        protected ƒtextureUVsFlat: Float32Array;
+        /** bones */
+        protected ƒiBonesFlat: Uint8Array;
+        protected ƒweightsFlat: Float32Array;
+        constructor(_mesh: Mesh);
+        get iBones(): Uint8Array;
+        get weights(): Float32Array;
+        get vertices(): Float32Array;
+        get indices(): Uint16Array;
+        get normalsVertex(): Float32Array;
+        get textureUVs(): Float32Array;
+        get verticesFlat(): Float32Array;
+        get indicesFlat(): Uint16Array;
+        get normalsFlat(): Float32Array;
+        get textureUVsFlat(): Float32Array;
+        get iBonesFlat(): Uint8Array;
+        get weightsFlat(): Float32Array;
+        clear(): void;
+        protected createVerticesFlat(): Float32Array;
+        protected createNormalsFlat(): Float32Array;
+        protected createTextureUVsFlat(): Float32Array;
     }
 }
 declare namespace FudgeCore {
@@ -5031,9 +5220,10 @@ declare namespace FudgeCore {
      * and the propagation of the rendered image from the offscreen renderbuffer to the target canvas
      * through a series of {@link Framing} objects. The stages involved are in order of rendering
      * {@link Render}.viewport -> {@link Viewport}.source -> {@link Viewport}.destination -> DOM-Canvas -> Client(CSS)
-     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019
+     * @authors Jascha Karagöl, HFU, 2019 | Jirka Dell'Oro-Friedl, HFU, 2019-2022
+     * @link https://github.com/JirkaDellOro/FUDGE/wiki/Viewport
      */
-    class Viewport extends EventTargetƒ {
+    class Viewport extends EventTargetUnified {
         #private;
         private static focus;
         name: string;
@@ -5047,22 +5237,23 @@ declare namespace FudgeCore {
         adjustingFrames: boolean;
         adjustingCamera: boolean;
         physicsDebugMode: PHYSICS_DEBUGMODE;
+        componentsPick: RecycableArray<ComponentPick>;
         /**
          * Returns true if this viewport currently has focus and thus receives keyboard events
          */
         get hasFocus(): boolean;
         /**
-         * Connects the viewport to the given canvas to render the given branch to using the given camera-component, and names the viewport as given.
-         */
-        initialize(_name: string, _branch: Node, _camera: ComponentCamera, _canvas: HTMLCanvasElement): void;
-        /**
          * Retrieve the destination canvas
          */
-        getCanvas(): HTMLCanvasElement;
+        get canvas(): HTMLCanvasElement;
         /**
          * Retrieve the 2D-context attached to the destination canvas
          */
-        getContext(): CanvasRenderingContext2D;
+        get context(): CanvasRenderingContext2D;
+        /**
+         * Connects the viewport to the given canvas to render the given branch to using the given camera-component, and names the viewport as given.
+         */
+        initialize(_name: string, _branch: Node, _camera: ComponentCamera, _canvas: HTMLCanvasElement): void;
         /**
          * Retrieve the size of the destination canvas as a rectangle, x and y are always 0
          */
@@ -5093,6 +5284,7 @@ declare namespace FudgeCore {
          * Calculate the cascade of transforms in this branch and store the results as mtxWorld in the {@link Node}s and {@link ComponentMesh}es
          */
         calculateTransforms(): void;
+        dispatchPointerEvent(_event: PointerEvent): void;
         /**
          * Adjust all frames involved in the rendering process from the display area in the client up to the renderer canvas
          */
@@ -5143,48 +5335,10 @@ declare namespace FudgeCore {
         pointClientToScreen(_client: Vector2): Vector2;
         /**
          * Switch the viewports focus on or off. Only one viewport in one FUDGE instance can have the focus, thus receiving keyboard events.
-         * So a viewport currently having the focus will lose it, when another one receives it. The viewports fire {@link Eventƒ}s accordingly.
+         * So a viewport currently having the focus will lose it, when another one receives it. The viewports fire {@link EventUnified}s accordingly.
          * // TODO: examine, if this can be achieved by regular DOM-Focus and tabindex=0
          */
         setFocus(_on: boolean): void;
-        /**
-         * De- / Activates the given pointer event to be propagated into the viewport as FUDGE-Event
-         */
-        activatePointerEvent(_type: EVENT_POINTER, _on: boolean): void;
-        /**
-         * De- / Activates the given keyboard event to be propagated into the viewport as FUDGE-Event
-         */
-        activateKeyboardEvent(_type: EVENT_KEYBOARD, _on: boolean): void;
-        /**
-         * De- / Activates the given drag-drop event to be propagated into the viewport as FUDGE-Event
-         */
-        activateDragDropEvent(_type: EVENT_DRAGDROP, _on: boolean): void;
-        /**
-         * De- / Activates the wheel event to be propagated into the viewport as FUDGE-Event
-         */
-        activateWheelEvent(_type: EVENT_WHEEL, _on: boolean): void;
-        /**
-         * Handle drag-drop events and dispatch to viewport as FUDGE-Event
-         */
-        private hndDragDropEvent;
-        /**
-         * Add position of the pointer mapped to canvas-coordinates as canvasX, canvasY to the event
-         */
-        private addCanvasPosition;
-        /**
-         * Handle pointer events and dispatch to viewport as FUDGE-Event
-         */
-        private hndPointerEvent;
-        /**
-         * Handle keyboard events and dispatch to viewport as FUDGE-Event, if the viewport has the focus
-         */
-        private hndKeyboardEvent;
-        /**
-         * Handle wheel event and dispatch to viewport as FUDGE-Event
-         */
-        private hndWheelEvent;
-        private activateEvent;
-        private hndComponentEvent;
     }
 }
 declare namespace FudgeCore {
@@ -5192,7 +5346,7 @@ declare namespace FudgeCore {
         [filename: string]: string;
     }
     /**
-     * Handles file transfer from a Fudge-Browserapp to the local filesystem without a local server.
+     * Handles file transfer from a FUDGE-Browserapp to the local filesystem without a local server.
      * Saves to the download-path given by the browser, loads from the player's choice.
      */
     class FileIoBrowserLocal extends EventTargetStatic {
@@ -5221,38 +5375,42 @@ declare namespace FudgeCore {
     }
 }
 declare namespace FudgeCore {
-    enum MODE {
+    export enum MODE {
         EDITOR = 0,
         RUNTIME = 1
     }
-    interface SerializableResource extends Serializable {
+    export interface SerializableResource extends Serializable {
         name: string;
         type: string;
         idResource: string;
     }
-    interface Resources {
+    export interface Resources {
         [idResource: string]: SerializableResource;
     }
-    interface SerializationOfResources {
+    export interface SerializationOfResources {
         [idResource: string]: Serialization;
     }
-    interface ScriptNamespaces {
+    export interface ScriptNamespaces {
         [name: string]: Object;
     }
-    interface ComponentScripts {
+    export interface ComponentScripts {
         [namespace: string]: ComponentScript[];
+    }
+    interface GraphInstancesToResync {
+        [idResource: string]: GraphInstance[];
     }
     /**
      * Static class handling the resources used with the current FUDGE-instance.
      * Keeps a list of the resources and generates ids to retrieve them.
      * Resources are objects referenced multiple times but supposed to be stored only once
      */
-    abstract class Project {
+    export abstract class Project extends EventTargetStatic {
         static resources: Resources;
         static serialization: SerializationOfResources;
         static scriptNamespaces: ScriptNamespaces;
         static baseURL: URL;
         static mode: MODE;
+        static graphInstancesToResync: GraphInstancesToResync;
         /**
          * Registers the resource and generates an id for it by default.
          * If the resource already has an id, thus having been registered, its deleted from the list and registered anew.
@@ -5261,7 +5419,8 @@ declare namespace FudgeCore {
         static register(_resource: SerializableResource, _idResource?: string): void;
         static deregister(_resource: SerializableResource): void;
         static clear(): void;
-        static getResourcesOfType<T>(_type: new (_args: General) => T): Resources;
+        static getResourcesByType<T>(_type: new (_args: General) => T): SerializableResource[];
+        static getResourcesByName(_name: string): SerializableResource[];
         /**
          * Generate a user readable and unique id using the type of the resource, the date and random numbers
          * @param _resource
@@ -5282,8 +5441,15 @@ declare namespace FudgeCore {
          * @param _replaceWithInstance if true (default), the node used as origin is replaced by a {@link GraphInstance} of the {@link Graph} created
          */
         static registerAsGraph(_node: Node, _replaceWithInstance?: boolean): Promise<Graph>;
+        /**
+         * Creates and returns a {@link GraphInstance} of the given {@link Graph}
+         * and connects it to the graph for synchronisation of mutation.
+         */
         static createGraphInstance(_graph: Graph): Promise<GraphInstance>;
+        static registerGraphInstanceForResync(_instance: GraphInstance): void;
+        static resyncGraphInstances(_graph: Graph): Promise<void>;
         static registerScriptNamespace(_namespace: Object): void;
+        static clearScriptNamespaces(): void;
         static getComponentScripts(): ComponentScripts;
         static loadScript(_url: RequestInfo): Promise<void>;
         static loadResources(_url: RequestInfo): Promise<Resources>;
@@ -5299,6 +5465,731 @@ declare namespace FudgeCore {
         static deserialize(_serialization: SerializationOfResources): Promise<Resources>;
         private static deserializeResource;
     }
+    export {};
+}
+declare namespace GLTF {
+    type GlTfId = number;
+    /**
+     * An object pointing to a buffer view containing the indices of deviating accessor values. The number of indices is equal to `accessor.sparse.count`. Indices **MUST** strictly increase.
+     */
+    interface AccessorSparseIndices {
+        /**
+         * The index of the buffer view with sparse indices. The referenced buffer view **MUST NOT** have its `target` or `byteStride` properties defined. The buffer view and the optional `byteOffset` **MUST** be aligned to the `componentType` byte length.
+         */
+        "bufferView": GlTfId;
+        /**
+         * The offset relative to the start of the buffer view in bytes.
+         */
+        "byteOffset"?: number;
+        /**
+         * The indices data type.
+         */
+        "componentType": number | number | number | number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * An object pointing to a buffer view containing the deviating accessor values. The number of elements is equal to `accessor.sparse.count` times number of components. The elements have the same component type as the base accessor. The elements are tightly packed. Data **MUST** be aligned following the same rules as the base accessor.
+     */
+    interface AccessorSparseValues {
+        /**
+         * The index of the bufferView with sparse values. The referenced buffer view **MUST NOT** have its `target` or `byteStride` properties defined.
+         */
+        "bufferView": GlTfId;
+        /**
+         * The offset relative to the start of the bufferView in bytes.
+         */
+        "byteOffset"?: number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * Sparse storage of accessor values that deviate from their initialization value.
+     */
+    interface AccessorSparse {
+        /**
+         * Number of deviating accessor values stored in the sparse array.
+         */
+        "count": number;
+        /**
+         * An object pointing to a buffer view containing the indices of deviating accessor values. The number of indices is equal to `count`. Indices **MUST** strictly increase.
+         */
+        "indices": AccessorSparseIndices;
+        /**
+         * An object pointing to a buffer view containing the deviating accessor values.
+         */
+        "values": AccessorSparseValues;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A typed view into a buffer view that contains raw binary data.
+     */
+    interface Accessor {
+        /**
+         * The index of the bufferView.
+         */
+        "bufferView"?: GlTfId;
+        /**
+         * The offset relative to the start of the buffer view in bytes.
+         */
+        "byteOffset"?: number;
+        /**
+         * The datatype of the accessor's components.
+         */
+        "componentType": number | number | number | number | number | number | number;
+        /**
+         * Specifies whether integer data values are normalized before usage.
+         */
+        "normalized"?: boolean;
+        /**
+         * The number of elements referenced by this accessor.
+         */
+        "count": number;
+        /**
+         * Specifies if the accessor's elements are scalars, vectors, or matrices.
+         */
+        "type": any | any | any | any | any | any | any | string;
+        /**
+         * Maximum value of each component in this accessor.
+         */
+        "max"?: number[];
+        /**
+         * Minimum value of each component in this accessor.
+         */
+        "min"?: number[];
+        /**
+         * Sparse storage of elements that deviate from their initialization value.
+         */
+        "sparse"?: AccessorSparse;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * The descriptor of the animated property.
+     */
+    interface AnimationChannelTarget {
+        /**
+         * The index of the node to animate. When undefined, the animated object **MAY** be defined by an extension.
+         */
+        "node"?: GlTfId;
+        /**
+         * The name of the node's TRS property to animate, or the `"weights"` of the Morph Targets it instantiates. For the `"translation"` property, the values that are provided by the sampler are the translation along the X, Y, and Z axes. For the `"rotation"` property, the values are a quaternion in the order (x, y, z, w), where w is the scalar. For the `"scale"` property, the values are the scaling factors along the X, Y, and Z axes.
+         */
+        "path": any | any | any | any | string;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * An animation channel combines an animation sampler with a target property being animated.
+     */
+    interface AnimationChannel {
+        /**
+         * The index of a sampler in this animation used to compute the value for the target.
+         */
+        "sampler": GlTfId;
+        /**
+         * The descriptor of the animated property.
+         */
+        "target": AnimationChannelTarget;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * An animation sampler combines timestamps with a sequence of output values and defines an interpolation algorithm.
+     */
+    interface AnimationSampler {
+        /**
+         * The index of an accessor containing keyframe timestamps.
+         */
+        "input": GlTfId;
+        /**
+         * Interpolation algorithm.
+         */
+        "interpolation"?: any | any | any | string;
+        /**
+         * The index of an accessor, containing keyframe output values.
+         */
+        "output": GlTfId;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A keyframe animation.
+     */
+    interface Animation {
+        /**
+         * An array of animation channels. An animation channel combines an animation sampler with a target property being animated. Different channels of the same animation **MUST NOT** have the same targets.
+         */
+        "channels": AnimationChannel[];
+        /**
+         * An array of animation samplers. An animation sampler combines timestamps with a sequence of output values and defines an interpolation algorithm.
+         */
+        "samplers": AnimationSampler[];
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * Metadata about the glTF asset.
+     */
+    interface Asset {
+        /**
+         * A copyright message suitable for display to credit the content creator.
+         */
+        "copyright"?: string;
+        /**
+         * Tool that generated this glTF model.  Useful for debugging.
+         */
+        "generator"?: string;
+        /**
+         * The glTF version in the form of `<major>.<minor>` that this asset targets.
+         */
+        "version": string;
+        /**
+         * The minimum glTF version in the form of `<major>.<minor>` that this asset targets. This property **MUST NOT** be greater than the asset version.
+         */
+        "minVersion"?: string;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A buffer points to binary geometry, animation, or skins.
+     */
+    interface Buffer {
+        /**
+         * The URI (or IRI) of the buffer.
+         */
+        "uri"?: string;
+        /**
+         * The length of the buffer in bytes.
+         */
+        "byteLength": number;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A view into a buffer generally representing a subset of the buffer.
+     */
+    interface BufferView {
+        /**
+         * The index of the buffer.
+         */
+        "buffer": GlTfId;
+        /**
+         * The offset into the buffer in bytes.
+         */
+        "byteOffset"?: number;
+        /**
+         * The length of the bufferView in bytes.
+         */
+        "byteLength": number;
+        /**
+         * The stride, in bytes.
+         */
+        "byteStride"?: number;
+        /**
+         * The hint representing the intended GPU buffer type to use with this buffer view.
+         */
+        "target"?: number | number | number;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * An orthographic camera containing properties to create an orthographic projection matrix.
+     */
+    interface CameraOrthographic {
+        /**
+         * The floating-point horizontal magnification of the view. This value **MUST NOT** be equal to zero. This value **SHOULD NOT** be negative.
+         */
+        "xmag": number;
+        /**
+         * The floating-point vertical magnification of the view. This value **MUST NOT** be equal to zero. This value **SHOULD NOT** be negative.
+         */
+        "ymag": number;
+        /**
+         * The floating-point distance to the far clipping plane. This value **MUST NOT** be equal to zero. `zfar` **MUST** be greater than `znear`.
+         */
+        "zfar": number;
+        /**
+         * The floating-point distance to the near clipping plane.
+         */
+        "znear": number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A perspective camera containing properties to create a perspective projection matrix.
+     */
+    interface CameraPerspective {
+        /**
+         * The floating-point aspect ratio of the field of view.
+         */
+        "aspectRatio"?: number;
+        /**
+         * The floating-point vertical field of view in radians. This value **SHOULD** be less than π.
+         */
+        "yfov": number;
+        /**
+         * The floating-point distance to the far clipping plane.
+         */
+        "zfar"?: number;
+        /**
+         * The floating-point distance to the near clipping plane.
+         */
+        "znear": number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A camera's projection.  A node **MAY** reference a camera to apply a transform to place the camera in the scene.
+     */
+    interface Camera {
+        /**
+         * An orthographic camera containing properties to create an orthographic projection matrix. This property **MUST NOT** be defined when `perspective` is defined.
+         */
+        "orthographic"?: CameraOrthographic;
+        /**
+         * A perspective camera containing properties to create a perspective projection matrix. This property **MUST NOT** be defined when `orthographic` is defined.
+         */
+        "perspective"?: CameraPerspective;
+        /**
+         * Specifies if the camera uses a perspective or orthographic projection.
+         */
+        "type": any | any | string;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * Image data used to create a texture. Image **MAY** be referenced by an URI (or IRI) or a buffer view index.
+     */
+    interface Image {
+        /**
+         * The URI (or IRI) of the image.
+         */
+        "uri"?: string;
+        /**
+         * The image's media type. This field **MUST** be defined when `bufferView` is defined.
+         */
+        "mimeType"?: any | any | string;
+        /**
+         * The index of the bufferView that contains the image. This field **MUST NOT** be defined when `uri` is defined.
+         */
+        "bufferView"?: GlTfId;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * Reference to a texture.
+     */
+    interface TextureInfo {
+        /**
+         * The index of the texture.
+         */
+        "index": GlTfId;
+        /**
+         * The set index of texture's TEXCOORD attribute used for texture coordinate mapping.
+         */
+        "texCoord"?: number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A set of parameter values that are used to define the metallic-roughness material model from Physically-Based Rendering (PBR) methodology.
+     */
+    interface MaterialPbrMetallicRoughness {
+        /**
+         * The factors for the base color of the material.
+         */
+        "baseColorFactor"?: number[];
+        /**
+         * The base color texture.
+         */
+        "baseColorTexture"?: TextureInfo;
+        /**
+         * The factor for the metalness of the material.
+         */
+        "metallicFactor"?: number;
+        /**
+         * The factor for the roughness of the material.
+         */
+        "roughnessFactor"?: number;
+        /**
+         * The metallic-roughness texture.
+         */
+        "metallicRoughnessTexture"?: TextureInfo;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    interface MaterialNormalTextureInfo {
+        "index"?: any;
+        "texCoord"?: any;
+        /**
+         * The scalar parameter applied to each normal vector of the normal texture.
+         */
+        "scale"?: number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    interface MaterialOcclusionTextureInfo {
+        "index"?: any;
+        "texCoord"?: any;
+        /**
+         * A scalar multiplier controlling the amount of occlusion applied.
+         */
+        "strength"?: number;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * The material appearance of a primitive.
+     */
+    interface Material {
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        /**
+         * A set of parameter values that are used to define the metallic-roughness material model from Physically Based Rendering (PBR) methodology. When undefined, all the default values of `pbrMetallicRoughness` **MUST** apply.
+         */
+        "pbrMetallicRoughness"?: MaterialPbrMetallicRoughness;
+        /**
+         * The tangent space normal texture.
+         */
+        "normalTexture"?: MaterialNormalTextureInfo;
+        /**
+         * The occlusion texture.
+         */
+        "occlusionTexture"?: MaterialOcclusionTextureInfo;
+        /**
+         * The emissive texture.
+         */
+        "emissiveTexture"?: TextureInfo;
+        /**
+         * The factors for the emissive color of the material.
+         */
+        "emissiveFactor"?: number[];
+        /**
+         * The alpha rendering mode of the material.
+         */
+        "alphaMode"?: any | any | any | string;
+        /**
+         * The alpha cutoff value of the material.
+         */
+        "alphaCutoff"?: number;
+        /**
+         * Specifies whether the material is double sided.
+         */
+        "doubleSided"?: boolean;
+        [k: string]: any;
+    }
+    /**
+     * Geometry to be rendered with the given material.
+     */
+    interface MeshPrimitive {
+        /**
+         * A plain JSON object, where each key corresponds to a mesh attribute semantic and each value is the index of the accessor containing attribute's data.
+         */
+        "attributes": {
+            [k: string]: GlTfId;
+        };
+        /**
+         * The index of the accessor that contains the vertex indices.
+         */
+        "indices"?: GlTfId;
+        /**
+         * The index of the material to apply to this primitive when rendering.
+         */
+        "material"?: GlTfId;
+        /**
+         * The topology type of primitives to render.
+         */
+        "mode"?: number | number | number | number | number | number | number | number;
+        /**
+         * An array of morph targets.
+         */
+        "targets"?: {
+            [k: string]: GlTfId;
+        }[];
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A set of primitives to be rendered.  Its global transform is defined by a node that references it.
+     */
+    interface Mesh {
+        /**
+         * An array of primitives, each defining geometry to be rendered.
+         */
+        "primitives": MeshPrimitive[];
+        /**
+         * Array of weights to be applied to the morph targets. The number of array elements **MUST** match the number of morph targets.
+         */
+        "weights"?: number[];
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A node in the node hierarchy.  When the node contains `skin`, all `mesh.primitives` **MUST** contain `JOINTS_0` and `WEIGHTS_0` attributes.  A node **MAY** have either a `matrix` or any combination of `translation`/`rotation`/`scale` (TRS) properties. TRS properties are converted to matrices and postmultiplied in the `T * R * S` order to compose the transformation matrix; first the scale is applied to the vertices, then the rotation, and then the translation. If none are provided, the transform is the identity. When a node is targeted for animation (referenced by an animation.channel.target), `matrix` **MUST NOT** be present.
+     */
+    interface Node {
+        /**
+         * The index of the camera referenced by this node.
+         */
+        "camera"?: GlTfId;
+        /**
+         * The indices of this node's children.
+         */
+        "children"?: GlTfId[];
+        /**
+         * The index of the skin referenced by this node.
+         */
+        "skin"?: GlTfId;
+        /**
+         * A floating-point 4x4 transformation matrix stored in column-major order.
+         */
+        "matrix"?: number[];
+        /**
+         * The index of the mesh in this node.
+         */
+        "mesh"?: GlTfId;
+        /**
+         * The node's unit quaternion rotation in the order (x, y, z, w), where w is the scalar.
+         */
+        "rotation"?: number[];
+        /**
+         * The node's non-uniform scale, given as the scaling factors along the x, y, and z axes.
+         */
+        "scale"?: number[];
+        /**
+         * The node's translation along the x, y, and z axes.
+         */
+        "translation"?: number[];
+        /**
+         * The weights of the instantiated morph target. The number of array elements **MUST** match the number of morph targets of the referenced mesh. When defined, `mesh` **MUST** also be defined.
+         */
+        "weights"?: number[];
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * Texture sampler properties for filtering and wrapping modes.
+     */
+    interface Sampler {
+        /**
+         * Magnification filter.
+         */
+        "magFilter"?: number | number | number;
+        /**
+         * Minification filter.
+         */
+        "minFilter"?: number | number | number | number | number | number | number;
+        /**
+         * S (U) wrapping mode.
+         */
+        "wrapS"?: number | number | number | number;
+        /**
+         * T (V) wrapping mode.
+         */
+        "wrapT"?: number | number | number | number;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * The root nodes of a scene.
+     */
+    interface Scene {
+        /**
+         * The indices of each root node.
+         */
+        "nodes"?: GlTfId[];
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * Joints and matrices defining a skin.
+     */
+    interface Skin {
+        /**
+         * The index of the accessor containing the floating-point 4x4 inverse-bind matrices.
+         */
+        "inverseBindMatrices"?: GlTfId;
+        /**
+         * The index of the node used as a skeleton root.
+         */
+        "skeleton"?: GlTfId;
+        /**
+         * Indices of skeleton nodes, used as joints in this skin.
+         */
+        "joints": GlTfId[];
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * A texture and its sampler.
+     */
+    interface Texture {
+        /**
+         * The index of the sampler used by this texture. When undefined, a sampler with repeat wrapping and auto filtering **SHOULD** be used.
+         */
+        "sampler"?: GlTfId;
+        /**
+         * The index of the image used by this texture. When undefined, an extension or other mechanism **SHOULD** supply an alternate texture source, otherwise behavior is undefined.
+         */
+        "source"?: GlTfId;
+        "name"?: any;
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+    /**
+     * The root object for a glTF asset.
+     */
+    interface GlTf {
+        /**
+         * Names of glTF extensions used in this asset.
+         */
+        "extensionsUsed"?: string[];
+        /**
+         * Names of glTF extensions required to properly load this asset.
+         */
+        "extensionsRequired"?: string[];
+        /**
+         * An array of accessors.
+         */
+        "accessors"?: Accessor[];
+        /**
+         * An array of keyframe animations.
+         */
+        "animations"?: Animation[];
+        /**
+         * Metadata about the glTF asset.
+         */
+        "asset": Asset;
+        /**
+         * An array of buffers.
+         */
+        "buffers"?: Buffer[];
+        /**
+         * An array of bufferViews.
+         */
+        "bufferViews"?: BufferView[];
+        /**
+         * An array of cameras.
+         */
+        "cameras"?: Camera[];
+        /**
+         * An array of images.
+         */
+        "images"?: Image[];
+        /**
+         * An array of materials.
+         */
+        "materials"?: Material[];
+        /**
+         * An array of meshes.
+         */
+        "meshes"?: Mesh[];
+        /**
+         * An array of nodes.
+         */
+        "nodes"?: Node[];
+        /**
+         * An array of samplers.
+         */
+        "samplers"?: Sampler[];
+        /**
+         * The index of the default scene.
+         */
+        "scene"?: GlTfId;
+        /**
+         * An array of scenes.
+         */
+        "scenes"?: Scene[];
+        /**
+         * An array of skins.
+         */
+        "skins"?: Skin[];
+        /**
+         * An array of textures.
+         */
+        "textures"?: Texture[];
+        "extensions"?: any;
+        "extras"?: any;
+        [k: string]: any;
+    }
+}
+declare namespace FudgeCore {
+    class GLTFLoader {
+        #private;
+        private static loaders;
+        private static defaultMaterial;
+        private static defaultSkinMaterial;
+        readonly gltf: GLTF.GlTf;
+        readonly uri: string;
+        private constructor();
+        static LOAD(_uri: string): Promise<GLTFLoader>;
+        getScene(_name?: string): Promise<GraphInstance>;
+        getSceneByIndex(_iScene?: number): Promise<GraphInstance>;
+        getNode(_name: string): Promise<Node>;
+        getNodeByIndex(_iNode: number): Promise<Node>;
+        getCamera(_name: string): Promise<ComponentCamera>;
+        getCameraByIndex(_iCamera: number): Promise<ComponentCamera>;
+        getAnimation(_name: string): Promise<Animation>;
+        getAnimationByIndex(_iAnimation: number): Promise<Animation>;
+        getMesh(_name: string): Promise<MeshGLTF>;
+        getMeshByIndex(_iMesh: number): Promise<MeshGLTF>;
+        getSkeleton(_name: string): Promise<SkeletonInstance>;
+        getSkeletonByIndex(_iSkeleton: number): Promise<SkeletonInstance>;
+        getUint8Array(_iAccessor: number): Promise<Uint8Array>;
+        getUint16Array(_iAccessor: number): Promise<Uint16Array>;
+        getUint32Array(_iAccessor: number): Promise<Uint32Array>;
+        getFloat32Array(_iAccessor: number): Promise<Float32Array>;
+        private getBufferData;
+        private isSkeletalAnimation;
+        private findSkeletalAnimationIndices;
+        private isBoneIndex;
+        private getAnimationSequenceVector3;
+    }
+}
+declare namespace FudgeCore {
+    let shaderSources: {
+        [source: string]: string;
+    };
 }
 declare namespace FudgeCore {
     /**
@@ -5310,8 +6201,7 @@ declare namespace FudgeCore {
         static readonly baseClass: typeof Shader;
         /** list of all the subclasses derived from this class, if they registered properly*/
         static readonly subclasses: typeof Shader[];
-        static vertexShaderSource: string;
-        static fragmentShaderSource: string;
+        static define: string[];
         static program: WebGLProgram;
         static attributes: {
             [name: string]: number;
@@ -5327,92 +6217,164 @@ declare namespace FudgeCore {
         static useProgram(this: typeof Shader): void;
         static createProgram(this: typeof Shader): void;
         protected static registerSubclass(_subclass: typeof Shader): number;
+        protected static insertDefines(_shader: string, _defines: string[]): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderFlat extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderFlatSkin extends Shader {
+        static readonly iSubclass: number;
+        static define: string[];
+        static getCoat(): typeof Coat;
+    }
+}
+declare namespace FudgeCore {
     abstract class ShaderFlatTextured extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderGouraud extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
+    abstract class ShaderGouraudSkin extends Shader {
+        static readonly iSubclass: number;
+        static define: string[];
+        static getCoat(): typeof Coat;
+    }
+}
+declare namespace FudgeCore {
     abstract class ShaderGouraudTextured extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderLit extends Shader {
         static readonly iSubclass: number;
-        static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
+        static define: string[];
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderLitTextured extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderMatCap extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
-        static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderPhong extends Shader {
         static readonly iSubclass: number;
+        static define: string[];
         static getCoat(): typeof Coat;
-        static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderPick extends Shader {
+        static define: string[];
         static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;
     }
 }
 declare namespace FudgeCore {
-    /** Code generated by CompileShaders.mjs using the information in CompileShaders.json */
     abstract class ShaderPickTextured extends Shader {
+        static define: string[];
         static getVertexShaderSource(): string;
         static getFragmentShaderSource(): string;
+    }
+}
+declare namespace FudgeCore {
+    interface BoneList {
+        [boneName: string]: Node;
+    }
+}
+declare namespace FudgeCore {
+    interface BoneMatrixList {
+        [boneName: string]: Matrix4x4;
+    }
+}
+declare namespace FudgeCore {
+    class Skeleton extends Graph {
+        readonly bones: BoneList;
+        readonly mtxBindInverses: BoneMatrixList;
+        /**
+         * Creates a new skeleton with a name
+         */
+        constructor(_name?: string);
+        /**
+         * Appends a node to this skeleton or the given parent and registers it as a bone
+         * @param _mtxInit initial local matrix
+         * @param _parentName name of the parent node, that must be registered as a bone
+         */
+        addBone(_bone: Node, _mtxInit?: Matrix4x4, _parentName?: string): void;
+        /**
+         * Registers a node as a bone with its bind inverse matrix
+         * @param _bone the node to be registered, that should be a descendant of this skeleton
+         * @param _mtxBindInverse a precalculated inverse matrix of the bind pose from the bone
+         */
+        registerBone(_bone: Node, _mtxBindInverse?: Matrix4x4): void;
+        /**
+         * Sets the current state of this skeleton as the default pose
+         * by updating the inverse bind matrices
+         */
+        setDefaultPose(): void;
+        indexOfBone(_boneName: string): number;
+        serialize(): Serialization;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        /**
+         * Calculates and sets the world matrix of a bone relative to its parent
+         */
+        private calculateMtxWorld;
+        /**
+         * Deregisters all bones of a removed node
+         */
+        private hndChildRemove;
+    }
+}
+declare namespace FudgeCore {
+    class SkeletonInstance extends GraphInstance {
+        #private;
+        private skeletonSource;
+        static CREATE(_skeleton: Skeleton): Promise<SkeletonInstance>;
+        get bones(): BoneList;
+        get mtxBoneLocals(): BoneMatrixList;
+        /**
+         * Gets the bone transformations for a vertex
+         */
+        get mtxBones(): Matrix4x4[];
+        /**
+         * Set this skeleton instance to be a recreation of the {@link Skeleton} given
+         */
+        set(_skeleton: Skeleton): Promise<void>;
+        deserialize(_serialization: Serialization): Promise<Serializable>;
+        /**
+         * Resets this skeleton instance to its default pose
+         */
+        resetPose(): void;
+        applyAnimation(_mutator: Mutator): void;
+        private calculateMtxBones;
+        private registerBones;
     }
 }
 declare namespace FudgeCore {
@@ -5507,7 +6469,7 @@ declare namespace FudgeCore {
         TIME_REAL = "timeReal"
     }
     /**
-     * Core loop of a Fudge application. Initializes automatically and must be started explicitly.
+     * Core loop of a FUDGE application. Initializes automatically and must be started explicitly.
      * It then fires {@link EVENT.LOOP_FRAME} to all added listeners at each frame
      *
      * @author Jirka Dell'Oro-Friedl, HFU, 2019
@@ -5587,7 +6549,7 @@ declare namespace FudgeCore {
      *
      * @authors Jirka Dell'Oro-Friedl, HFU, 2019
      */
-    class Time extends EventTargetƒ {
+    class Time extends EventTargetUnified {
         /** Standard game time starting automatically with the application */
         static readonly game: Time;
         private start;
@@ -5598,7 +6560,7 @@ declare namespace FudgeCore {
         private idTimerAddedLast;
         constructor();
         /**
-         * Returns the game-time-object which starts automatically and serves as base for various internal operations.
+         * Returns representions of the time given in milliseconds in various formats defined in {@link TimeUnits}
          */
         static getUnits(_milliseconds: number): TimeUnits;
         /**

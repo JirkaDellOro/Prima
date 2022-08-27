@@ -12,7 +12,8 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 
 | Semester | 2D                                                                                             | 3D                                                                                       |
 |---------:|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-|      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/W21/LaserLeague)                                | [MarkusCart](https://jirkadelloro.github.io/Prima/W21/MarkusCart)                            |
+|      W21 | [Pacman](https://jirkadelloro.github.io/Prima/S22/Pacman)                                      | [MarkusCart](https://jirkadelloro.github.io/Prima/S22/Slenderman)                        |
+|      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/W21/LaserLeague)                            | [MarkusCart](https://jirkadelloro.github.io/Prima/W21/MarkusCart)                        |
 |      S21 | [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html) | [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html) |
 |      W20 | [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)              | [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)                   |
 |      S20 | [Snake](https://jirkadelloro.github.io/Prima/S20/L08_Snake3D_Enemy/Main.html)                  | [TowerDefense](https://jirkadelloro.github.io/Prima/S20/L11_TowerDefenseFire/Main.html)  |
@@ -32,7 +33,7 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 |  7 | VUI                 | Create a virtual user interface using the interface controller and mutables. Explain the interface.                 |
 |  8 | Event-System        | Use the event system to send messages through graphs and explain if that was useful in your context or not and why. |
 |  9 | External Data       | Create a configuration file your application loads and adjusts to the content. Explain your choice of parameters.   |
-|  A | Light               | Explain your choice of lights in your graphs (1)                                                                  |
+|  A | Light               | Explain your choice of lights in your graphs (1)                                                                    |
 |  B | Physics             | Add rigidbody components and work with collisions (1) and/or forces and torques (1) and/or joints (1)               |
 |  C | Net                 | Add multiplayer functionality via network (3)                                                                       |
 |  D | State Machines      | Create autonomous entities using the StateMachine (1) and/or ComponentStateMachine (1) defined in FudgeAid          |
