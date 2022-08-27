@@ -8,7 +8,7 @@ In this course, students learn fundamentals of game engines and development envi
 The environment we work with is [FUDGE](https://jirkadelloro.github.io/FUDGE), the Furtwangen University Didactic Game Engine/Editor, which allows for optimized tuition and collaboration, while demonstrating the fundamentals of popular engines like Unreal or Unity. Students acquainted to FUDGE can easily shift over to these mighty tools later on. Coding language is [TypeScript](https://typescriptlang.org)
 
 ## Examples
-This is **experimental** material created by the docents during the PRIMA-lectures while explaining some core functionalities the course was working on. Usually, we examine one 2d and one 3d application. **These are not fully functional prototypes**. 
+This is **experimental** material created by the docents during the PRIMA-lectures while explaining some core functionalities the course was working on. Usually, we examine one 2d and one 3d application. **These are not fully functional and self explaining prototypes**. 
 
 | Semester | 2D                                                                                             | 3D                                                                                       |
 |---------:|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
