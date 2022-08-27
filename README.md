@@ -12,7 +12,7 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 
 | Semester | 2D                                                                                             | 3D                                                                                       |
 |---------:|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-|      W21 | [Pacman](https://jirkadelloro.github.io/Prima/S22/Pacman)                                      | [MarkusCart](https://jirkadelloro.github.io/Prima/S22/Slenderman)                        |
+|      S22 | [Pacman](https://jirkadelloro.github.io/Prima/S22/Pacman)                                      | [Slenderman](https://jirkadelloro.github.io/Prima/S22/Slenderman)                        |
 |      W21 | [LaserLeague](https://jirkadelloro.github.io/Prima/W21/LaserLeague)                            | [MarkusCart](https://jirkadelloro.github.io/Prima/W21/MarkusCart)                        |
 |      S21 | [SpaceInvaders](https://jirkadelloro.github.io/Prima/S21/L02_SpaceInvaders/SpaceInvaders.html) | [PhysicsGame](https://jirkadelloro.github.io/Prima/S21/L05_PhysicsGame/PhysicsGame.html) |
 |      W20 | [BreakOut](https://jirkadelloro.github.io/Prima/W20/L07_BreakOut_Final/Main.html)              | [Doom](https://jirkadelloro.github.io/Prima/W20/L13_Doom_UI/Main.html)                   |
