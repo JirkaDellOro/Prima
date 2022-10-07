@@ -23,7 +23,7 @@
           {
             "ƒ.ComponentMaterial": {
               "sortForAlpha": false,
-              "clrPrimary": "[1, 1, 1, 1]",
+              "clrPrimary": "[1, 0, 0, 1]",
               "clrSecondary": "[1, 1, 1, 1]",
               "pivot": {
                 "translation": "[0, 0]",
@@ -38,7 +38,24 @@
           }
         ]
       },
-      "children": [],
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Mario",
+            "active": true,
+            "components": {},
+            "children": []
+          }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Enemies",
+            "active": true,
+            "components": {},
+            "children": []
+          }
+        }
+      ],
       "idResource": "Graph|2022-10-06T13:16:21.184Z|79961",
       "type": "Graph"
     }
@@ -57,7 +74,7 @@
       "shader": "ShaderLit",
       "coat": {
         "ƒ.CoatColored": {
-          "color": "[1, 0, 0, 1]"
+          "color": "[1, 1, 1, 1]"
         }
       }
     }
