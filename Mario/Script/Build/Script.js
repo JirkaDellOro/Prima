@@ -76,8 +76,6 @@ var Script;
         avatar.setAnimation(animWalk);
         avatar.framerate = 20;
         avatar.mtxLocal.translateY(0.3);
-        avatar.mtxLocal.translateX(-1);
-        avatar.mtxLocal.translateZ(1.001);
         let branch = viewport.getBranch();
         // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
         branch.addChild(avatar);
@@ -94,8 +92,14 @@ var Script;
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
         ySpeed -= gravity * deltaTime;
         avatar.mtxLocal.translateY(ySpeed);
-        if (avatar.mtxLocal.translation.y < 0)
-            avatar.mtxLocal.translation.y = 0;
+        let pos = avatar.mtxLocal.translation;
+        if (pos.y + ySpeed > 0)
+            avatar.mtxLocal.translateY(ySpeed);
+        else {
+            ySpeed = 0;
+            pos.y = 0;
+            avatar.mtxLocal.translation = pos;
+        }
         let speed = xSpeedDefault;
         if (leftDirection) {
             speed = -xSpeedDefault;

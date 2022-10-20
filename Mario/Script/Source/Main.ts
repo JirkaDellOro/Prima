@@ -49,8 +49,6 @@ namespace Script {
     avatar.framerate = 20;
 
     avatar.mtxLocal.translateY(0.3);
-    avatar.mtxLocal.translateX(-1);
-    avatar.mtxLocal.translateZ(1.001);
 
     let branch: ƒ.Node = viewport.getBranch();
     // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
@@ -73,9 +71,15 @@ namespace Script {
     ySpeed -= gravity * deltaTime;
     avatar.mtxLocal.translateY(ySpeed);
 
-    if (avatar.mtxLocal.translation.y < 0)
-      avatar.mtxLocal.translation.y = 0;
-
+    let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
+    if (pos.y + ySpeed > 0)
+      avatar.mtxLocal.translateY(ySpeed);
+    else {
+      ySpeed = 0;
+      pos.y = 0;
+      avatar.mtxLocal.translation = pos;
+    }
+    
     let speed: number = xSpeedDefault;
     if (leftDirection) {
       speed = -xSpeedDefault;
