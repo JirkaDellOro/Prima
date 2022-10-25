@@ -1,34 +1,4 @@
 {
-  "MeshQuad|2022-10-10T09:59:10.394Z|47846": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2022-10-10T09:59:10.394Z|47846",
-      "name": "MeshQuad"
-    }
-  },
-  "Material|2022-10-10T09:59:24.237Z|32416": {
-    "ƒ.Material": {
-      "name": "ShaderLitTextured",
-      "idResource": "Material|2022-10-10T09:59:24.237Z|32416",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-10-11T14:34:59.188Z|89545"
-        }
-      }
-    }
-  },
-  "TextureImage|2022-10-11T14:34:59.188Z|89545": {
-    "ƒ.TextureImage": {
-      "url": "Images\\Floor.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2022-10-11T14:34:59.188Z|89545",
-        "name": "Images\\Floor.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
   "MeshQuad|2022-10-11T14:26:57.720Z|26125": {
     "ƒ.MeshQuad": {
       "idResource": "MeshQuad|2022-10-11T14:26:57.720Z|26125",
@@ -51,63 +21,114 @@
         {
           "ƒ.GraphInstance": {
             "deserializeFromSource": true,
-            "name": "Floor",
-            "idSource": "Graph|2022-10-11T14:23:37.299Z|76243"
+            "name": "Tree",
+            "idSource": "Graph|2022-10-12T19:07:09.324Z|84928"
           }
         },
         {
-          "ƒ.GraphInstance": {
-            "deserializeFromSource": true,
-            "name": "Tree",
-            "idSource": "Graph|2022-10-12T19:07:09.324Z|84928"
+          "ƒ.Node": {
+            "name": "Blocks",
+            "active": true,
+            "components": {},
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Block",
+                  "active": true,
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, -1, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": [
+                    {
+                      "ƒ.GraphInstance": {
+                        "deserializeFromSource": true,
+                        "name": "BlockEarth",
+                        "idSource": "Graph|2022-10-25T14:53:53.981Z|71729"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Block",
+                  "active": true,
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[-1, -1, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": [
+                    {
+                      "ƒ.GraphInstance": {
+                        "deserializeFromSource": true,
+                        "name": "BlockEarth",
+                        "idSource": "Graph|2022-10-25T14:53:53.981Z|71729"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Block",
+                  "active": true,
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[1, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": [
+                    {
+                      "ƒ.GraphInstance": {
+                        "deserializeFromSource": true,
+                        "name": "BlockEarth",
+                        "idSource": "Graph|2022-10-25T14:53:53.981Z|71729"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ],
       "idResource": "Graph|2022-10-06T13:16:37.701Z|35847",
-      "type": "Graph"
-    }
-  },
-  "Graph|2022-10-11T14:23:37.299Z|76243": {
-    "ƒ.Graph": {
-      "name": "Floor",
-      "active": true,
-      "components": {
-        "ComponentMesh": [
-          {
-            "ƒ.ComponentMesh": {
-              "idMesh": "MeshQuad|2022-10-10T09:59:10.394Z|47846",
-              "pivot": {
-                "translation": "[0, -0.8000000715255737, 1]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[8, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ],
-        "ComponentMaterial": [
-          {
-            "ƒ.ComponentMaterial": {
-              "sortForAlpha": false,
-              "clrPrimary": "[1, 1, 1, 1]",
-              "clrSecondary": "[1, 1, 1, 1]",
-              "pivot": {
-                "translation": "[0, 0]",
-                "rotation": 0,
-                "scaling": "[1, 1]"
-              },
-              "Component": {
-                "active": true
-              },
-              "idMaterial": "Material|2022-10-10T09:59:24.237Z|32416"
-            }
-          }
-        ]
-      },
-      "children": [],
-      "idResource": "Graph|2022-10-11T14:23:37.299Z|76243",
       "type": "Graph"
     }
   },
@@ -167,12 +188,6 @@
       "type": "Graph"
     }
   },
-  "MeshQuad|2022-10-12T19:07:31.114Z|48377": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2022-10-12T19:07:31.114Z|48377",
-      "name": "MeshTree"
-    }
-  },
   "Material|2022-10-12T19:07:41.567Z|08502": {
     "ƒ.Material": {
       "name": "ShaderTree",
@@ -205,9 +220,9 @@
         "ComponentMesh": [
           {
             "ƒ.ComponentMesh": {
-              "idMesh": "MeshQuad|2022-10-12T19:07:31.114Z|48377",
+              "idMesh": "MeshQuad|2022-10-11T14:26:57.720Z|26125",
               "pivot": {
-                "translation": "[1, 0.41999995708465576, 0.9990000128746033]",
+                "translation": "[1, 1.2000000476837158, 0]",
                 "rotation": "[0, 0, 0]",
                 "scaling": "[1.2500001192092896, 1.4500000476837158, 1]"
               },
@@ -238,6 +253,74 @@
       },
       "children": [],
       "idResource": "Graph|2022-10-12T19:07:09.324Z|84928",
+      "type": "Graph"
+    }
+  },
+  "TextureImage|2022-10-25T14:53:06.945Z|97244": {
+    "ƒ.TextureImage": {
+      "url": "Images\\Tiles\\background_grass.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-10-25T14:53:06.945Z|97244",
+        "name": "Images\\Tiles\\background_grass.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2022-10-25T14:53:18.277Z|73670": {
+    "ƒ.Material": {
+      "name": "ShaderEarth",
+      "idResource": "Material|2022-10-25T14:53:18.277Z|73670",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-10-25T14:53:06.945Z|97244"
+        }
+      }
+    }
+  },
+  "Graph|2022-10-25T14:53:53.981Z|71729": {
+    "ƒ.Graph": {
+      "name": "BlockEarth",
+      "active": true,
+      "components": {
+        "ComponentMaterial": [
+          {
+            "ƒ.ComponentMaterial": {
+              "sortForAlpha": false,
+              "clrPrimary": "[1, 1, 1, 1]",
+              "clrSecondary": "[1, 1, 1, 1]",
+              "pivot": {
+                "translation": "[0, 0]",
+                "rotation": 0,
+                "scaling": "[1, 1]"
+              },
+              "Component": {
+                "active": true
+              },
+              "idMaterial": "Material|2022-10-25T14:53:18.277Z|73670"
+            }
+          }
+        ],
+        "ComponentMesh": [
+          {
+            "ƒ.ComponentMesh": {
+              "idMesh": "MeshQuad|2022-10-11T14:26:57.720Z|26125",
+              "pivot": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ]
+      },
+      "children": [],
+      "idResource": "Graph|2022-10-25T14:53:53.981Z|71729",
       "type": "Graph"
     }
   }

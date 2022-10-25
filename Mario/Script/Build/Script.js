@@ -42,6 +42,7 @@ var Script;
     var ƒAid = FudgeAid;
     // Initialize Viewport
     let viewport;
+    let graph;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
@@ -75,10 +76,9 @@ var Script;
         avatar.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
         avatar.setAnimation(animWalk);
         avatar.framerate = 20;
-        avatar.mtxLocal.translateY(0.3);
-        let branch = viewport.getBranch();
+        graph = viewport.getBranch();
         // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
-        branch.addChild(avatar);
+        graph.addChild(avatar);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
@@ -93,14 +93,14 @@ var Script;
         ySpeed -= gravity * deltaTime;
         let yOffset = ySpeed * deltaTime;
         avatar.mtxLocal.translateY(yOffset);
-        let pos = avatar.mtxLocal.translation;
-        if (pos.y + yOffset > 0)
-            avatar.mtxLocal.translateY(yOffset);
-        else {
-            ySpeed = 0;
-            pos.y = 0;
-            avatar.mtxLocal.translation = pos;
-        }
+        // let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
+        // if (pos.y + yOffset > 0)
+        //   avatar.mtxLocal.translateY(yOffset);
+        // else {
+        //   ySpeed = 0;
+        //   pos.y = 0;
+        //   avatar.mtxLocal.translation = pos;
+        // }
         let speed = xSpeedDefault;
         if (leftDirection) {
             speed = -xSpeedDefault;
@@ -154,8 +154,23 @@ var Script;
         }
         // Rotate based on direction
         avatar.mtxLocal.rotation = ƒ.Vector3.Y(leftDirection ? 180 : 0);
+        checkCollision();
         viewport.draw();
         //ƒ.AudioManager.default.update();
+    }
+    function checkCollision() {
+        let blocks = graph.getChildrenByName("Blocks")[0];
+        let pos = avatar.mtxLocal.translation;
+        for (let block of blocks.getChildren()) {
+            let posBlock = block.mtxLocal.translation;
+            if (Math.abs(pos.x - posBlock.x) < 0.5) {
+                if (pos.y < posBlock.y + 0.5) {
+                    pos.y = posBlock.y + 0.5;
+                    avatar.mtxLocal.translation = pos;
+                    ySpeed = 0;
+                }
+            }
+        }
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

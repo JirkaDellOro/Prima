@@ -4,6 +4,7 @@ namespace Script {
 
   // Initialize Viewport
   let viewport: ƒ.Viewport;
+  let graph: ƒ.Node;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   function start(_event: CustomEvent): void {
@@ -48,11 +49,9 @@ namespace Script {
     avatar.setAnimation(animWalk);
     avatar.framerate = 20;
 
-    avatar.mtxLocal.translateY(0.3);
-
-    let branch: ƒ.Node = viewport.getBranch();
+    graph = viewport.getBranch();
     // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
-    branch.addChild(avatar);
+    graph.addChild(avatar);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
@@ -72,15 +71,15 @@ namespace Script {
     let yOffset: number = ySpeed * deltaTime;
     avatar.mtxLocal.translateY(yOffset);
 
-    let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
-    if (pos.y + yOffset > 0)
-      avatar.mtxLocal.translateY(yOffset);
-    else {
-      ySpeed = 0;
-      pos.y = 0;
-      avatar.mtxLocal.translation = pos;
-    }
-    
+    // let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
+    // if (pos.y + yOffset > 0)
+    //   avatar.mtxLocal.translateY(yOffset);
+    // else {
+    //   ySpeed = 0;
+    //   pos.y = 0;
+    //   avatar.mtxLocal.translation = pos;
+    // }
+
     let speed: number = xSpeedDefault;
     if (leftDirection) {
       speed = -xSpeedDefault;
@@ -133,8 +132,25 @@ namespace Script {
     // Rotate based on direction
     avatar.mtxLocal.rotation = ƒ.Vector3.Y(leftDirection ? 180 : 0);
 
+    checkCollision();
+
 
     viewport.draw();
     //ƒ.AudioManager.default.update();
+  }
+
+  function checkCollision(): void {
+    let blocks: ƒ.Node = graph.getChildrenByName("Blocks")[0];
+    let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
+    for (let block of blocks.getChildren()) {
+      let posBlock: ƒ.Vector3 = block.mtxLocal.translation;
+      if (Math.abs(pos.x - posBlock.x) < 0.5) {
+        if (pos.y < posBlock.y + 0.5) {
+          pos.y = posBlock.y + 0.5;
+          avatar.mtxLocal.translation = pos;
+          ySpeed = 0;
+        }
+      }
+    }
   }
 }
