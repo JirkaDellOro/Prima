@@ -84,17 +84,18 @@ var Script;
     }
     const xSpeedDefault = .9;
     const xSpeedSprint = 2;
-    let ySpeed = 0.01;
-    let gravity = 0.05;
+    let ySpeed = 1;
+    let gravity = 5;
     let leftDirection = false;
     let prevSprint = false;
     function update(_event) {
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
         ySpeed -= gravity * deltaTime;
-        avatar.mtxLocal.translateY(ySpeed);
+        let yOffset = ySpeed * deltaTime;
+        avatar.mtxLocal.translateY(yOffset);
         let pos = avatar.mtxLocal.translation;
-        if (pos.y + ySpeed > 0)
-            avatar.mtxLocal.translateY(ySpeed);
+        if (pos.y + yOffset > 0)
+            avatar.mtxLocal.translateY(yOffset);
         else {
             ySpeed = 0;
             pos.y = 0;

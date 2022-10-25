@@ -60,8 +60,8 @@ namespace Script {
 
   const xSpeedDefault: number = .9;
   const xSpeedSprint: number = 2;
-  let ySpeed: number = 0.01;
-  let gravity: number = 0.05;
+  let ySpeed: number = 1;
+  let gravity: number = 5;
 
   let leftDirection: boolean = false;
   let prevSprint: boolean = false;
@@ -69,11 +69,12 @@ namespace Script {
   function update(_event: Event): void {
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
     ySpeed -= gravity * deltaTime;
-    avatar.mtxLocal.translateY(ySpeed);
+    let yOffset: number = ySpeed * deltaTime;
+    avatar.mtxLocal.translateY(yOffset);
 
     let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
-    if (pos.y + ySpeed > 0)
-      avatar.mtxLocal.translateY(ySpeed);
+    if (pos.y + yOffset > 0)
+      avatar.mtxLocal.translateY(yOffset);
     else {
       ySpeed = 0;
       pos.y = 0;
