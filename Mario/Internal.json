@@ -9,7 +9,19 @@
     "ƒ.Graph": {
       "name": "Level",
       "active": true,
-      "components": {},
+      "components": {
+        "ComponentAudio": [
+          {
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "idResource": "Audio|2022-10-27T12:31:35.238Z|47364",
+              "playing": false,
+              "loop": false,
+              "volume": 1
+            }
+          }
+        ]
+      },
       "children": [
         {
           "ƒ.GraphInstance": {
@@ -322,6 +334,14 @@
       "children": [],
       "idResource": "Graph|2022-10-25T14:53:53.981Z|71729",
       "type": "Graph"
+    }
+  },
+  "Audio|2022-10-27T12:31:35.238Z|47364": {
+    "ƒ.Audio": {
+      "url": "Audio\\SuperMarioBros.mp3",
+      "idResource": "Audio|2022-10-27T12:31:35.238Z|47364",
+      "name": "Audio\\SuperMarioBros.mp3",
+      "type": "Audio"
     }
   }
 }

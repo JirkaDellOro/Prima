@@ -1,10 +1,11 @@
-namespace Script {
+namespace Mario {
   import ƒ = FudgeCore;
   import ƒAid = FudgeAid;
 
   // Initialize Viewport
   let viewport: ƒ.Viewport;
-  let graph: ƒ.Node;
+  export let graph: ƒ.Node;
+  export let gravity: number = 5;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   function start(_event: CustomEvent): void {
@@ -37,6 +38,7 @@ namespace Script {
 
   // Load Sprite
   let avatar: ƒAid.NodeSprite;
+  let avatarInstance: Avatar;
   async function hndLoad(_event: Event): Promise<void> {
     let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
     await imgSpriteSheet.load("./Images/Mario_Spritesheet.png");
@@ -53,6 +55,15 @@ namespace Script {
     // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
     graph.addChild(avatar);
 
+    avatarInstance = new Avatar();
+    avatarInstance.initializeAnimations(imgSpriteSheet);
+    console.log(avatarInstance);
+    graph.addChild(avatarInstance);
+
+    let cmpAudio: ƒ.ComponentAudio = graph.getComponent(ƒ.ComponentAudio);
+    cmpAudio.volume = 0.1;
+    console.log(cmpAudio);
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
   }
@@ -60,13 +71,14 @@ namespace Script {
   const xSpeedDefault: number = .9;
   const xSpeedSprint: number = 2;
   let ySpeed: number = 1;
-  let gravity: number = 5;
 
   let leftDirection: boolean = false;
   let prevSprint: boolean = false;
 
   function update(_event: Event): void {
     let deltaTime: number = ƒ.Loop.timeFrameGame / 1000;
+
+    avatarInstance.update(deltaTime);
     ySpeed -= gravity * deltaTime;
     let yOffset: number = ySpeed * deltaTime;
     avatar.mtxLocal.translateY(yOffset);
@@ -97,8 +109,9 @@ namespace Script {
 
     // Check for key presses
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-      avatar.mtxLocal.translateX(-xTranslation);
       leftDirection = true;
+      avatarInstance.walk(deltaTime, leftDirection);
+      avatar.mtxLocal.translateX(-xTranslation);
       if (speed < -1) {
         if (!prevSprint) {
           prevSprint = true;

@@ -1,8 +1,55 @@
 "use strict";
-var Script;
-(function (Script) {
+var Mario;
+(function (Mario) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    var ƒAid = FudgeAid;
+    class Avatar extends ƒAid.NodeSprite {
+        xSpeedDefault = .9;
+        xSpeedSprint = 2;
+        ySpeed = 0;
+        leftDirection = false;
+        prevSprint = false;
+        animWalk;
+        animSprint;
+        animJump;
+        animLook;
+        animDeath;
+        constructor() {
+            super("AvatarInstance");
+            this.addComponent(new ƒ.ComponentTransform());
+            // this.addEventListener(ƒ.EVENT.RENDER_PREPARE, () => console.log("Render"));
+        }
+        update(_deltaTime) {
+            this.ySpeed -= Mario.gravity * _deltaTime;
+            let yOffset = this.ySpeed * _deltaTime;
+            this.mtxLocal.translateY(yOffset);
+        }
+        walk(_deltaTime, _left) {
+            const xTranslation = this.xSpeedDefault * _deltaTime;
+            this.mtxLocal.translateX(xTranslation * (_left ? -1 : 1));
+        }
+        async initializeAnimations(_imgSpriteSheet) {
+            let coat = new ƒ.CoatTextured(undefined, _imgSpriteSheet);
+            this.animWalk = new ƒAid.SpriteSheetAnimation("Walk", coat);
+            this.animWalk.generateByGrid(ƒ.Rectangle.GET(0, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+            this.animSprint = new ƒAid.SpriteSheetAnimation("Sprint", coat);
+            this.animSprint.generateByGrid(ƒ.Rectangle.GET(0, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+            this.animJump = new ƒAid.SpriteSheetAnimation("Jump", coat);
+            this.animJump.generateByGrid(ƒ.Rectangle.GET(0, 48, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+            this.animLook = new ƒAid.SpriteSheetAnimation("Look", coat);
+            this.animLook.generateByGrid(ƒ.Rectangle.GET(32, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+            this.animDeath = new ƒAid.SpriteSheetAnimation("Death", coat);
+            this.animDeath.generateByGrid(ƒ.Rectangle.GET(32, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
+            this.setAnimation(this.animDeath);
+            this.framerate = 20;
+        }
+    }
+    Mario.Avatar = Avatar;
+})(Mario || (Mario = {}));
+var Mario;
+(function (Mario) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Mario); // Register the namespace to FUDGE for serialization
     class CustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
@@ -34,15 +81,15 @@ var Script;
             }
         };
     }
-    Script.CustomComponentScript = CustomComponentScript;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+    Mario.CustomComponentScript = CustomComponentScript;
+})(Mario || (Mario = {}));
+var Mario;
+(function (Mario) {
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
     // Initialize Viewport
     let viewport;
-    let graph;
+    Mario.gravity = 5;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
@@ -67,6 +114,7 @@ var Script;
     }
     // Load Sprite
     let avatar;
+    let avatarInstance;
     async function hndLoad(_event) {
         let imgSpriteSheet = new ƒ.TextureImage();
         await imgSpriteSheet.load("./Images/Mario_Spritesheet.png");
@@ -76,21 +124,28 @@ var Script;
         avatar.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
         avatar.setAnimation(animWalk);
         avatar.framerate = 20;
-        graph = viewport.getBranch();
+        Mario.graph = viewport.getBranch();
         // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
-        graph.addChild(avatar);
+        Mario.graph.addChild(avatar);
+        avatarInstance = new Mario.Avatar();
+        avatarInstance.initializeAnimations(imgSpriteSheet);
+        console.log(avatarInstance);
+        Mario.graph.addChild(avatarInstance);
+        let cmpAudio = Mario.graph.getComponent(ƒ.ComponentAudio);
+        cmpAudio.volume = 0.1;
+        console.log(cmpAudio);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
     const xSpeedDefault = .9;
     const xSpeedSprint = 2;
     let ySpeed = 1;
-    let gravity = 5;
     let leftDirection = false;
     let prevSprint = false;
     function update(_event) {
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
-        ySpeed -= gravity * deltaTime;
+        avatarInstance.update(deltaTime);
+        ySpeed -= Mario.gravity * deltaTime;
         let yOffset = ySpeed * deltaTime;
         avatar.mtxLocal.translateY(yOffset);
         // let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
@@ -115,8 +170,9 @@ var Script;
         const xTranslation = speed * deltaTime;
         // Check for key presses
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-            avatar.mtxLocal.translateX(-xTranslation);
             leftDirection = true;
+            avatarInstance.walk(deltaTime, leftDirection);
+            avatar.mtxLocal.translateX(-xTranslation);
             if (speed < -1) {
                 if (!prevSprint) {
                     prevSprint = true;
@@ -159,7 +215,7 @@ var Script;
         //ƒ.AudioManager.default.update();
     }
     function checkCollision() {
-        let blocks = graph.getChildrenByName("Blocks")[0];
+        let blocks = Mario.graph.getChildrenByName("Blocks")[0];
         let pos = avatar.mtxLocal.translation;
         for (let block of blocks.getChildren()) {
             let posBlock = block.mtxLocal.translation;
@@ -172,5 +228,5 @@ var Script;
             }
         }
     }
-})(Script || (Script = {}));
+})(Mario || (Mario = {}));
 //# sourceMappingURL=Script.js.map
