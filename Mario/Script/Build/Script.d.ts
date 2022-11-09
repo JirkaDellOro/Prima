@@ -1,12 +1,19 @@
 declare namespace Mario {
     import ƒ = FudgeCore;
     import ƒAid = FudgeAid;
+    enum ACTION {
+        IDLE = 0,
+        WALK = 1,
+        SPRINT = 2,
+        CROUCH = 3,
+        LOOK = 4
+    }
     class Avatar extends ƒAid.NodeSprite {
-        readonly xSpeedDefault: number;
-        readonly xSpeedSprint: number;
-        private ySpeed;
-        private leftDirection;
-        private prevSprint;
+        readonly speedWalk: number;
+        readonly speedSprint: number;
+        ySpeed: number;
+        private xSpeed;
+        private animationCurrent;
         private animWalk;
         private animSprint;
         private animJump;
@@ -14,7 +21,7 @@ declare namespace Mario {
         private animDeath;
         constructor();
         update(_deltaTime: number): void;
-        walk(_deltaTime: number, _left: boolean): void;
+        act(_action: ACTION): void;
         initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void>;
     }
 }

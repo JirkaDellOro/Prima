@@ -3,12 +3,22 @@ var Mario;
 (function (Mario) {
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
+    let ACTION;
+    (function (ACTION) {
+        ACTION[ACTION["IDLE"] = 0] = "IDLE";
+        ACTION[ACTION["WALK"] = 1] = "WALK";
+        ACTION[ACTION["SPRINT"] = 2] = "SPRINT";
+        ACTION[ACTION["CROUCH"] = 3] = "CROUCH";
+        ACTION[ACTION["LOOK"] = 4] = "LOOK";
+    })(ACTION = Mario.ACTION || (Mario.ACTION = {}));
     class Avatar extends ƒAid.NodeSprite {
-        xSpeedDefault = .9;
-        xSpeedSprint = 2;
+        speedWalk = .9;
+        speedSprint = 2;
         ySpeed = 0;
-        leftDirection = false;
-        prevSprint = false;
+        xSpeed = 0;
+        animationCurrent;
+        // private isRunning: boolean = false;
+        // private direction: number = 1;
         animWalk;
         animSprint;
         animJump;
@@ -23,10 +33,37 @@ var Mario;
             this.ySpeed -= Mario.gravity * _deltaTime;
             let yOffset = this.ySpeed * _deltaTime;
             this.mtxLocal.translateY(yOffset);
+            this.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
         }
-        walk(_deltaTime, _left) {
-            const xTranslation = this.xSpeedDefault * _deltaTime;
-            this.mtxLocal.translateX(xTranslation * (_left ? -1 : 1));
+        act(_action) {
+            let animation;
+            this.xSpeed = 0;
+            switch (_action) {
+                case ACTION.WALK:
+                    this.xSpeed = this.speedWalk;
+                    animation = this.animWalk;
+                    break;
+                case ACTION.SPRINT:
+                    this.xSpeed = this.speedSprint;
+                    animation = this.animSprint;
+                    break;
+                case ACTION.IDLE:
+                    this.showFrame(0);
+                    animation = this.animWalk;
+                    break;
+                case ACTION.CROUCH:
+                    this.showFrame(0);
+                    animation = this.animLook;
+                    break;
+                case ACTION.LOOK:
+                    this.showFrame(1);
+                    animation = this.animLook;
+                    break;
+            }
+            if (animation != this.animationCurrent) {
+                this.setAnimation(animation);
+                this.animationCurrent = animation;
+            }
         }
         async initializeAnimations(_imgSpriteSheet) {
             let coat = new ƒ.CoatTextured(undefined, _imgSpriteSheet);
@@ -113,23 +150,15 @@ var Mario;
         animDeath.generateByGrid(ƒ.Rectangle.GET(32, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
     }
     // Load Sprite
-    let avatar;
     let avatarInstance;
     async function hndLoad(_event) {
         let imgSpriteSheet = new ƒ.TextureImage();
         await imgSpriteSheet.load("./Images/Mario_Spritesheet.png");
         let coat = new ƒ.CoatTextured(undefined, imgSpriteSheet);
         initializeAnimations(coat);
-        avatar = new ƒAid.NodeSprite("Avatar");
-        avatar.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
-        avatar.setAnimation(animWalk);
-        avatar.framerate = 20;
         Mario.graph = viewport.getBranch();
-        // let mario: ƒ.Node = branch.getChildrenByName("Mario")[0];
-        Mario.graph.addChild(avatar);
         avatarInstance = new Mario.Avatar();
         avatarInstance.initializeAnimations(imgSpriteSheet);
-        console.log(avatarInstance);
         Mario.graph.addChild(avatarInstance);
         let cmpAudio = Mario.graph.getComponent(ƒ.ComponentAudio);
         cmpAudio.volume = 0.1;
@@ -137,93 +166,39 @@ var Mario;
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
-    const xSpeedDefault = .9;
-    const xSpeedSprint = 2;
-    let ySpeed = 1;
-    let leftDirection = false;
-    let prevSprint = false;
     function update(_event) {
         let deltaTime = ƒ.Loop.timeFrameGame / 1000;
-        avatarInstance.update(deltaTime);
-        ySpeed -= Mario.gravity * deltaTime;
-        let yOffset = ySpeed * deltaTime;
-        avatar.mtxLocal.translateY(yOffset);
-        // let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
-        // if (pos.y + yOffset > 0)
-        //   avatar.mtxLocal.translateY(yOffset);
-        // else {
-        //   ySpeed = 0;
-        //   pos.y = 0;
-        //   avatar.mtxLocal.translation = pos;
-        // }
-        let speed = xSpeedDefault;
-        if (leftDirection) {
-            speed = -xSpeedDefault;
-        }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT, ƒ.KEYBOARD_CODE.SHIFT_RIGHT])) {
-            speed = xSpeedSprint;
-            if (leftDirection) {
-                speed = -xSpeedSprint;
-            }
-        }
-        // Calculate (walk) speed
-        const xTranslation = speed * deltaTime;
+        let run = ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT, ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
         // Check for key presses
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-            leftDirection = true;
-            avatarInstance.walk(deltaTime, leftDirection);
-            avatar.mtxLocal.translateX(-xTranslation);
-            if (speed < -1) {
-                if (!prevSprint) {
-                    prevSprint = true;
-                    avatar.setAnimation(animSprint);
-                }
-            }
-            else {
-                prevSprint = false;
-            }
+            avatarInstance.mtxLocal.rotation = ƒ.Vector3.Y(180);
+            avatarInstance.act(run ? Mario.ACTION.SPRINT : Mario.ACTION.WALK);
         }
         else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-            avatar.mtxLocal.translateX(xTranslation);
-            leftDirection = false;
-            if (speed > 1) {
-                if (!prevSprint) {
-                    prevSprint = true;
-                    avatar.setAnimation(animSprint);
-                }
-            }
-            else {
-                prevSprint = false;
-            }
+            avatarInstance.mtxLocal.rotation = ƒ.Vector3.Y(0);
+            avatarInstance.act(run ? Mario.ACTION.SPRINT : Mario.ACTION.WALK);
         }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
-            avatar.setAnimation(animLook);
-            avatar.showFrame(1);
-        }
-        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])) {
-            avatar.setAnimation(animLook);
-            avatar.showFrame(0);
-        }
-        else {
-            avatar.showFrame(0);
-            avatar.setAnimation(animWalk);
-        }
-        // Rotate based on direction
-        avatar.mtxLocal.rotation = ƒ.Vector3.Y(leftDirection ? 180 : 0);
+        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+            avatarInstance.act(Mario.ACTION.LOOK);
+        else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            avatarInstance.act(Mario.ACTION.CROUCH);
+        else
+            avatarInstance.act(Mario.ACTION.IDLE);
+        avatarInstance.update(deltaTime);
         checkCollision();
         viewport.draw();
         //ƒ.AudioManager.default.update();
     }
     function checkCollision() {
         let blocks = Mario.graph.getChildrenByName("Blocks")[0];
-        let pos = avatar.mtxLocal.translation;
+        let pos = avatarInstance.mtxLocal.translation;
         for (let block of blocks.getChildren()) {
             let posBlock = block.mtxLocal.translation;
             if (Math.abs(pos.x - posBlock.x) < 0.5) {
                 if (pos.y < posBlock.y + 0.5) {
                     pos.y = posBlock.y + 0.5;
-                    avatar.mtxLocal.translation = pos;
-                    ySpeed = 0;
+                    avatarInstance.mtxLocal.translation = pos;
+                    avatarInstance.ySpeed = 0;
                 }
             }
         }

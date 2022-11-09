@@ -2,12 +2,18 @@ namespace Mario {
   import ƒ = FudgeCore;
   import ƒAid = FudgeAid;
 
+  export enum ACTION {
+    IDLE, WALK, SPRINT, CROUCH, LOOK
+  }
+
   export class Avatar extends ƒAid.NodeSprite {
-    readonly xSpeedDefault: number = .9;
-    readonly xSpeedSprint: number = 2;
-    private ySpeed: number = 0;
-    private leftDirection: boolean = false;
-    private prevSprint: boolean = false;
+    readonly speedWalk: number = .9;
+    readonly speedSprint: number = 2;
+    public ySpeed: number = 0;
+    private xSpeed: number = 0;
+    private animationCurrent: ƒAid.SpriteSheetAnimation;
+    // private isRunning: boolean = false;
+    // private direction: number = 1;
 
     private animWalk: ƒAid.SpriteSheetAnimation;
     private animSprint: ƒAid.SpriteSheetAnimation;
@@ -26,11 +32,39 @@ namespace Mario {
       this.ySpeed -= gravity * _deltaTime;
       let yOffset: number = this.ySpeed * _deltaTime;
       this.mtxLocal.translateY(yOffset);
+      this.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
     }
 
-    public walk(_deltaTime: number, _left: boolean): void {
-      const xTranslation: number = this.xSpeedDefault * _deltaTime;
-      this.mtxLocal.translateX(xTranslation * (_left ? -1 : 1));
+    public act(_action: ACTION): void {
+      let animation: ƒAid.SpriteSheetAnimation;
+      this.xSpeed = 0;
+      switch (_action) {
+        case ACTION.WALK:
+          this.xSpeed = this.speedWalk;
+          animation = this.animWalk;
+          break;
+        case ACTION.SPRINT:
+          this.xSpeed = this.speedSprint;
+          animation = this.animSprint;
+          break;
+        case ACTION.IDLE:
+          this.showFrame(0);
+          animation = this.animWalk;
+          break;
+        case ACTION.CROUCH:
+          this.showFrame(0);
+          animation = this.animLook;
+          break;
+        case ACTION.LOOK:
+          this.showFrame(1);
+          animation = this.animLook;
+          break;
+      }
+
+      if (animation != this.animationCurrent) {
+        this.setAnimation(animation);
+        this.animationCurrent = animation;
+      }
     }
 
     public async initializeAnimations(_imgSpriteSheet: ƒ.TextureImage): Promise<void> {
