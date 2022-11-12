@@ -12,8 +12,6 @@ namespace Mario {
     public ySpeed: number = 0;
     private xSpeed: number = 0;
     private animationCurrent: ƒAid.SpriteSheetAnimation;
-    // private isRunning: boolean = false;
-    // private direction: number = 1;
 
     private animWalk: ƒAid.SpriteSheetAnimation;
     private animSprint: ƒAid.SpriteSheetAnimation;
@@ -33,6 +31,7 @@ namespace Mario {
       let yOffset: number = this.ySpeed * _deltaTime;
       this.mtxLocal.translateY(yOffset);
       this.mtxLocal.translateX(this.xSpeed * _deltaTime, true);
+      this.mtxLocal.rotateX(this.xSpeed * _deltaTime, true);
     }
 
     public act(_action: ACTION): void {

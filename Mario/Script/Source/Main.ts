@@ -1,6 +1,5 @@
 namespace Mario {
   import ƒ = FudgeCore;
-  import ƒAid = FudgeAid;
 
   // Initialize Viewport
   let viewport: ƒ.Viewport;
@@ -13,43 +12,17 @@ namespace Mario {
     hndLoad(_event);
   }
 
-  let animWalk: ƒAid.SpriteSheetAnimation;
-  let animSprint: ƒAid.SpriteSheetAnimation;
-  let animJump: ƒAid.SpriteSheetAnimation;
-  let animLook: ƒAid.SpriteSheetAnimation;
-  let animDeath: ƒAid.SpriteSheetAnimation;
-
-  function initializeAnimations(coat: ƒ.CoatTextured): void {
-    animWalk = new ƒAid.SpriteSheetAnimation("Walk", coat);
-    animWalk.generateByGrid(ƒ.Rectangle.GET(0, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-
-    animSprint = new ƒAid.SpriteSheetAnimation("Sprint", coat);
-    animSprint.generateByGrid(ƒ.Rectangle.GET(0, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-
-    animJump = new ƒAid.SpriteSheetAnimation("Jump", coat);
-    animJump.generateByGrid(ƒ.Rectangle.GET(0, 48, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-
-    animLook = new ƒAid.SpriteSheetAnimation("Look", coat);
-    animLook.generateByGrid(ƒ.Rectangle.GET(32, 0, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-
-    animDeath = new ƒAid.SpriteSheetAnimation("Death", coat);
-    animDeath.generateByGrid(ƒ.Rectangle.GET(32, 24, 16, 24), 2, 64, ƒ.ORIGIN2D.BOTTOMCENTER, ƒ.Vector2.X(16));
-  }
 
   // Load Sprite
-  let avatarInstance: Avatar;
+  let avatar: Avatar;
   async function hndLoad(_event: Event): Promise<void> {
     let imgSpriteSheet: ƒ.TextureImage = new ƒ.TextureImage();
     await imgSpriteSheet.load("./Images/Mario_Spritesheet.png");
-    let coat: ƒ.CoatTextured = new ƒ.CoatTextured(undefined, imgSpriteSheet);
-
-    initializeAnimations(coat);
 
     graph = viewport.getBranch();
-
-    avatarInstance = new Avatar();
-    avatarInstance.initializeAnimations(imgSpriteSheet);
-    graph.addChild(avatarInstance);
+    avatar = new Avatar();
+    avatar.initializeAnimations(imgSpriteSheet);
+    graph.addChild(avatar);
 
     let cmpAudio: ƒ.ComponentAudio = graph.getComponent(ƒ.ComponentAudio);
     cmpAudio.volume = 0.1;
@@ -65,21 +38,21 @@ namespace Mario {
 
     // Check for key presses
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-      avatarInstance.mtxLocal.rotation = ƒ.Vector3.Y(180);
-      avatarInstance.act(run ? ACTION.SPRINT : ACTION.WALK);
+      avatar.mtxLocal.rotation = ƒ.Vector3.Y(180);
+      avatar.act(run ? ACTION.SPRINT : ACTION.WALK);
     }
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-      avatarInstance.mtxLocal.rotation = ƒ.Vector3.Y(0);
-      avatarInstance.act(run ? ACTION.SPRINT : ACTION.WALK);
+      avatar.mtxLocal.rotation = ƒ.Vector3.Y(0);
+      avatar.act(run ? ACTION.SPRINT : ACTION.WALK);
     }
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-      avatarInstance.act(ACTION.LOOK);
+      avatar.act(ACTION.LOOK);
     else if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-      avatarInstance.act(ACTION.CROUCH);
+      avatar.act(ACTION.CROUCH);
     else
-      avatarInstance.act(ACTION.IDLE);
+      avatar.act(ACTION.IDLE);
 
-    avatarInstance.update(deltaTime);
+    avatar.update(deltaTime);
     checkCollision();
 
 
@@ -89,14 +62,14 @@ namespace Mario {
 
   function checkCollision(): void {
     let blocks: ƒ.Node = graph.getChildrenByName("Blocks")[0];
-    let pos: ƒ.Vector3 = avatarInstance.mtxLocal.translation;
+    let pos: ƒ.Vector3 = avatar.mtxLocal.translation;
     for (let block of blocks.getChildren()) {
       let posBlock: ƒ.Vector3 = block.mtxLocal.translation;
       if (Math.abs(pos.x - posBlock.x) < 0.5) {
         if (pos.y < posBlock.y + 0.5) {
           pos.y = posBlock.y + 0.5;
-          avatarInstance.mtxLocal.translation = pos;
-          avatarInstance.ySpeed = 0;
+          avatar.mtxLocal.translation = pos;
+          avatar.ySpeed = 0;
         }
       }
     }

@@ -27,15 +27,16 @@ declare namespace Mario {
 }
 declare namespace Mario {
     import ƒ = FudgeCore;
-    class CustomComponentScript extends ƒ.ComponentScript {
-        static readonly iSubclass: number;
-        message: string;
-        constructor();
-        hndEvent: (_event: Event) => void;
-    }
+    let graph: ƒ.Node;
+    let gravity: number;
 }
 declare namespace Mario {
     import ƒ = FudgeCore;
-    let graph: ƒ.Node;
-    let gravity: number;
+    class ScriptRotator extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        speed: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        update: (_event: Event) => void;
+    }
 }
