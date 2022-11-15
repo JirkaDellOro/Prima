@@ -9,6 +9,8 @@ namespace Mario {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+    viewport.camera.mtxPivot.translateZ(+10);
+    viewport.camera.mtxPivot.rotateY(+180);
     hndLoad(_event);
   }
 

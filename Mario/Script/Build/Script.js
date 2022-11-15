@@ -91,6 +91,8 @@ var Mario;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
+        viewport.camera.mtxPivot.translateZ(+10);
+        viewport.camera.mtxPivot.rotateY(+180);
         hndLoad(_event);
     }
     // Load Sprite
