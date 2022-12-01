@@ -5,6 +5,7 @@ namespace Script {
   let viewport: ƒ.Viewport;
   let cmpEngine: EngineScript;
   let vctMouse: ƒ.Vector2 = ƒ.Vector2.ZERO();
+  export let cmpTerrain: ƒ.ComponentMesh;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
   window.addEventListener("mousemove", hndMouse);
 
@@ -12,10 +13,13 @@ namespace Script {
     viewport = _event.detail;
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     ƒ.Physics.settings.solverIterations = 300;
+    
     let ship: ƒ.Node = viewport.getBranch().getChildrenByName("Ship")[0];
     cmpEngine = ship.getComponent(EngineScript);
     let cmpCamera = ship.getComponent(ƒ.ComponentCamera);
     viewport.camera = cmpCamera;
+
+    cmpTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a

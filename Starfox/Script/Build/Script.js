@@ -24,7 +24,6 @@ var Script;
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
                     // ƒ.Debug.log(this.message, this.node);
-                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -32,12 +31,21 @@ var Script;
                     break;
                 case "nodeDeserialized" /* NODE_DESERIALIZED */:
                     this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+                    this.rigidbody.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, this.hndCollision);
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
                     // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     break;
             }
         };
         update = (_event) => {
-            // rigidbody.applyTorque(ƒ.Vector3.Y(1));
+            if (!Script.cmpTerrain)
+                return;
+            let mesh = Script.cmpTerrain.mesh;
+            let info = mesh.getTerrainInfo(this.node.mtxLocal.translation, Script.cmpTerrain.mtxWorld);
+            console.log(info.distance);
+        };
+        hndCollision = (_event) => {
+            console.log("Bumm");
         };
         yaw(_value) {
             this.rigidbody.applyTorque(new ƒ.Vector3(0, _value * -10, 0));
@@ -74,6 +82,7 @@ var Script;
         cmpEngine = ship.getComponent(Script.EngineScript);
         let cmpCamera = ship.getComponent(ƒ.ComponentCamera);
         viewport.camera = cmpCamera;
+        Script.cmpTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }

@@ -28,7 +28,6 @@ namespace Script {
       switch (_event.type) {
         case ƒ.EVENT.COMPONENT_ADD:
           // ƒ.Debug.log(this.message, this.node);
-          this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update)
           break;
         case ƒ.EVENT.COMPONENT_REMOVE:
           this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
@@ -36,13 +35,23 @@ namespace Script {
           break;
         case ƒ.EVENT.NODE_DESERIALIZED:
           this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
+          this.rigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, this.hndCollision);
+          this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.update)
           // if deserialized the node is now fully reconstructed and access to all its components and children is possible
           break;
       }
     }
 
-    public update = (_event: Event): void => {
-      // rigidbody.applyTorque(ƒ.Vector3.Y(1));
+    private update = (_event: Event): void => {
+      if (!cmpTerrain)
+        return;
+      let mesh: ƒ.MeshTerrain = (<ƒ.MeshTerrain>cmpTerrain.mesh);
+      let info: ƒ.TerrainInfo = mesh.getTerrainInfo(this.node.mtxLocal.translation, cmpTerrain.mtxWorld);
+      console.log(info.distance);
+    }
+    
+    private hndCollision = (_event: Event): void => {
+      console.log("Bumm");
     }
 
     public yaw(_value: number) {
