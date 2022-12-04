@@ -6,7 +6,6 @@ declare namespace Script {
         power: number;
         constructor();
         hndEvent: (_event: Event) => void;
-        private update;
         private hndCollision;
         yaw(_value: number): void;
         pitch(_value: number): void;
@@ -18,4 +17,13 @@ declare namespace Script {
 declare namespace Script {
     import ƒ = FudgeCore;
     let cmpTerrain: ƒ.ComponentMesh;
+}
+declare namespace Script {
+    import ƒ = FudgeCore;
+    class SensorScript extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        private update;
+    }
 }

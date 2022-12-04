@@ -16,7 +16,8 @@ namespace Script {
     
     let ship: ƒ.Node = viewport.getBranch().getChildrenByName("Ship")[0];
     cmpEngine = ship.getComponent(EngineScript);
-    let cmpCamera = ship.getComponent(ƒ.ComponentCamera);
+    let cmpCamera = ship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+    console.log(cmpCamera);
     viewport.camera = cmpCamera;
 
     cmpTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);

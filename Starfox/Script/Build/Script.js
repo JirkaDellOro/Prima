@@ -30,19 +30,12 @@ var Script;
                     this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
                     break;
                 case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
                     this.rigidbody.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, this.hndCollision);
-                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
-                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                    this.node.addEventListener("SensorHit", this.hndCollision);
                     break;
             }
-        };
-        update = (_event) => {
-            if (!Script.cmpTerrain)
-                return;
-            let mesh = Script.cmpTerrain.mesh;
-            let info = mesh.getTerrainInfo(this.node.mtxLocal.translation, Script.cmpTerrain.mtxWorld);
-            console.log(info.distance);
         };
         hndCollision = (_event) => {
             console.log("Bumm");
@@ -80,7 +73,8 @@ var Script;
         ƒ.Physics.settings.solverIterations = 300;
         let ship = viewport.getBranch().getChildrenByName("Ship")[0];
         cmpEngine = ship.getComponent(Script.EngineScript);
-        let cmpCamera = ship.getComponent(ƒ.ComponentCamera);
+        let cmpCamera = ship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+        console.log(cmpCamera);
         viewport.camera = cmpCamera;
         Script.cmpTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -112,5 +106,50 @@ var Script;
         cmpEngine.pitch(vctMouse.y);
         cmpEngine.yaw(vctMouse.x);
     }
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    class SensorScript extends ƒ.ComponentScript {
+        // Register the script as component for use in the editor via drag&drop
+        static iSubclass = ƒ.Component.registerSubclass(SensorScript);
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    // this.node.addEventListener(ƒ.EVENT.GRAPH_INSTANTIATED, this.hndEvent)
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+                case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
+                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
+                    break;
+            }
+        };
+        update = (_event) => {
+            if (!Script.cmpTerrain)
+                return;
+            let mesh = Script.cmpTerrain.mesh;
+            let parent = this.node.getParent();
+            let info = mesh.getTerrainInfo(parent.mtxWorld.translation, Script.cmpTerrain.mtxWorld);
+            if (info.distance < 0)
+                this.node.dispatchEvent(new Event("SensorHit", { bubbles: true }));
+        };
+    }
+    Script.SensorScript = SensorScript;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
