@@ -34,11 +34,19 @@ var Script;
                     this.rigidbody = this.node.getComponent(ƒ.ComponentRigidbody);
                     this.rigidbody.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, this.hndCollision);
                     this.node.addEventListener("SensorHit", this.hndCollision);
+                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.update);
                     break;
             }
         };
         hndCollision = (_event) => {
             console.log("Bumm");
+        };
+        update = (_event) => {
+            if (!Script.gameState)
+                return;
+            Script.gameState.height = this.node.mtxLocal.translation.y;
+            Script.gameState.velocity = Math.round(this.rigidbody.getVelocity().magnitude);
+            console.log(Script.gameState.fuel);
         };
         yaw(_value) {
             this.rigidbody.applyTorque(new ƒ.Vector3(0, _value * -10, 0));
@@ -61,13 +69,35 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    var ƒui = FudgeUserInterface;
+    class GameState extends ƒ.Mutable {
+        reduceMutator(_mutator) { }
+        height = 1;
+        velocity = 2;
+        fuel = 20;
+        controller;
+        constructor(_config) {
+            super();
+            this.fuel = _config.fuel;
+            this.controller = new ƒui.Controller(this, document.querySelector("#vui"));
+            console.log(this.controller);
+        }
+    }
+    Script.GameState = GameState;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let cmpEngine;
     let vctMouse = ƒ.Vector2.ZERO();
     document.addEventListener("interactiveViewportStarted", start);
     window.addEventListener("mousemove", hndMouse);
-    function start(_event) {
+    async function start(_event) {
+        let response = await fetch("config.json");
+        let config = await response.json();
+        Script.gameState = new Script.GameState(config);
         viewport = _event.detail;
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         ƒ.Physics.settings.solverIterations = 300;

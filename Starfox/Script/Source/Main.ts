@@ -6,10 +6,17 @@ namespace Script {
   let cmpEngine: EngineScript;
   let vctMouse: ƒ.Vector2 = ƒ.Vector2.ZERO();
   export let cmpTerrain: ƒ.ComponentMesh;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  export let gameState: GameState;
+
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
   window.addEventListener("mousemove", hndMouse);
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
+    let response: Response = await fetch("config.json");
+    let config: {[key: string]: number} = await response.json();
+
+    gameState = new GameState(config);
+
     viewport = _event.detail;
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     ƒ.Physics.settings.solverIterations = 300;
