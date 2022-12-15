@@ -51,7 +51,6 @@ namespace Script {
         return;
       gameState.height = this.node.mtxLocal.translation.y;
       gameState.velocity = Math.round(this.rigidbody.getVelocity().magnitude);
-      console.log(gameState.fuel);
     }
 
     public yaw(_value: number) {

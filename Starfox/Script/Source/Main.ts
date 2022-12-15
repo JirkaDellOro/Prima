@@ -5,6 +5,7 @@ namespace Script {
   let viewport: ƒ.Viewport;
   let cmpEngine: EngineScript;
   let vctMouse: ƒ.Vector2 = ƒ.Vector2.ZERO();
+  export let ship: ƒ.Node;
   export let cmpTerrain: ƒ.ComponentMesh;
   export let gameState: GameState;
 
@@ -21,7 +22,7 @@ namespace Script {
     viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
     ƒ.Physics.settings.solverIterations = 300;
     
-    let ship: ƒ.Node = viewport.getBranch().getChildrenByName("Ship")[0];
+    ship = viewport.getBranch().getChildrenByName("Ship")[0];
     cmpEngine = ship.getComponent(EngineScript);
     let cmpCamera = ship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
     console.log(cmpCamera);

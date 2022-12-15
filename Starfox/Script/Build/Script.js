@@ -46,7 +46,6 @@ var Script;
                 return;
             Script.gameState.height = this.node.mtxLocal.translation.y;
             Script.gameState.velocity = Math.round(this.rigidbody.getVelocity().magnitude);
-            console.log(Script.gameState.fuel);
         };
         yaw(_value) {
             this.rigidbody.applyTorque(new ƒ.Vector3(0, _value * -10, 0));
@@ -101,9 +100,9 @@ var Script;
         viewport = _event.detail;
         viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         ƒ.Physics.settings.solverIterations = 300;
-        let ship = viewport.getBranch().getChildrenByName("Ship")[0];
-        cmpEngine = ship.getComponent(Script.EngineScript);
-        let cmpCamera = ship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+        Script.ship = viewport.getBranch().getChildrenByName("Ship")[0];
+        cmpEngine = Script.ship.getComponent(Script.EngineScript);
+        let cmpCamera = Script.ship.getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
         console.log(cmpCamera);
         viewport.camera = cmpCamera;
         Script.cmpTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
@@ -181,5 +180,111 @@ var Script;
         };
     }
     Script.SensorScript = SensorScript;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    var ƒAid = FudgeAid;
+    let JOB;
+    (function (JOB) {
+        JOB[JOB["IDLE"] = 0] = "IDLE";
+        JOB[JOB["ATTACK"] = 1] = "ATTACK";
+    })(JOB || (JOB = {}));
+    class TurretStateMachine extends ƒAid.ComponentStateMachine {
+        static iSubclass = ƒ.Component.registerSubclass(TurretStateMachine);
+        static instructions = TurretStateMachine.get();
+        constructor() {
+            super();
+            this.instructions = TurretStateMachine.instructions; // setup instructions with the static set
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+        }
+        static get() {
+            let setup = new ƒAid.StateMachineInstructions();
+            setup.transitDefault = TurretStateMachine.transitDefault;
+            setup.actDefault = TurretStateMachine.actDefault;
+            setup.setAction(JOB.IDLE, this.actIdle);
+            setup.setAction(JOB.ATTACK, this.actAttack);
+            return setup;
+        }
+        static transitDefault(_machine) {
+            console.log("Transit to", _machine.stateNext);
+        }
+        static async actDefault(_machine) {
+            console.log(JOB[_machine.stateCurrent]);
+        }
+        static async actIdle(_machine) {
+            _machine.node.mtxLocal.rotateY(1);
+            let distance = ƒ.Vector3.DIFFERENCE(Script.ship.mtxWorld.translation, _machine.node.mtxWorld.translation);
+            if (distance.magnitude < 10)
+                _machine.transit(JOB.ATTACK);
+        }
+        static async actAttack(_machine) {
+            _machine.node.mtxLocal.rotateY(-5);
+            let distance = ƒ.Vector3.DIFFERENCE(Script.ship.mtxWorld.translation, _machine.node.mtxWorld.translation);
+            if (distance.magnitude > 10)
+                _machine.transit(JOB.IDLE);
+        }
+        // private static async actEscape(_machine: StateMachine): Promise<void> {
+        //   _machine.cmpMaterial.clrPrimary = ƒ.Color.CSS("white");
+        //   let difference: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_machine.node.mtxWorld.translation, cart.mtxWorld.translation);
+        //   difference.normalize(_machine.forceEscape);
+        //   _machine.cmpBody.applyForce(difference);
+        //   StateMachine.actDefault(_machine);
+        // }
+        // private static async actDie(_machine: StateMachine): Promise<void> {
+        //   //
+        // }
+        // private static transitDie(_machine: StateMachine): void {
+        //   _machine.cmpBody.applyLinearImpulse(ƒ.Vector3.Y(5));
+        //   let timer: ƒ.Timer = new ƒ.Timer(ƒ.Time.game, 100, 20, (_event: ƒ.EventTimer) => {
+        //     _machine.cmpMaterial.clrPrimary = ƒ.Color.CSS("black", 1 - _event.count / 20);
+        //     if (_event.lastCall)
+        //       _machine.transit(JOB.RESPAWN);
+        //   });
+        //   console.log(timer);
+        // }
+        // private static actRespawn(_machine: StateMachine): void {
+        //   let range: ƒ.Vector3 = ƒ.Vector3.SCALE(mtxTerrain.scaling, 0.5);
+        //   _machine.cmpBody.setPosition(ƒ.Random.default.getVector3(range, ƒ.Vector3.SCALE(range, -1)));
+        //   _machine.transit(JOB.IDLE);
+        // }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                    this.transit(JOB.IDLE);
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                    break;
+                case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                    this.transit(JOB.IDLE);
+                    // let trigger: ƒ.ComponentRigidbody = this.node.getChildren()[0].getComponent(ƒ.ComponentRigidbody);
+                    // trigger.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, (_event: ƒ.EventPhysics) => {
+                    //   console.log("TriggerEnter", _event.cmpRigidbody.node.name);
+                    //   if (_event.cmpRigidbody.node.name == "Cart" && this.stateCurrent != JOB.DIE)
+                    //     this.transit(JOB.ESCAPE);
+                    // });
+                    // trigger.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_EXIT, (_event: ƒ.EventPhysics) => {
+                    //   if (this.stateCurrent == JOB.ESCAPE)
+                    //     this.transit(JOB.IDLE);
+                    // });
+                    break;
+            }
+        };
+        update = (_event) => {
+            this.act();
+        };
+    }
+    Script.TurretStateMachine = TurretStateMachine;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
