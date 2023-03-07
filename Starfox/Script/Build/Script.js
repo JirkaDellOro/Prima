@@ -225,7 +225,7 @@ var Script;
                 _machine.transit(JOB.ATTACK);
         }
         static async actAttack(_machine) {
-            _machine.node.mtxLocal.rotateY(-5);
+            _machine.node.mtxLocal.lookAt(ƒ.Vector3.TRANSFORMATION(Script.ship.mtxWorld.translation, _machine.node.getParent().mtxWorldInverse, true), undefined, true);
             let distance = ƒ.Vector3.DIFFERENCE(Script.ship.mtxWorld.translation, _machine.node.mtxWorld.translation);
             if (distance.magnitude > 10)
                 _machine.transit(JOB.IDLE);

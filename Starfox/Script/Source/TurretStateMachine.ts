@@ -47,9 +47,9 @@ namespace Script {
       if (distance.magnitude < 10)
         _machine.transit(JOB.ATTACK);
     }
-    
+
     private static async actAttack(_machine: TurretStateMachine): Promise<void> {
-      _machine.node.mtxLocal.rotateY(-5);
+      _machine.node.mtxLocal.lookAt(ƒ.Vector3.TRANSFORMATION(ship.mtxWorld.translation, _machine.node.getParent().mtxWorldInverse, true), undefined, true);
       let distance: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(ship.mtxWorld.translation, _machine.node.mtxWorld.translation);
       if (distance.magnitude > 10)
         _machine.transit(JOB.IDLE);
