@@ -49,7 +49,11 @@ namespace Script {
     }
 
     private static async actAttack(_machine: TurretStateMachine): Promise<void> {
-      _machine.node.mtxLocal.lookAt(ƒ.Vector3.TRANSFORMATION(ship.mtxWorld.translation, _machine.node.getParent().mtxWorldInverse, true), undefined, true);
+      _machine.node.getChildrenByName("Cannon")[0].mtxLocal.lookAt(
+        ƒ.Vector3.TRANSFORMATION(ship.mtxWorld.translation, _machine.node.getChildrenByName("Head")[0].mtxWorldInverse, true),
+        undefined,
+        false
+      );
       let distance: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(ship.mtxWorld.translation, _machine.node.mtxWorld.translation);
       if (distance.magnitude > 10)
         _machine.transit(JOB.IDLE);
