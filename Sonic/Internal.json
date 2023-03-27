@@ -29,11 +29,68 @@
       }
     }
   },
+  "MeshSprite|2023-03-23T13:55:55.301Z|85000": {
+    "ƒ.MeshSprite": {
+      "idResource": "MeshSprite|2023-03-23T13:55:55.301Z|85000",
+      "name": "MeshSprite",
+      "type": "MeshSprite"
+    }
+  },
+  "Material|2023-03-23T13:57:10.704Z|80297": {
+    "ƒ.Material": {
+      "name": "Sonic",
+      "idResource": "Material|2023-03-23T13:57:10.704Z|80297",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-23T13:56:18.002Z|98392"
+        }
+      }
+    }
+  },
+  "TextureImage|2023-03-23T13:56:18.002Z|98392": {
+    "ƒ.TextureImage": {
+      "url": "Image\\SpriteSheet.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-23T13:56:18.002Z|98392",
+        "name": "Image\\SpriteSheet.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2023-03-20T15:45:03.634Z|49818": {
     "ƒ.Graph": {
       "name": "Game",
       "active": true,
-      "components": {},
+      "components": {
+        "ComponentCamera": [
+          {
+            "ƒ.ComponentCamera": {
+              "backgroundColor": {
+                "r": 0,
+                "g": 0,
+                "b": 0,
+                "a": 1
+              },
+              "backgroundEnabled": true,
+              "projection": "central",
+              "fieldOfView": 45,
+              "direction": "diagonal",
+              "aspect": 1.668724279835391,
+              "pivot": {
+                "translation": "[0, 0, 15]",
+                "rotation": "[0, 180, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ]
+      },
       "children": [
         {
           "ƒ.Node": {
@@ -243,37 +300,6 @@
       ],
       "idResource": "Graph|2023-03-20T15:45:03.634Z|49818",
       "type": "Graph"
-    }
-  },
-  "MeshSprite|2023-03-23T13:55:55.301Z|85000": {
-    "ƒ.MeshSprite": {
-      "idResource": "MeshSprite|2023-03-23T13:55:55.301Z|85000",
-      "name": "MeshSprite",
-      "type": "MeshSprite"
-    }
-  },
-  "TextureImage|2023-03-23T13:56:18.002Z|98392": {
-    "ƒ.TextureImage": {
-      "url": "Image\\SpriteSheet.png",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2023-03-23T13:56:18.002Z|98392",
-        "name": "Image\\SpriteSheet.png",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2023-03-23T13:57:10.704Z|80297": {
-    "ƒ.Material": {
-      "name": "Sonic",
-      "idResource": "Material|2023-03-23T13:57:10.704Z|80297",
-      "shader": "ShaderLitTextured",
-      "coat": {
-        "ƒ.CoatTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2023-03-23T13:56:18.002Z|98392"
-        }
-      }
     }
   }
 }

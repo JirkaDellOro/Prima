@@ -43,18 +43,25 @@ var Script;
     let viewport;
     let sonic;
     document.addEventListener("interactiveViewportStarted", start);
+    // document.addEventListener("keydown", hndKeyboard)
     function start(_event) {
         viewport = _event.detail;
         sonic = viewport.getBranch().getChildrenByName("Sonic")[0];
         console.log(sonic);
+        let cmpCamera = viewport.getBranch().getComponent(ƒ.ComponentCamera);
+        viewport.camera = cmpCamera;
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.simulate();  // if physics is included and used
-        sonic.mtxLocal.translateX(0.01);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
+            sonic.mtxLocal.translateX(0.05);
         viewport.draw();
-        ƒ.AudioManager.default.update();
+        // ƒ.AudioManager.default.update();
     }
+    // function hndKeyboard(_event: KeyboardEvent) {
+    //   if (_event.code == )
+    // }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
