@@ -183,10 +183,97 @@
               }
             ]
           }
+        },
+        {
+          "ƒ.Node": {
+            "name": "Sonic",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshSprite|2023-03-23T13:55:55.301Z|85000",
+                    "pivot": {
+                      "translation": "[0, 0.5, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0.02799999713897705]",
+                      "rotation": 0,
+                      "scaling": "[0.09999992698431015, 0.09999992698431015]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2023-03-23T13:57:10.704Z|80297"
+                  }
+                }
+              ],
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0.5, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
         }
       ],
       "idResource": "Graph|2023-03-20T15:45:03.634Z|49818",
       "type": "Graph"
+    }
+  },
+  "MeshSprite|2023-03-23T13:55:55.301Z|85000": {
+    "ƒ.MeshSprite": {
+      "idResource": "MeshSprite|2023-03-23T13:55:55.301Z|85000",
+      "name": "MeshSprite",
+      "type": "MeshSprite"
+    }
+  },
+  "TextureImage|2023-03-23T13:56:18.002Z|98392": {
+    "ƒ.TextureImage": {
+      "url": "Image\\SpriteSheet.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2023-03-23T13:56:18.002Z|98392",
+        "name": "Image\\SpriteSheet.png",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2023-03-23T13:57:10.704Z|80297": {
+    "ƒ.Material": {
+      "name": "Sonic",
+      "idResource": "Material|2023-03-23T13:57:10.704Z|80297",
+      "shader": "ShaderLitTextured",
+      "coat": {
+        "ƒ.CoatTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2023-03-23T13:56:18.002Z|98392"
+        }
+      }
     }
   }
 }
