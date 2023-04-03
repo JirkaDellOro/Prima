@@ -42,7 +42,7 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     let sonic;
-    let gravity = -9.81;
+    const gravity = -9.81;
     let ySpeed = 0;
     let isGrounded = true;
     document.addEventListener("interactiveViewportStarted", start);
@@ -68,17 +68,24 @@ var Script;
         ySpeed += gravity * timeFrame;
         let pos = sonic.mtxLocal.translation;
         pos.y += ySpeed * timeFrame;
-        if (pos.y < 0.5) {
+        let tileCollided = checkCollision(pos);
+        if (tileCollided) {
             ySpeed = 0;
-            pos.y = 0.5;
+            pos.y = tileCollided.mtxWorld.translation.y + 0.5;
             isGrounded = true;
         }
         sonic.mtxLocal.translation = pos;
         viewport.draw();
         // ƒ.AudioManager.default.update();
     }
-    // function hndKeyboard(_event: KeyboardEvent) {
-    //   if (_event.code == )
-    // }
+    function checkCollision(_posWorld) {
+        let tiles = viewport.getBranch().getChildrenByName("Terrain")[0].getChildren();
+        for (let tile of tiles) {
+            let pos = ƒ.Vector3.TRANSFORMATION(_posWorld, tile.mtxWorldInverse, true);
+            if (pos.y < 0.5 && pos.x > -0.5 && pos.x < 0.5)
+                return tile;
+        }
+        return null;
+    }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

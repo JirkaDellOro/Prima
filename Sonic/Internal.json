@@ -60,6 +60,26 @@
       }
     }
   },
+  "AnimationSprite|2023-04-03T15:10:34.547Z|60535": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-03T15:10:34.547Z|60535",
+      "idTexture": "TextureImage|2023-03-23T13:56:18.002Z|98392",
+      "frames": 4,
+      "wrapAfter": 5,
+      "start": "[2, 157]",
+      "size": "[53, 53]",
+      "next": "[52, 0]",
+      "wrap": "[0, 100]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-03T15:10:34.547Z|60535",
+        "name": "AnimationSprite",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 25,
+        "animationStructure": {}
+      }
+    }
+  },
   "Graph|2023-03-20T15:45:03.634Z|49818": {
     "ƒ.Graph": {
       "name": "Game",
@@ -150,7 +170,7 @@
                         "ƒ.ComponentMesh": {
                           "idMesh": "MeshQuad|2023-03-20T15:46:35.565Z|00077",
                           "pivot": {
-                            "translation": "[1, 0, 0]",
+                            "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
@@ -175,6 +195,20 @@
                             "active": true
                           },
                           "idMaterial": "Material|2023-03-20T16:02:00.225Z|63764"
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[1, 0.30000001192092896, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
                         }
                       }
                     ]
@@ -224,7 +258,7 @@
                       {
                         "ƒ.ComponentTransform": {
                           "local": {
-                            "translation": "[-1, 0, 0]",
+                            "translation": "[3, 0, 0]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
@@ -268,9 +302,9 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[0, 0.02799999713897705]",
+                      "translation": "[0.3062015473842621, 0.18668252229690552]",
                       "rotation": 0,
-                      "scaling": "[0.09999992698431015, 0.09999992698431015]"
+                      "scaling": "[0.10271317511796951, 0.06302021443843842]"
                     },
                     "Component": {
                       "active": true
@@ -290,6 +324,21 @@
                     "Component": {
                       "active": true
                     }
+                  }
+                }
+              ],
+              "ComponentAnimator": [
+                {
+                  "ƒ.ComponentAnimator": {
+                    "Component": {
+                      "active": true
+                    },
+                    "idAnimation": "AnimationSprite|2023-04-03T15:10:34.547Z|60535",
+                    "playmode": "loop",
+                    "quantization": "discrete",
+                    "scale": 1,
+                    "scaleWithGameTime": true,
+                    "animateInEditor": true
                   }
                 }
               ]
