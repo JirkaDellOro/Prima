@@ -75,7 +75,7 @@
         "name": "AnimationSprite",
         "labels": {},
         "events": {},
-        "framesPerSecond": 25,
+        "framesPerSecond": 8,
         "animationStructure": {}
       }
     }
@@ -302,7 +302,7 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[0.3062015473842621, 0.18668252229690552]",
+                      "translation": "[0.0038759689778089523, 0.18668252229690552]",
                       "rotation": 0,
                       "scaling": "[0.10271317511796951, 0.06302021443843842]"
                     },
@@ -338,7 +338,7 @@
                     "quantization": "discrete",
                     "scale": 1,
                     "scaleWithGameTime": true,
-                    "animateInEditor": true
+                    "animateInEditor": false
                   }
                 }
               ]
