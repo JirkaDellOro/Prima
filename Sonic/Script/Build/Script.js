@@ -75,6 +75,7 @@ var Script;
             isGrounded = true;
         }
         sonic.mtxLocal.translation = pos;
+        followCamera();
         viewport.draw();
         // ƒ.AudioManager.default.update();
     }
@@ -86,6 +87,10 @@ var Script;
                 return tile;
         }
         return null;
+    }
+    function followCamera() {
+        let mutator = sonic.mtxLocal.getMutator();
+        viewport.camera.mtxPivot.mutate({ "translation": { "x": mutator.translation.x, "y": mutator.translation.y } });
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

@@ -49,6 +49,8 @@ namespace Script {
     }
     sonic.mtxLocal.translation = pos;
 
+    followCamera();
+
 
     viewport.draw();
     // ƒ.AudioManager.default.update();
@@ -64,5 +66,12 @@ namespace Script {
 
     return null;
   }
+  function followCamera() {
+    let mutator: ƒ.Mutator = sonic.mtxLocal.getMutator();
+    viewport.camera.mtxPivot.mutate(
+      { "translation": { "x": mutator.translation.x, "y": mutator.translation.y } }
+    );
+  }
 }
+
 
