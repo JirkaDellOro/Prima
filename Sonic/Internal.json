@@ -72,7 +72,7 @@
       "wrap": "[0, 100]",
       "Animation": {
         "idResource": "AnimationSprite|2023-04-03T15:10:34.547Z|60535",
-        "name": "AnimationSprite",
+        "name": "SonicRun",
         "labels": {},
         "events": {},
         "framesPerSecond": 8,
@@ -302,9 +302,9 @@
                     "clrPrimary": "[1, 1, 1, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
-                      "translation": "[0.0038759689778089523, 0.18668252229690552]",
+                      "translation": "[0.07364340871572495, 0.4554102122783661]",
                       "rotation": 0,
-                      "scaling": "[0.10271317511796951, 0.06302021443843842]"
+                      "scaling": "[0.07364340871572495, 0.06777645647525787]"
                     },
                     "Component": {
                       "active": true
@@ -333,7 +333,7 @@
                     "Component": {
                       "active": true
                     },
-                    "idAnimation": "AnimationSprite|2023-04-03T15:10:34.547Z|60535",
+                    "idAnimation": "AnimationSprite|2023-04-06T13:06:14.063Z|83507",
                     "playmode": "loop",
                     "quantization": "discrete",
                     "scale": 1,
@@ -349,6 +349,26 @@
       ],
       "idResource": "Graph|2023-03-20T15:45:03.634Z|49818",
       "type": "Graph"
+    }
+  },
+  "AnimationSprite|2023-04-06T13:06:14.063Z|83507": {
+    "ƒ.AnimationSprite": {
+      "idResource": "AnimationSprite|2023-04-06T13:06:14.063Z|83507",
+      "idTexture": "TextureImage|2023-03-23T13:56:18.002Z|98392",
+      "frames": 4,
+      "wrapAfter": 5,
+      "start": "[0, 383]",
+      "size": "[38, 57]",
+      "next": "[38, 0]",
+      "wrap": "[0, 80]",
+      "Animation": {
+        "idResource": "AnimationSprite|2023-04-06T13:06:14.063Z|83507",
+        "name": "SonicIdle",
+        "labels": {},
+        "events": {},
+        "framesPerSecond": 8,
+        "animationStructure": {}
+      }
     }
   }
 }
