@@ -49,9 +49,12 @@ var Script;
     // document.addEventListener("keydown", hndKeyboard)
     function start(_event) {
         viewport = _event.detail;
-        sonic = viewport.getBranch().getChildrenByName("Sonic")[0];
+        let graph = viewport.getBranch();
+        sonic = graph.getChildrenByName("Sonic")[0];
         console.log(sonic);
-        let cmpCamera = viewport.getBranch().getComponent(ƒ.ComponentCamera);
+        ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
+        ƒ.AudioManager.default.listenTo(graph);
+        let cmpCamera = graph.getComponent(ƒ.ComponentCamera);
         viewport.camera = cmpCamera;
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -77,7 +80,7 @@ var Script;
         sonic.mtxLocal.translation = pos;
         followCamera();
         viewport.draw();
-        // ƒ.AudioManager.default.update();
+        ƒ.AudioManager.default.update();
     }
     function checkCollision(_posWorld) {
         let tiles = viewport.getBranch().getChildrenByName("Terrain")[0].getChildren();

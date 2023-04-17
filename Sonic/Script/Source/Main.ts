@@ -14,11 +14,15 @@ namespace Script {
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
-
-    sonic = viewport.getBranch().getChildrenByName("Sonic")[0];
+    let graph: ƒ.Graph = <ƒ.Graph>viewport.getBranch()
+    sonic = graph.getChildrenByName("Sonic")[0];
     console.log(sonic);
 
-    let cmpCamera: ƒ.ComponentCamera = viewport.getBranch().getComponent(ƒ.ComponentCamera);
+
+    ƒ.AudioManager.default.listenWith(graph.getComponent(ƒ.ComponentAudioListener));
+    ƒ.AudioManager.default.listenTo(graph);
+
+    let cmpCamera: ƒ.ComponentCamera = graph.getComponent(ƒ.ComponentCamera);
     viewport.camera = cmpCamera;
 
 
@@ -53,7 +57,7 @@ namespace Script {
 
 
     viewport.draw();
-    // ƒ.AudioManager.default.update();
+    ƒ.AudioManager.default.update();
   }
 
   function checkCollision(_posWorld: ƒ.Vector3): ƒ.Node {
