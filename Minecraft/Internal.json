@@ -44,7 +44,7 @@
           {
             "ƒ.ComponentMaterial": {
               "sortForAlpha": false,
-              "clrPrimary": "[0.7176470588235294, 0.5843137254901961, 0.5843137254901961, 1]",
+              "clrPrimary": "[1, 0, 0, 1]",
               "clrSecondary": "[1, 1, 1, 1]",
               "pivot": {
                 "translation": "[0, 0]",
@@ -62,7 +62,7 @@
           {
             "ƒ.ComponentTransform": {
               "local": {
-                "translation": "[3, 0, 0]",
+                "translation": "[0, 0, 0]",
                 "rotation": "[0, 0, 0]",
                 "scaling": "[1, 1, 1]"
               },
@@ -88,7 +88,7 @@
             "ƒ.ComponentLight": {
               "pivot": {
                 "translation": "[0, 0, 0]",
-                "rotation": "[30, -20, 0]",
+                "rotation": "[70, 30, 0]",
                 "scaling": "[1, 1, 1]"
               },
               "light": {
@@ -110,7 +110,7 @@
               },
               "light": {
                 "ƒ.LightAmbient": {
-                  "color": "[0.16862745098039217, 0.16862745098039217, 0.16862745098039217, 1]"
+                  "color": "[0.12941176470588237, 0.12941176470588237, 0.12941176470588237, 1]"
                 }
               },
               "Component": {
@@ -118,9 +118,7 @@
               }
             }
           }
-        ],
-        "ComponentMesh": [],
-        "ComponentMaterial": []
+        ]
       },
       "children": [
         {
