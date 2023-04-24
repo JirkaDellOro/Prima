@@ -120,15 +120,7 @@
           }
         ]
       },
-      "children": [
-        {
-          "ƒ.GraphInstance": {
-            "deserializeFromSource": true,
-            "name": "Cube",
-            "idSource": "Graph|2023-04-20T13:16:47.382Z|26427"
-          }
-        }
-      ],
+      "children": [],
       "idResource": "Graph|2023-04-20T13:20:03.440Z|32173",
       "type": "Graph"
     }
