@@ -3,10 +3,16 @@ namespace Script {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  //@ts-ignore
+  document.addEventListener("interactiveViewportStarted", start);
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
+    let block: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources["Graph|2023-04-20T13:16:47.382Z|26427"];
+    let instance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(block);
+    console.log(instance);
+    instance.mtxLocal.translateX(1);
+    viewport.getBranch().addChild(instance);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
