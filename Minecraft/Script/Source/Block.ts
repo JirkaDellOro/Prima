@@ -16,7 +16,7 @@ namespace Script {
       this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
 
       let cmpPick: ƒ.ComponentPick = new ƒ.ComponentPick();
-      cmpPick.pick = ƒ.PICK.RADIUS;
+      cmpPick.pick = ƒ.PICK.CAMERA;
       this.addComponent(cmpPick);
     }
   }

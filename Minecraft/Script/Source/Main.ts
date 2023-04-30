@@ -2,16 +2,21 @@ namespace Script {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
-  let viewport: ƒ.Viewport;
+  export let viewport: ƒ.Viewport;
+  export let blocks: ƒ.Node
+  export let grid: Block[][][] = [];
+
   document.addEventListener("interactiveViewportStarted", start);
 
   async function start(_event: Event): Promise<void> {
     viewport = (<CustomEvent>_event).detail;
 
-    generateWorld(10, 3, 10);
+    generateWorld(10, 3, 9);
 
-    viewport.canvas.addEventListener("pointerdown", pick);
-    viewport.getBranch().addEventListener("pointerdown", <ƒ.EventListenerUnified>hit);
+    let pickAlgorithm = [pickByComponent, pickByCamera, pickByDistance, pickByGrid];
+
+    viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
+    viewport.getBranch().addEventListener("pointerdown", <ƒ.EventListenerUnified>hitComponent);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -23,27 +28,28 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 
-  function pick(_event: PointerEvent): void {
-    console.log("pick");
-    viewport.dispatchPointerEvent(_event);
-  }
-
-  function hit(_event: PointerEvent): void {
-    let node: ƒ.Node = (<ƒ.Node>_event.target);
-    let cmpPick: ƒ.ComponentPick = node.getComponent(ƒ.ComponentPick);
-    console.log(cmpPick.node.name);
-  }
-
   function generateWorld(_width: number, _height: number, _depth: number): void {
-    for (let y: number = 0; y < _height; y++)
-      for (let z: number = 0; z < _depth; z++)
+    blocks = new ƒ.Node("Blocks");
+    viewport.getBranch().addChild(blocks);
+    // let vctOffset: ƒ.Vector2 = new ƒ.Vector2(Math.floor(_width / 2), Math.floor(_depth / 2));
+    let vctOffset: ƒ.Vector2 = ƒ.Vector2.ZERO();
+
+    for (let y: number = 0; y < _height; y++) {
+      grid[y] = [];
+      for (let z: number = 0; z < _depth; z++) {
+        grid[y][z] = [];
         for (let x: number = 0; x < _width; x++) {
-          let vctPostion: ƒ.Vector3 = new ƒ.Vector3(x - _width / 2, -y, z - _depth / 2);
+          let vctPostion: ƒ.Vector3 = new ƒ.Vector3(x - vctOffset.x, y, z - vctOffset.y);
           let txtColor: string = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
-          let instance: Block = new Block(vctPostion, ƒ.Color.CSS(txtColor));
-          instance.name = vctPostion.toString() + "|" + txtColor; 
-          viewport.getBranch().addChild(instance);
+          let block: Block = new Block(vctPostion, ƒ.Color.CSS(txtColor));
+          block.name = vctPostion.toString() + "|" + txtColor;
+          blocks.addChild(block);
+          grid[y][z][x] = block;
         }
+      }
+    }
+    console.log(grid);
   }
 }
+
 
