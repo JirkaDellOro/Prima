@@ -12,6 +12,9 @@ var Script;
             cmpMaterial.clrPrimary = _color;
             this.addComponent(cmpMaterial);
             this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
+            let cmpPick = new ƒ.ComponentPick();
+            cmpPick.pick = ƒ.PICK.RADIUS;
+            this.addComponent(cmpPick);
         }
     }
     Script.Block = Block;
@@ -58,17 +61,12 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
-    //@ts-ignore
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         viewport = _event.detail;
-        // let block: ƒ.Graph = <ƒ.Graph>ƒ.Project.resources["Graph|2023-04-20T13:16:47.382Z|26427"];
-        // let instance: ƒ.GraphInstance = await ƒ.Project.createGraphInstance(block);
-        // console.log(instance);
-        // instance.mtxLocal.translateX(1);
-        let instance = new Script.Block(ƒ.Vector3.X(1), ƒ.Color.CSS("red"));
-        console.log(instance);
-        viewport.getBranch().addChild(instance);
+        generateWorld(10, 3, 10);
+        viewport.canvas.addEventListener("pointerdown", pick);
+        viewport.getBranch().addEventListener("pointerdown", hit);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -76,6 +74,26 @@ var Script;
         // ƒ.Physics.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function pick(_event) {
+        console.log("pick");
+        viewport.dispatchPointerEvent(_event);
+    }
+    function hit(_event) {
+        let node = _event.target;
+        let cmpPick = node.getComponent(ƒ.ComponentPick);
+        console.log(cmpPick.node.name);
+    }
+    function generateWorld(_width, _height, _depth) {
+        for (let y = 0; y < _height; y++)
+            for (let z = 0; z < _depth; z++)
+                for (let x = 0; x < _width; x++) {
+                    let vctPostion = new ƒ.Vector3(x - _width / 2, -y, z - _depth / 2);
+                    let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
+                    let instance = new Script.Block(vctPostion, ƒ.Color.CSS(txtColor));
+                    instance.name = vctPostion.toString() + "|" + txtColor;
+                    viewport.getBranch().addChild(instance);
+                }
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
