@@ -65,7 +65,7 @@ var Script;
     async function start(_event) {
         Script.viewport = _event.detail;
         generateWorld(10, 3, 9);
-        let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByDistance, Script.pickByGrid];
+        let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
         Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
         Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -124,9 +124,10 @@ var Script;
         let picks = ƒ.Picker.pickViewport(Script.viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
         picks.sort((_a, _b) => _a.zBuffer < _b.zBuffer ? -1 : 1);
         hitBlock(picks[0]?.node);
+        console.log(picks[0]);
     }
     Script.pickByCamera = pickByCamera;
-    function pickByDistance(_event) {
+    function pickByRadius(_event) {
         console.log("pickByRay");
         let ray = Script.viewport.getRayFromClient(new ƒ.Vector2(_event.clientX, _event.clientY));
         let shortest;
@@ -143,7 +144,7 @@ var Script;
         }
         hitBlock(found);
     }
-    Script.pickByDistance = pickByDistance;
+    Script.pickByRadius = pickByRadius;
     function pickByGrid(_event) {
         console.log("pickByGrid");
         let ray = Script.viewport.getRayFromClient(new ƒ.Vector2(_event.clientX, _event.clientY));

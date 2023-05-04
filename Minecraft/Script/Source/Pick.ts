@@ -24,9 +24,10 @@ namespace Script {
     let picks: ƒ.Pick[] = ƒ.Picker.pickViewport(viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
     picks.sort((_a, _b) => _a.zBuffer < _b.zBuffer ? -1 : 1);
     hitBlock(picks[0]?.node);
+    console.log(picks[0]);
   }
 
-  export function pickByDistance(_event: PointerEvent): void {
+  export function pickByRadius(_event: PointerEvent): void {
     console.log("pickByRay");
     let ray: ƒ.Ray = viewport.getRayFromClient(new ƒ.Vector2(_event.clientX, _event.clientY));
     let shortest: number;

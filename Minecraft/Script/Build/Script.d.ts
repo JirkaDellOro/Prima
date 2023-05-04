@@ -25,6 +25,6 @@ declare namespace Script {
     function pickByComponent(_event: PointerEvent): void;
     function hitComponent(_event: PointerEvent): void;
     function pickByCamera(_event: PointerEvent): void;
-    function pickByDistance(_event: PointerEvent): void;
+    function pickByRadius(_event: PointerEvent): void;
     function pickByGrid(_event: PointerEvent): void;
 }

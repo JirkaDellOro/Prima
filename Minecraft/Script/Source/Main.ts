@@ -13,7 +13,7 @@ namespace Script {
 
     generateWorld(10, 3, 9);
 
-    let pickAlgorithm = [pickByComponent, pickByCamera, pickByDistance, pickByGrid];
+    let pickAlgorithm = [pickByComponent, pickByCamera, pickByRadius, pickByGrid];
 
     viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
     viewport.getBranch().addEventListener("pointerdown", <ƒ.EventListenerUnified>hitComponent);
