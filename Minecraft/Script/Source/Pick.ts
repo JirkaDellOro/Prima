@@ -1,6 +1,6 @@
 namespace Script {
   import ƒ = FudgeCore;
-  
+
   export function pickByComponent(_event: PointerEvent): void {
     console.log("pickByComponent");
     Reflect.set(_event, "closestDistance", Infinity);
@@ -23,8 +23,14 @@ namespace Script {
     console.log("pickCamera");
     let picks: ƒ.Pick[] = ƒ.Picker.pickViewport(viewport, new ƒ.Vector2(_event.clientX, _event.clientY));
     picks.sort((_a, _b) => _a.zBuffer < _b.zBuffer ? -1 : 1);
-    hitBlock(picks[0]?.node);
-    console.log(picks[0]);
+    let pick: ƒ.Pick = picks[0];
+
+    if (_event.button == 1)
+      hitBlock(pick.node);
+    else if (_event.button == 2) {
+      let posNewBlock: ƒ.Vector3 = ƒ.Vector3.SUM(pick.node.mtxWorld.translation, pick.normal);
+      addBlock(posNewBlock);
+    }
   }
 
   export function pickByRadius(_event: PointerEvent): void {
@@ -62,7 +68,8 @@ namespace Script {
       let posGrid: ƒ.Vector3 = posCheck.map(_value => Math.round(_value));
       console.log(posGrid.toString(), posCheck.toString());
       try {
-        let block = grid[posGrid.y][posGrid.z][posGrid.x];
+        let block = grid3D[posGrid.y][posGrid.z][posGrid.x];
+        // let block = gridAssoc[posGrid.toString()];
         if (block) {
           hitBlock(block);
           return;
@@ -79,4 +86,12 @@ namespace Script {
     _block.getParent().removeChild(_block);
     viewport.draw();
   }
+  function addBlock(_pos: ƒ.Vector3) {
+    if (gridAssoc[_pos.toString()]) // already a block there...
+      return;
+
+    createBlock(_pos, "white");
+    viewport.draw();
+  }
 }
+

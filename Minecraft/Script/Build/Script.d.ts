@@ -19,7 +19,11 @@ declare namespace Script {
     import ƒ = FudgeCore;
     let viewport: ƒ.Viewport;
     let blocks: ƒ.Node;
-    let grid: Block[][][];
+    let grid3D: Block[][][];
+    let gridAssoc: {
+        [pos: string]: Block;
+    };
+    function createBlock(_vctPosition: ƒ.Vector3, _txtColor: string): void;
 }
 declare namespace Script {
     function pickByComponent(_event: PointerEvent): void;

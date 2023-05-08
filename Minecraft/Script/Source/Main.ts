@@ -4,12 +4,17 @@ namespace Script {
 
   export let viewport: ƒ.Viewport;
   export let blocks: ƒ.Node
-  export let grid: Block[][][] = [];
+  export let grid3D: Block[][][] = [];
+  export let gridAssoc: { [pos: string]: Block } = {};
+  let steve: ƒ.Node;
+  let cmpRigidbody: ƒ.ComponentRigidbody 
 
   document.addEventListener("interactiveViewportStarted", start);
 
   async function start(_event: Event): Promise<void> {
     viewport = (<CustomEvent>_event).detail;
+    viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
+    viewport.canvas.addEventListener("contextmenu", _event => _event.preventDefault());
 
     generateWorld(10, 3, 9);
 
@@ -18,12 +23,21 @@ namespace Script {
     viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
     viewport.getBranch().addEventListener("pointerdown", <ƒ.EventListenerUnified>hitComponent);
 
+    steve = viewport.getBranch().getChildrenByName("Steve")[0];
+    console.log(steve);
+    viewport.camera = steve.getComponent(ƒ.ComponentCamera);
+    cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
+    cmpRigidbody.effectRotation = ƒ.Vector3.Y();
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
-    // ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
-    // ƒ.Physics.simulate();  // if physics is included and used
+
+    cmpRigidbody.applyForce(ƒ.Vector3.Z(200));
+
+    ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
@@ -35,20 +49,28 @@ namespace Script {
     let vctOffset: ƒ.Vector2 = ƒ.Vector2.ZERO();
 
     for (let y: number = 0; y < _height; y++) {
-      grid[y] = [];
+      grid3D[y] = [];
       for (let z: number = 0; z < _depth; z++) {
-        grid[y][z] = [];
+        grid3D[y][z] = [];
         for (let x: number = 0; x < _width; x++) {
-          let vctPostion: ƒ.Vector3 = new ƒ.Vector3(x - vctOffset.x, y, z - vctOffset.y);
+          let vctPosition: ƒ.Vector3 = new ƒ.Vector3(x - vctOffset.x, y, z - vctOffset.y);
           let txtColor: string = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
-          let block: Block = new Block(vctPostion, ƒ.Color.CSS(txtColor));
-          block.name = vctPostion.toString() + "|" + txtColor;
-          blocks.addChild(block);
-          grid[y][z][x] = block;
+          createBlock(vctPosition, txtColor);
         }
       }
     }
-    console.log(grid);
+    console.log(gridAssoc);
+  }
+
+  export function createBlock(_vctPosition: ƒ.Vector3, _txtColor: string): void {
+    let block: Block = new Block(_vctPosition, ƒ.Color.CSS(_txtColor));
+    block.name = _vctPosition.toString() + "|" + _txtColor;
+    console.log(block.name);
+    blocks.addChild(block);
+    gridAssoc[_vctPosition.toString()] = block;
+    try {
+      grid3D[_vctPosition.y][_vctPosition.z][_vctPosition.x] = block;
+    } catch (_e) { }
   }
 }
 
