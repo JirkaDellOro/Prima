@@ -144,11 +144,11 @@
                 {
                   "ƒ.ComponentRigidbody": {
                     "initialization": "TO_PIVOT",
-                    "friction": 0.2,
+                    "friction": 0,
                     "restitution": 0.2,
                     "mass": 85,
-                    "dampTranslation": 0.1,
-                    "dampRotation": 0.1,
+                    "dampTranslation": 1,
+                    "dampRotation": 2.9999999999999996,
                     "effectGravity": 1,
                     "typeBody": "DYNAMIC",
                     "typeCollider": "CAPSULE",
@@ -165,8 +165,6 @@
                   }
                 }
               ],
-              "ComponentMesh": [],
-              "ComponentMaterial": [],
               "ComponentCamera": [
                 {
                   "ƒ.ComponentCamera": {

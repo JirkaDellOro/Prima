@@ -81,14 +81,27 @@ var Script;
         Script.viewport.camera = steve.getComponent(ƒ.ComponentCamera);
         cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
         cmpRigidbody.effectRotation = ƒ.Vector3.Y();
+        // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
-        cmpRigidbody.applyForce(ƒ.Vector3.Z(200));
+        control();
         ƒ.Physics.simulate(); // if physics is included and used
         Script.viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function control() {
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            cmpRigidbody.applyTorque(ƒ.Vector3.Y(5));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            cmpRigidbody.applyTorque(ƒ.Vector3.Y(-5));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), 1000));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), -1000));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && cmpRigidbody.getVelocity().y == 0)
+            cmpRigidbody.addVelocity(ƒ.Vector3.Y(5));
     }
     function generateWorld(_width, _height, _depth) {
         Script.blocks = new ƒ.Node("Blocks");
@@ -100,7 +113,7 @@ var Script;
             for (let z = 0; z < _depth; z++) {
                 Script.grid3D[y][z] = [];
                 for (let x = 0; x < _width; x++) {
-                    let vctPosition = new ƒ.Vector3(x - vctOffset.x, y, z - vctOffset.y);
+                    let vctPosition = new ƒ.Vector3(x - vctOffset.x, y + Math.random() * 0.2, z - vctOffset.y);
                     let txtColor = ƒ.Random.default.getElement(["red", "lime", "blue", "yellow"]);
                     createBlock(vctPosition, txtColor);
                 }
