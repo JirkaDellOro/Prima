@@ -66,6 +66,7 @@ var Script;
     Script.grid3D = [];
     Script.gridAssoc = {};
     let steve;
+    let isGrounded = false;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         Script.viewport = _event.detail;
@@ -90,7 +91,9 @@ var Script;
         steve = Script.viewport.getBranch().getChildrenByName("Steve")[0];
         console.log(steve);
         Script.viewport.camera = steve.getComponent(ƒ.ComponentCamera);
-        steve.getComponent(ƒ.ComponentRigidbody).effectRotation = ƒ.Vector3.Y();
+        let cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
+        cmpRigidbody.effectRotation = ƒ.Vector3.Y();
+        cmpRigidbody.addEventListener("ColliderEnteredCollision" /* COLLISION_ENTER */, steveCollides);
     }
     function controlSteve() {
         let cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
@@ -102,8 +105,15 @@ var Script;
             cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), 1000));
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
             cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), -1000));
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && cmpRigidbody.getVelocity().y == 0)
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && isGrounded) {
             cmpRigidbody.addVelocity(ƒ.Vector3.Y(5));
+            isGrounded = false;
+        }
+    }
+    function steveCollides(_event) {
+        // let vctCollision: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
+        //if (Math.abs(vctCollision.x) < 0.1 && Math.abs(vctCollision.z) < 0.1 && vctCollision.y < 0) // collision below steve
+        isGrounded = true;
     }
     function generateWorld(_width, _height, _depth) {
         Script.blocks = new ƒ.Node("Blocks");

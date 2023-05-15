@@ -7,6 +7,7 @@ namespace Script {
   export let grid3D: Block[][][] = [];
   export let gridAssoc: { [pos: string]: Block } = {};
   let steve: ƒ.Node;
+  let isGrounded: boolean = false;
 
   document.addEventListener("interactiveViewportStarted", start);
 
@@ -41,7 +42,9 @@ namespace Script {
     steve = viewport.getBranch().getChildrenByName("Steve")[0];
     console.log(steve);
     viewport.camera = steve.getComponent(ƒ.ComponentCamera);
-    steve.getComponent(ƒ.ComponentRigidbody).effectRotation = ƒ.Vector3.Y();
+    let cmpRigidbody: ƒ.ComponentRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
+    cmpRigidbody.effectRotation = ƒ.Vector3.Y();
+    cmpRigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, steveCollides);
   }
 
   function controlSteve(): void {
@@ -56,8 +59,16 @@ namespace Script {
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
       cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), -1000));
 
-    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && cmpRigidbody.getVelocity().y == 0)
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && isGrounded) {
       cmpRigidbody.addVelocity(ƒ.Vector3.Y(5));
+      isGrounded = false;
+    }
+  }
+
+  function steveCollides(_event: ƒ.EventPhysics): void {
+    // let vctCollision: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
+    //if (Math.abs(vctCollision.x) < 0.1 && Math.abs(vctCollision.z) < 0.1 && vctCollision.y < 0) // collision below steve
+      isGrounded = true;
   }
 
   function generateWorld(_width: number, _height: number, _depth: number): void {
