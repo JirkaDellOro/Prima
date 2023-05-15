@@ -9,6 +9,10 @@ namespace Script {
   let steve: ƒ.Node;
   let isGrounded: boolean = false;
 
+  enum MINECRAFT {
+    STEVE_COLLIDES = "steveCollides"
+  }
+
   document.addEventListener("interactiveViewportStarted", start);
 
   async function start(_event: Event): Promise<void> {
@@ -22,6 +26,7 @@ namespace Script {
 
     viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
     viewport.getBranch().addEventListener("pointerdown", <ƒ.EventListenerUnified>hitComponent);
+    viewport.getBranch().addEventListener(MINECRAFT.STEVE_COLLIDES, (_event: Event) => console.log(_event));
 
     setupSteve();
 
@@ -41,7 +46,7 @@ namespace Script {
     // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
     steve = viewport.getBranch().getChildrenByName("Steve")[0];
     console.log(steve);
-    viewport.camera = steve.getComponent(ƒ.ComponentCamera);
+    viewport.camera = steve.getChild(0).getComponent(ƒ.ComponentCamera);
     let cmpRigidbody: ƒ.ComponentRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
     cmpRigidbody.effectRotation = ƒ.Vector3.Y();
     cmpRigidbody.addEventListener(ƒ.EVENT_PHYSICS.COLLISION_ENTER, steveCollides);
@@ -69,6 +74,8 @@ namespace Script {
     // let vctCollision: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
     //if (Math.abs(vctCollision.x) < 0.1 && Math.abs(vctCollision.z) < 0.1 && vctCollision.y < 0) // collision below steve
       isGrounded = true;
+      let customEvent: CustomEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, {bubbles: true, detail: steve.mtxWorld.translation})
+      steve.dispatchEvent(customEvent);
   }
 
   function generateWorld(_width: number, _height: number, _depth: number): void {

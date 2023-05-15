@@ -165,33 +165,108 @@
                   }
                 }
               ],
-              "ComponentCamera": [
+              "ComponentCamera": [],
+              "JointRevolute": [
                 {
-                  "ƒ.ComponentCamera": {
-                    "backgroundColor": {
-                      "r": 0,
-                      "g": 0,
-                      "b": 0,
-                      "a": 1
-                    },
-                    "backgroundEnabled": true,
-                    "projection": "central",
-                    "fieldOfView": 45,
-                    "direction": "diagonal",
-                    "aspect": 1,
-                    "pivot": {
-                      "translation": "[0, 0, -3]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
+                  "ƒ.JointRevolute": {
+                    "motorTorque": 0,
+                    "JointAxial": {
+                      "springDamping": 0,
+                      "springFrequency": 0,
+                      "maxMotor": 360,
+                      "minMotor": 0,
+                      "motorSpeed": 0,
+                      "axis": "[0, 1, 0]",
+                      "Joint": {
+                        "nameChildToConnect": "Camera",
+                        "internalCollision": false,
+                        "breakForce": 0,
+                        "breakTorque": 0,
+                        "anchor": "[0, 0, 0]",
+                        "Component": {
+                          "active": true
+                        }
+                      }
                     }
                   }
                 }
               ]
             },
-            "children": []
+            "children": [
+              {
+                "ƒ.Node": {
+                  "name": "Camera",
+                  "active": true,
+                  "components": {
+                    "ComponentCamera": [
+                      {
+                        "ƒ.ComponentCamera": {
+                          "backgroundColor": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0,
+                            "a": 1
+                          },
+                          "backgroundEnabled": true,
+                          "projection": "central",
+                          "fieldOfView": 45,
+                          "direction": "diagonal",
+                          "aspect": 1.6728395061728396,
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, -1]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ],
+                    "ComponentRigidbody": [
+                      {
+                        "ƒ.ComponentRigidbody": {
+                          "initialization": "TO_PIVOT",
+                          "friction": 0.2,
+                          "restitution": 0.2,
+                          "mass": 1,
+                          "dampTranslation": 0.1,
+                          "dampRotation": 0.1,
+                          "effectGravity": 1,
+                          "typeBody": "DYNAMIC",
+                          "typeCollider": "SPHERE",
+                          "isTrigger": false,
+                          "id": 1,
+                          "pivot": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[0.2999999225139618, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "children": []
+                }
+              }
+            ]
           }
         }
       ],
