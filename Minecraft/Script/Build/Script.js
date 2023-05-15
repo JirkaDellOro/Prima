@@ -66,7 +66,6 @@ var Script;
     Script.grid3D = [];
     Script.gridAssoc = {};
     let steve;
-    let cmpRigidbody;
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         Script.viewport = _event.detail;
@@ -76,22 +75,25 @@ var Script;
         let pickAlgorithm = [Script.pickByComponent, Script.pickByCamera, Script.pickByRadius, Script.pickByGrid];
         Script.viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
         Script.viewport.getBranch().addEventListener("pointerdown", Script.hitComponent);
-        steve = Script.viewport.getBranch().getChildrenByName("Steve")[0];
-        console.log(steve);
-        Script.viewport.camera = steve.getComponent(ƒ.ComponentCamera);
-        cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
-        cmpRigidbody.effectRotation = ƒ.Vector3.Y();
-        // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
+        setupSteve();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
-        control();
+        controlSteve();
         ƒ.Physics.simulate(); // if physics is included and used
         Script.viewport.draw();
         ƒ.AudioManager.default.update();
     }
-    function control() {
+    function setupSteve() {
+        // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
+        steve = Script.viewport.getBranch().getChildrenByName("Steve")[0];
+        console.log(steve);
+        Script.viewport.camera = steve.getComponent(ƒ.ComponentCamera);
+        steve.getComponent(ƒ.ComponentRigidbody).effectRotation = ƒ.Vector3.Y();
+    }
+    function controlSteve() {
+        let cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
             cmpRigidbody.applyTorque(ƒ.Vector3.Y(5));
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))

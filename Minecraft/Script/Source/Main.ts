@@ -7,7 +7,6 @@ namespace Script {
   export let grid3D: Block[][][] = [];
   export let gridAssoc: { [pos: string]: Block } = {};
   let steve: ƒ.Node;
-  let cmpRigidbody: ƒ.ComponentRigidbody
 
   document.addEventListener("interactiveViewportStarted", start);
 
@@ -23,26 +22,31 @@ namespace Script {
     viewport.canvas.addEventListener("pointerdown", pickAlgorithm[1]);
     viewport.getBranch().addEventListener("pointerdown", <ƒ.EventListenerUnified>hitComponent);
 
-    steve = viewport.getBranch().getChildrenByName("Steve")[0];
-    console.log(steve);
-    viewport.camera = steve.getComponent(ƒ.ComponentCamera);
-    cmpRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
-    cmpRigidbody.effectRotation = ƒ.Vector3.Y();
-    // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
+    setupSteve();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
   function update(_event: Event): void {
-    control();
+    controlSteve();
 
     ƒ.Physics.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
 
-  function control(): void {
+  function setupSteve(): void {
+    // console.log(ƒ.Physics.settings.sleepingAngularVelocityThreshold);
+    steve = viewport.getBranch().getChildrenByName("Steve")[0];
+    console.log(steve);
+    viewport.camera = steve.getComponent(ƒ.ComponentCamera);
+    steve.getComponent(ƒ.ComponentRigidbody).effectRotation = ƒ.Vector3.Y();
+  }
+
+  function controlSteve(): void {
+    let cmpRigidbody: ƒ.ComponentRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
+
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
       cmpRigidbody.applyTorque(ƒ.Vector3.Y(5));
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
