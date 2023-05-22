@@ -169,12 +169,12 @@
               "JointRevolute": [
                 {
                   "ƒ.JointRevolute": {
-                    "motorTorque": 0,
+                    "motorTorque": 5,
                     "JointAxial": {
-                      "springDamping": 0,
+                      "springDamping": 1,
                       "springFrequency": 0,
-                      "maxMotor": 360,
-                      "minMotor": 0,
+                      "maxMotor": 90,
+                      "minMotor": -90,
                       "motorSpeed": 0,
                       "axis": "[0, 1, 0]",
                       "Joint": {
@@ -213,8 +213,8 @@
                           "direction": "diagonal",
                           "aspect": 1.6728395061728396,
                           "pivot": {
-                            "translation": "[0, 0, 0]",
-                            "rotation": "[0, 0, 0]",
+                            "translation": "[0, 0.800000011920929, 0]",
+                            "rotation": "[20, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
                           "Component": {
@@ -227,7 +227,7 @@
                       {
                         "ƒ.ComponentTransform": {
                           "local": {
-                            "translation": "[0, 0, -1]",
+                            "translation": "[0, 0, -1.3000000715255737]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
