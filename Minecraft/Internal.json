@@ -78,6 +78,98 @@
       "type": "Graph"
     }
   },
+  "Animation|2023-05-22T14:51:24.543Z|66563": {
+    "ƒ.Animation": {
+      "idResource": "Animation|2023-05-22T14:51:24.543Z|66563",
+      "name": "Walk",
+      "labels": {},
+      "events": {
+        "Touch0": 250,
+        "Touch1": 750
+      },
+      "framesPerSecond": 60,
+      "animationStructure": {
+        "children": {
+          "LegLeft": {
+            "components": {
+              "ComponentTransform": [
+                {
+                  "mtxLocal": {
+                    "rotation": {
+                      "x": {
+                        "keys": [
+                          {
+                            "time": 0,
+                            "value": -40,
+                            "slopeIn": 0,
+                            "slopeOut": 0,
+                            "constant": false
+                          },
+                          {
+                            "time": 502.6455143758759,
+                            "value": 40,
+                            "slopeIn": 0,
+                            "slopeOut": 0,
+                            "constant": false
+                          },
+                          {
+                            "time": 1000,
+                            "value": -40,
+                            "slopeIn": 0,
+                            "slopeOut": 0,
+                            "constant": false
+                          }
+                        ],
+                        "animationSequence": true
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "LegRight": {
+            "components": {
+              "ComponentTransform": [
+                {
+                  "mtxLocal": {
+                    "rotation": {
+                      "x": {
+                        "keys": [
+                          {
+                            "time": 0,
+                            "value": 40,
+                            "slopeIn": 0,
+                            "slopeOut": 0,
+                            "constant": false
+                          },
+                          {
+                            "time": 500,
+                            "value": -40,
+                            "slopeIn": 0,
+                            "slopeOut": 0,
+                            "constant": false
+                          },
+                          {
+                            "time": 1000,
+                            "value": 40,
+                            "slopeIn": 0,
+                            "slopeOut": 0,
+                            "constant": false
+                          }
+                        ],
+                        "animationSequence": true
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
   "Graph|2023-04-20T13:20:03.440Z|32173": {
     "ƒ.Graph": {
       "name": "Game",
@@ -212,8 +304,8 @@
                           "direction": "diagonal",
                           "aspect": 1.6728395061728396,
                           "pivot": {
-                            "translation": "[0, 0.800000011920929, 0]",
-                            "rotation": "[20, 0, 0]",
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[25, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
                           "Component": {
@@ -226,7 +318,7 @@
                       {
                         "ƒ.ComponentTransform": {
                           "local": {
-                            "translation": "[0, 0, -1.3000000715255737]",
+                            "translation": "[0, 0.8000000715255737, -1.7000001668930054]",
                             "rotation": "[0, 0, 0]",
                             "scaling": "[1, 1, 1]"
                           },
@@ -269,7 +361,23 @@
                 "ƒ.Node": {
                   "name": "Geometry",
                   "active": true,
-                  "components": {},
+                  "components": {
+                    "ComponentAnimator": [
+                      {
+                        "ƒ.ComponentAnimator": {
+                          "Component": {
+                            "active": true
+                          },
+                          "idAnimation": "Animation|2023-05-22T14:51:24.543Z|66563",
+                          "playmode": "loop",
+                          "quantization": "continous",
+                          "scale": 1,
+                          "scaleWithGameTime": true,
+                          "animateInEditor": false
+                        }
+                      }
+                    ]
+                  },
                   "children": [
                     {
                       "ƒ.Node": {
@@ -413,7 +521,7 @@
                               "ƒ.ComponentTransform": {
                                 "local": {
                                   "translation": "[0, 0, 0]",
-                                  "rotation": "[0, 0, 0]",
+                                  "rotation": "[6.660549163818359, 0, 0]",
                                   "scaling": "[1, 1, 1]"
                                 },
                                 "Component": {
@@ -469,7 +577,7 @@
                               "ƒ.ComponentTransform": {
                                 "local": {
                                   "translation": "[0, 0, 0]",
-                                  "rotation": "[0, 0, 0]",
+                                  "rotation": "[-6.311857223510742, 0, 0]",
                                   "scaling": "[1, 1, 1]"
                                 },
                                 "Component": {
