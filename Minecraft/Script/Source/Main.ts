@@ -6,7 +6,7 @@ namespace Script {
   export let blocks: ƒ.Node
   export let grid3D: Block[][][] = [];
   export let gridAssoc: { [pos: string]: Block } = {};
-  let steve: ƒ.Node;
+  export let steve: ƒ.Node;
   let isGrounded: boolean = false;
 
   enum MINECRAFT {
@@ -56,9 +56,9 @@ namespace Script {
     let cmpRigidbody: ƒ.ComponentRigidbody = steve.getComponent(ƒ.ComponentRigidbody);
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-      cmpRigidbody.applyTorque(ƒ.Vector3.Y(5));
+      cmpRigidbody.applyTorque(ƒ.Vector3.Y(15));
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-      cmpRigidbody.applyTorque(ƒ.Vector3.Y(-5));
+      cmpRigidbody.applyTorque(ƒ.Vector3.Y(-15));
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
       cmpRigidbody.applyForce(ƒ.Vector3.SCALE(steve.mtxWorld.getZ(), 1000));
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
@@ -73,9 +73,9 @@ namespace Script {
   function steveCollides(_event: ƒ.EventPhysics): void {
     // let vctCollision: ƒ.Vector3 = ƒ.Vector3.DIFFERENCE(_event.collisionPoint, steve.mtxWorld.translation);
     //if (Math.abs(vctCollision.x) < 0.1 && Math.abs(vctCollision.z) < 0.1 && vctCollision.y < 0) // collision below steve
-      isGrounded = true;
-      let customEvent: CustomEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, {bubbles: true, detail: steve.mtxWorld.translation})
-      steve.dispatchEvent(customEvent);
+    isGrounded = true;
+    let customEvent: CustomEvent = new CustomEvent(MINECRAFT.STEVE_COLLIDES, { bubbles: true, detail: steve.mtxWorld.translation })
+    steve.dispatchEvent(customEvent);
   }
 
   function generateWorld(_width: number, _height: number, _depth: number): void {
@@ -101,7 +101,7 @@ namespace Script {
   export function createBlock(_vctPosition: ƒ.Vector3, _txtColor: string): void {
     let block: Block = new Block(_vctPosition, ƒ.Color.CSS(_txtColor));
     block.name = _vctPosition.toString() + "|" + _txtColor;
-    console.log(block.name);
+    // console.log(block.name);
     blocks.addChild(block);
     gridAssoc[_vctPosition.toString()] = block;
     try {
