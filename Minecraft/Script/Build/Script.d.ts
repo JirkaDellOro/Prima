@@ -18,6 +18,16 @@ declare namespace Script {
 }
 declare namespace Script {
     import ƒ = FudgeCore;
+    class Gamestate extends ƒ.Mutable {
+        points: number;
+        health: number;
+        name: string;
+        constructor();
+        protected reduceMutator(_mutator: ƒ.Mutator): void;
+    }
+}
+declare namespace Script {
+    import ƒ = FudgeCore;
     let viewport: ƒ.Viewport;
     let blocks: ƒ.Node;
     let grid3D: Block[][][];

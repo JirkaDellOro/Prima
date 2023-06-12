@@ -73,9 +73,32 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    var ƒUi = FudgeUserInterface;
+    class Gamestate extends ƒ.Mutable {
+        points;
+        health;
+        name;
+        constructor() {
+            super();
+            this.points = 0;
+            this.health = 100;
+            this.name = "Steve";
+            let vui = document.querySelector("div#vui");
+            new ƒUi.Controller(this, vui);
+            this.addEventListener("mutate" /* MUTATE */, () => console.log(this));
+        }
+        reduceMutator(_mutator) {
+        }
+    }
+    Script.Gamestate = Gamestate;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     Script.grid3D = [];
     Script.gridAssoc = {};
+    let config;
     let isGrounded = false;
     let MINECRAFT;
     (function (MINECRAFT) {
@@ -83,6 +106,11 @@ var Script;
     })(MINECRAFT || (MINECRAFT = {}));
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
+        let response = await fetch("config.json");
+        config = await response.json();
+        console.log(config);
+        let gamestate = new Script.Gamestate();
+        console.log(gamestate);
         Script.viewport = _event.detail;
         Script.viewport.physicsDebugMode = ƒ.PHYSICS_DEBUGMODE.COLLIDERS;
         Script.viewport.canvas.addEventListener("contextmenu", _event => _event.preventDefault());
@@ -113,13 +141,13 @@ var Script;
     function controlSteve() {
         let cmpRigidbody = Script.steve.getComponent(ƒ.ComponentRigidbody);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-            cmpRigidbody.applyTorque(ƒ.Vector3.Y(15));
+            cmpRigidbody.applyTorque(ƒ.Vector3.Y(config.torque));
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-            cmpRigidbody.applyTorque(ƒ.Vector3.Y(-15));
+            cmpRigidbody.applyTorque(ƒ.Vector3.Y(-config.torque));
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(Script.steve.mtxWorld.getZ(), 1000));
+            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(Script.steve.mtxWorld.getZ(), config.force));
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(Script.steve.mtxWorld.getZ(), -1000));
+            cmpRigidbody.applyForce(ƒ.Vector3.SCALE(Script.steve.mtxWorld.getZ(), -config.force));
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SPACE]) && isGrounded) {
             cmpRigidbody.addVelocity(ƒ.Vector3.Y(5));
             isGrounded = false;
