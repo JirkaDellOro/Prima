@@ -23,6 +23,7 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 
 ## Checklist for the final assignment
 © Prof. Dipl.-Ing. Jirka R. Dell'Oro-Friedl, HFU
+
 | Nr | Criterion           | Explanation                                                                                                                                     |
 |---:|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 |  1 | Units and Positions | Where is 0, what is 1? Explain your setup of coordinate systems of the entities.                                                                |
