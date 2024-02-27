@@ -42,6 +42,7 @@ This is **experimental** material created by the docents during the PRIMA-lectur
 |  E | Animation           | Animate using the animation system of FudgeCore (1) and/or Sprites (1) as defined in FudgeAid                                                   |
 
 The criteria 1 to 9 are mandatory and yield 1 point each. Choose from A to E for additional points as noted in brackets. One aspect of your application may not fullfill multiple criteria. The final grade may deviate up to one grade from the calculation to reflect excellent aspects or flaws of your work.   
+
 | Points | 10  | 11  | 12  | 13  |
 |--------|-----|-----|-----|-----|
 | Grade  | 4.0 | 3.0 | 2.0 | 1.0 |
